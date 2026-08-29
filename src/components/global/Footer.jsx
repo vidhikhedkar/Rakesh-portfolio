@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const Footer = () => {
   return (
@@ -6,9 +7,9 @@ const Footer = () => {
       <div className="max-w-300 w-full flex flex-col items-center gap-6">
 
         {/* Logo */}
-        <div className="text-2xl md:text-3xl font-bold tracking-tight text-[#171719]">
+         <Link to="/" className="text-2xl md:text-3xl font-bold tracking-tight text-[#171719]">
           Rakesh<span className="text-[#5870EE]">.P</span>
-        </div>
+        </Link>
 
         {/* Navigation Links */}
         <ul className="flex flex-wrap justify-center items-center gap-6 md:gap-10 text-[12px] font-semibold tracking-[1.5px] text-[#8c92a4]">

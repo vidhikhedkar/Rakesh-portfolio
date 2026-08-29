@@ -187,10 +187,10 @@ const Projects = () => {
                             }}
                             className="flex h-12 items-center justify-center bg-transparent px-2"
                         >
-                            <h1 className="flex items-center gap-2 whitespace-nowrap text-[30px] font-bold leading-none tracking-[-1.5px] text-[#111111]">
-                                <span className="text-[#5870EE] text-[34px] leading-none font-light"><GiDandelionFlower /></span> 
-                                <span>ALL PROJECTS</span>
-                                <span className="text-[#5870EE] text-[28px] leading-none font-light"><GiDandelionFlower /></span>
+                            <h1 className="flex items-center gap-2 whitespace-nowrap text-[50px] font-bold leading-none tracking-[-1.5px] text-[#111111] pl-50">
+                                <span className="text-[#5870EE] text-[34px] leading-none font-light animate-pulse"><GiDandelionFlower /></span> 
+                                <span className="">ALL PROJECTS</span>
+                                <span className="text-[#5870EE] text-[34px] leading-none font-light animate-pulse "><GiDandelionFlower /></span>
                             </h1>
                         </motion.div>
 
