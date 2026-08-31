@@ -1,15 +1,40 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { NavLink } from "react-router-dom";
 import { FaGlobe, FaLinkedinIn, FaBehance } from "react-icons/fa6";
-import profile from '../../assets/profile.jpg';
 import approach from '../../assets/approach.png';
 import { CiMobile2, CiPen } from "react-icons/ci";
 import { GoPeople } from "react-icons/go";
 import { SlLayers } from "react-icons/sl";
 import { LiaBookSolid } from "react-icons/lia";
+import { getHomeContentService } from "../service/hometab.service";
 
 const Home = () => {
+
+  const [homeContent, setHomeContent] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchHomeContent = async () => {
+      try {
+        const response = await getHomeContentService();
+
+        console.log("Home API Data:", response);
+
+        if (response.success) {
+          setHomeContent(response.data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch home content:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchHomeContent();
+  }, []);
+
 
   const fadeUp = {
     hidden: {
@@ -26,12 +51,12 @@ const Home = () => {
     },
   };
 
-  const services = [
-    { icon: <LiaBookSolid />, title: "Creative" },
-    { icon: <CiMobile2 />, title: "Design" },
-    { icon: <SlLayers />, title: "Development" },
-    { icon: <CiPen />, title: "Branding" },
-    { icon: <GoPeople />, title: "Development" },
+  const serviceIcons = [
+    <LiaBookSolid />,
+    <CiMobile2 />,
+    <SlLayers />,
+    <CiPen />,
+    <GoPeople />,
   ];
 
   return (
@@ -88,8 +113,8 @@ const Home = () => {
                 className="relative mx-auto h-50 w-50 shrink-0 overflow-hidden rounded-tl-[30px] rounded-br-[30px] bg-[#6d88ff] sm:mx-0 z-10"
               >
                 <img
-                  src={profile}
-                  alt="Profile"
+                  src={homeContent?.imageUrl}
+                  alt={`${homeContent?.firstName} ${homeContent?.lastName}`}
                   className="h-full w-full object-contain grayscale transition duration-700 group-hover:scale-105"
                 />
               </motion.div>
@@ -111,17 +136,17 @@ const Home = () => {
                 className="text-center sm:text-left relative z-10"
               >
                 <p className="mb-1 text-[13px] font-medium uppercase tracking-wide text-[#BCBCBC]">
-                  UI/UX DESIGNER
+                  {homeContent?.role}
                 </p>
 
                 <h1 className="text-5xl font-medium leading-[0.95] tracking-[-1.5px] text-[#0F0F0F] sm:text-5xl">
-                  Rakesh
+                  {homeContent?.firstName}
                   <br />
-                  Parvathneni
+                  {homeContent?.lastName}
                 </h1>
 
                 <p className="mt-4 max-w-52.5 text-[15px] leading-5 text-[#949597]">
-                  I am a UI/UX Designer based in Hyderabad.
+                  {homeContent?.location}
                 </p>
               </motion.div>
             </div>
@@ -158,28 +183,28 @@ const Home = () => {
                 className="flex min-w-max items-center gap-4 whitespace-nowrap text-[9px] font-medium uppercase tracking-wide text-[#b8bbc4] px-10"
               >
                 <div className="flex shrink-0 items-center gap-4 pr-4">
-                  <TickerItem />
+                  <TickerItem text={homeContent?.tickerText} />
                   <TickerDot />
-                  <TickerItem />
+                  <TickerItem text={homeContent?.tickerText} />
                   <TickerDot />
-                  <TickerItem />
+                  <TickerItem text={homeContent?.tickerText} />
                   <TickerDot />
-                  <TickerItem />
+                  <TickerItem text={homeContent?.tickerText} />
                   <TickerDot />
-                  <TickerItem />
+                  <TickerItem text={homeContent?.tickerText} />
                   <TickerDot />
                 </div>
 
                 <div className="flex shrink-0 items-center gap-4 pr-4">
-                  <TickerItem />
+                  <TickerItem text={homeContent?.tickerText} />
                   <TickerDot />
-                  <TickerItem />
+                  <TickerItem text={homeContent?.tickerText} />
                   <TickerDot />
-                  <TickerItem />
+                  <TickerItem text={homeContent?.tickerText} />
                   <TickerDot />
-                  <TickerItem />
+                  <TickerItem text={homeContent?.tickerText} />
                   <TickerDot />
-                  <TickerItem />
+                  <TickerItem text={homeContent?.tickerText} />
                   <TickerDot />
                 </div>
               </motion.div>
@@ -201,7 +226,7 @@ const Home = () => {
                 }}
                 className="group relative flex min-h-46.25 flex-col justify-between overflow-hidden rounded-[28px] bg-white p-5 shadow-[0_15px_50px_rgba(35,45,80,0.04)]"
               >
-                <NavLink to="/about" className="absolute inset-0 z-0" aria-label="Go to Credentials" />
+                <NavLink to="/profile" className="absolute inset-0 z-0" aria-label="Go to Credentials" />
 
                 <div className="flex flex-1 items-center justify-center">
                   <motion.div
@@ -230,7 +255,7 @@ const Home = () => {
                   </h2>
                 </div>
 
-                <PlusButton to="/about" />
+                <PlusButton to="/profile" />
               </motion.section>
 
 
@@ -350,11 +375,11 @@ const Home = () => {
             whileHover={{ y: -4 }}
             className="group relative flex min-h-72.5 flex-col overflow-hidden rounded-[28px] bg-white p-7 shadow-[0_15px_50px_rgba(35,45,80,0.04)] lg:col-span-6"
           >
-            <NavLink to="/projects" className="absolute inset-0 z-0" aria-label="Go to Services" />
+            <NavLink to="/services-offering" className="absolute inset-0 z-0" aria-label="Go to Services" />
 
             {/* Service Icons */}
             <div className="flex flex-1 items-start justify-between px-6 pt-16 sm:px-10 relative z-10">
-              {services.map((service, index) => (
+              {homeContent?.services?.map((service, index) => (
                 <motion.div
                   key={service.title + index}
                   initial={{
@@ -376,7 +401,7 @@ const Home = () => {
                   aria-label={service.title}
                 >
                   <div className="flex h-12 w-12 items-center justify-center text-[32px] text-[#4A6AF4]">
-                    {service.icon}
+                    {serviceIcons[index]}
                   </div>
                 </motion.div>
               ))}
@@ -393,7 +418,7 @@ const Home = () => {
               </h2>
             </div>
 
-            <PlusButton to="/projects" />
+            <PlusButton to="/services-offering" />
           </motion.section>
 
 
@@ -503,13 +528,7 @@ const Home = () => {
 
             {/* Bottom Content */}
             <div className="mt-auto pb-1 relative z-10">
-              <p className="text-[11px] font-normal uppercase tracking-wide text-[#BCBCBC]">
-                STAY WITH ME
-              </p>
-
-              <h2 className="mt-2 text-[25px] font-medium leading-none tracking-[-0.5px] text-[#0F0F0F]">
-                Let's Connect
-              </h2>
+              {homeContent?.ctaHeading}
             </div>
 
             <PlusButton to="/contact" />
@@ -527,17 +546,17 @@ const Home = () => {
           >
             <div className="grid grid-cols-3 gap-3">
               <Stat
-                number="07"
+                number={homeContent?.experienceYears}
                 label="Years Experience"
               />
 
               <Stat
-                number="+125"
+                number={homeContent?.clientsCount}
                 label="Clients Worldwide"
               />
 
               <Stat
-                number="+210"
+                number={homeContent?.totalProjectsCount}
                 label="Total Projects"
               />
             </div>
@@ -614,12 +633,12 @@ const Home = () => {
 };
 
 
-const TickerItem = () => {
+const TickerItem = ({ text }) => {
   return (
     <span>
-      K AND{" "}
+      {text?.split(" ")[0]}{" "}
       <b className="text-[#5b78ff]">
-        FEATURED
+        {text?.split(" ").slice(1).join(" ")}
       </b>
     </span>
   );

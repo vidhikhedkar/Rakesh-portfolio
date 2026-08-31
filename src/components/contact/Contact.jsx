@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { HiOutlineMail, HiOutlinePhone, HiOutlineLocationMarker } from "react-icons/hi";
-import { FaGlobe, FaTwitter, FaInstagram } from "react-icons/fa";
+import { FaInstagram } from "react-icons/fa";
 import { BsGlobe, BsTwitterX } from "react-icons/bs";
+import { getContactService } from "../service/contactservice";
 
 const fadeUp = {
     hidden: { opacity: 0, y: 20 },
@@ -10,18 +11,48 @@ const fadeUp = {
 };
 
 const Contact = () => {
-    const [copiedPhone, setCopiedPhone] = useState(null);
+    const [contactData, setContactData] = useState({
+        email: "rakeshparvathneni26@gmail.com",
+        phone1: "+91 96406 57114",
+        phone2: "+91 81860 54115",
+        city: "Hyderabad",
+        state: "Telangana, India.",
+        websiteUrl: "#",
+        twitterUrl: "#",
+        instagramUrl: "#"
+    });
+    
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchContactData = async () => {
+            try {
+                const data = await getContactService();
+                if (data) {
+                    setContactData({
+                        email: data.email || "rakeshparvathneni26@gmail.com",
+                        phone1: data.phone1 || "+91 96406 57114",
+                        phone2: data.phone2 || "+91 81860 54115",
+                        city: data.city || "Hyderabad",
+                        state: data.state || "Telangana, India.",
+                        websiteUrl: data.websiteUrl || "#",
+                        twitterUrl: data.twitterUrl || "#",
+                        instagramUrl: data.instagramUrl || "#"
+                    });
+                }
+            } catch (error) {
+                console.error("Failed to fetch contact details:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchContactData();
+    }, []);
 
     const handlePhoneClick = (phoneNumber) => {
         const cleanedNumber = phoneNumber.replace(/\s+/g, "");
         window.location.href = `tel:${cleanedNumber}`;
-    };
-
-    const handlePhoneCopy = (e, phoneNumber) => {
-        e.stopPropagation();
-        navigator.clipboard.writeText(phoneNumber);
-        setCopiedPhone(phoneNumber);
-        setTimeout(() => setCopiedPhone(null), 2000);
     };
 
     return (
@@ -46,7 +77,7 @@ const Contact = () => {
                             {/* Mail */}
                             <div className="flex items-start gap-4 group">
                                 <a
-                                    href="mailto:rakeshparvathneni26@gmail.com"
+                                    href={`mailto:${contactData.email}`}
                                     className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white shadow-[0_4px_20px_rgba(35,45,80,0.03)] text-[#5B78F6] transition-transform duration-300 group-hover:scale-105"
                                 >
                                     <HiOutlineMail className="text-2xl" />
@@ -55,8 +86,8 @@ const Contact = () => {
                                     <p className="text-[11px] font-semibold uppercase tracking-[1px] text-[#BCBCBC]">
                                         Mail Us
                                     </p>
-                                    <a href="mailto:rakeshparvathneni26@gmail.com" className="text-[15px] font-medium text-gray-600 hover:text-[#5B78F6] transition-colors">
-                                        rakeshparvathneni26@gmail.com
+                                    <a href={`mailto:${contactData.email}`} className="text-[15px] font-medium text-gray-600 hover:text-[#5B78F6] transition-colors">
+                                        {contactData.email}
                                     </a>
                                 </div>
                             </div>
@@ -74,23 +105,21 @@ const Contact = () => {
                                     {/* First Phone Number */}
                                     <div className="flex items-center justify-between">
                                         <span
-                                            onClick={() => handlePhoneClick("+91 96406 57114")}
+                                            onClick={() => handlePhoneClick(contactData.phone1)}
                                             className="text-[15px] font-medium text-gray-600 hover:text-[#5B78F6] transition-colors cursor-pointer"
                                         >
-                                            +91 96406 57114
+                                            {contactData.phone1}
                                         </span>
-
                                     </div>
 
                                     {/* Second Phone Number */}
                                     <div className="flex items-center justify-between">
                                         <span
-                                            onClick={() => handlePhoneClick("+91 81860 54115")}
+                                            onClick={() => handlePhoneClick(contactData.phone2)}
                                             className="text-[15px] font-medium text-gray-600 hover:text-[#5B78F6] transition-colors cursor-pointer"
                                         >
-                                            +91 81860 54115
+                                            {contactData.phone2}
                                         </span>
-
                                     </div>
                                 </div>
                             </div>
@@ -105,7 +134,7 @@ const Contact = () => {
                                         Location
                                     </p>
                                     <p className="text-[15px] font-medium text-gray-600 leading-relaxed">
-                                        Hyderabad,<br />Telangana, India.
+                                        {contactData.city},<br />{contactData.state}
                                     </p>
                                 </div>
                             </div>
@@ -118,22 +147,18 @@ const Contact = () => {
                             Social Info
                         </h4>
                         <div className="flex items-center gap-3 space-x-2">
-                            <a href="#" className="flex h-12 w-12 items-center justify-center rounded-full bg-white shadow-[0_4px_20px_rgba(35,45,80,0.03)] text-[#5B78F6] hover:bg-[#5B78F6] hover:text-white transition-all duration-300">
+                            <a href={contactData.websiteUrl} target="_blank" rel="noopener noreferrer" className="flex h-12 w-12 items-center justify-center rounded-full bg-white shadow-[0_4px_20px_rgba(35,45,80,0.03)] text-[#5B78F6] hover:bg-[#5B78F6] hover:text-white transition-all duration-300">
                                 <BsGlobe className="text-xl" />
                             </a>
-                            <a href="#" className="flex h-12 w-12 items-center justify-center rounded-full bg-white shadow-[0_4px_20px_rgba(35,45,80,0.03)] text-[#5B78F6] hover:bg-[#5B78F6] hover:text-white transition-all duration-300">
-                                <BsTwitterX  className="text-xl" />
+                            <a href={contactData.twitterUrl} target="_blank" rel="noopener noreferrer" className="flex h-12 w-12 items-center justify-center rounded-full bg-white shadow-[0_4px_20px_rgba(35,45,80,0.03)] text-[#5B78F6] hover:bg-[#5B78F6] hover:text-white transition-all duration-300">
+                                <BsTwitterX className="text-xl" />
                             </a>
-                            <a href="#" className="flex h-12 w-12 items-center justify-center rounded-full bg-white shadow-[0_4px_20px_rgba(35,45,80,0.03)] text-[#5B78F6] hover:bg-[#5B78F6] hover:text-white transition-all duration-300">
+                            <a href={contactData.instagramUrl} target="_blank" rel="noopener noreferrer" className="flex h-12 w-12 items-center justify-center rounded-full bg-white shadow-[0_4px_20px_rgba(35,45,80,0.03)] text-[#5B78F6] hover:bg-[#5B78F6] hover:text-white transition-all duration-300">
                                 <FaInstagram className="text-xl" />
                             </a>
                         </div>
                     </div>
                 </motion.div>
-
-
-
-
 
                 {/* Right Side: Form Card */}
                 <motion.div
@@ -143,12 +168,6 @@ const Contact = () => {
                     transition={{ duration: 0.5, delay: 0.1 }}
                     className="lg:col-span-7 bg-white rounded-4xl p-6 shadow-[0_10px_40px_rgba(35,45,80,0.04)] relative overflow-hidden"
                 >
-                    {/* Decorative Sparkle */}
-                    {/* <div className="absolute top-8 right-8 text-[#5B78F6] opacity-60 text-2xl">
-                        ✦
-                    </div> */}
-
-
                     <div className="absolute right-11 top-0 h-9.5 w-0.5 bg-[#5870EE] group-hover:bg-[#5870EE] transition-colors duration-300" />
                     <div className="absolute right-8 top-8 h-7 w-7 ">
                         <svg
@@ -171,7 +190,6 @@ const Contact = () => {
                             />
                         </svg>
                     </div>
-
 
                     <h2 className="text-[32px] md:text-[42px] font-medium tracking-[-1.5px] text-[#171719] mb-4">
                         Let’s work <span className="text-[#5B78F6]">together.</span>

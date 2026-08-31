@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { GiDandelionFlower } from 'react-icons/gi';
 import { NavLink } from 'react-router-dom';
+import { fetchAboutData } from '../service/abouttab.service';
 
 const PlusButton = ({ to }) => {
     const content = (
@@ -75,6 +76,28 @@ const fadeUp = {
 };
 
 export const About = () => {
+    const [aboutData, setAboutData] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const getAboutData = async () => {
+            try {
+                const response = await fetchAboutData();
+
+                console.log("About API Data:", response);
+
+                setAboutData(response);
+            } catch (error) {
+                console.error("Failed to fetch about data:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        getAboutData();
+    }, []);
+
+
     const toolkitItems = [
         // CSS
         {
@@ -137,8 +160,17 @@ export const About = () => {
         }
     ];
 
+
+    if (loading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-[#F3F4F8]">
+                <p className="text-[#5870EE]">Loading...</p>
+            </div>
+        );
+    }
+
     return (
-        <div className="container bg-[#F3F4F8] text-[#111111] py-12 flex justify-center items-center font-sans">
+        <div className="bg-[#F3F4F8] text-[#111111] py-12 flex justify-center items-center font-sans">
             <div className="container grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-5">
 
                 {/* Profile Image Card */}
@@ -149,8 +181,8 @@ export const About = () => {
                 >
                     <div className="w-full h-full max-w-40 max-h-48 rounded-[18px] bg-linear-to-tr from-[#3b82f6] to-[#61c6e8] overflow-hidden">
                         <img
-                            src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=500&q=80"
-                            alt="Rakesh Parvathneni"
+                            src={aboutData?.imageUrl}
+                            alt={aboutData?.fullName}
                             className="w-full h-full object-cover grayscale group-hover:scale-105 transition-transform duration-500"
                         />
                     </div>
@@ -197,10 +229,10 @@ export const About = () => {
                         </div>
 
                         <h1 className="text-[21px] sm:text-[23px] font-medium tracking-[-0.6px] text-[#0F0F0F] mb-1.5 mt-16">
-                            Rakesh Parvathneni
+                            {aboutData?.fullName}
                         </h1>
                         <p className="text-[10px] sm:text-[13px] text-[#BCBCBC] font-normal leading-[1.55] max-w-none">
-                            I'm a UI/UX Designer focused on creating clean, intuitive and engaging digital experiences. I enjoy transforming complex ideas into simple interfaces with strong visual hierarchy, thoughtful user flows and attention to detail.
+                            {aboutData?.bio}
                         </p>
                     </motion.div>
                 </div>
@@ -215,19 +247,29 @@ export const About = () => {
                         EXPERIENCE
                     </p>
                     <div className="space-y-4">
-                        <div>
-                            <p className="text-xs text-[#BCBCBC] font-medium mb-1">2025 - Present</p>
-                            <h3 className="text-lg font-bold text-[#5B78F6]">UI/UX Designer</h3>
-                            <p className="text-xs text-gray-500 font-medium mb-3">KBK Business Solutions Pvt. Ltd.</p>
-                            <ul className="text-xs text-[#BCBCBC] leading-relaxed">
-                                <li>• Responsive Web & Landing Page Design</li>
-                                <li>• SaaS & Enterprise Dashboard Design</li>
-                                <li>• User Flows & Wireframing</li>
-                                <li>• High-Fidelity UI Design & Prototyping</li>
-                                <li>• Competitor & UX Research</li>
-                                <li>• Developer Collaboration & Design Handoff</li>
-                            </ul>
-                        </div>
+                        {aboutData?.experiences?.map((experience) => (
+                            <div key={experience._id}>
+                                <p className="text-xs text-[#BCBCBC] font-medium mb-1">
+                                    {experience.period}
+                                </p>
+
+                                <h3 className="text-lg font-bold text-[#5B78F6]">
+                                    {experience.role}
+                                </h3>
+
+                                <p className="text-xs text-gray-500 font-medium mb-3">
+                                    {experience.company}
+                                </p>
+
+                                <ul className="text-xs text-[#BCBCBC] leading-relaxed">
+                                    {experience.points
+                                        ?.split("\n")
+                                        .map((point, index) => (
+                                            <li key={index}>• {point}</li>
+                                        ))}
+                                </ul>
+                            </div>
+                        ))}
                     </div>
                 </motion.div>
 
@@ -240,18 +282,17 @@ export const About = () => {
                     <div>
                         <p className="text-[11px] uppercase tracking-[0.2em] text-[#0F0F0F] font-bold mb-6">EDUCATION</p>
                         <div className="space-y-6">
-                            <div>
-                                <h3 className="text-base font-semibold text-[#5B78F6] leading-snug">Certification Diploma in UI/UX Design</h3>
-                                <p className="text-xs text-[#BCBCBC] font-regular mt-0.5">Creative Multimedia Academy, Dilsukhnagar</p>
-                            </div>
-                            <div>
-                                <h3 className="text-base font-semibold text-[#5B78F6] leading-snug">MBA (HR)</h3>
-                                <p className="text-xs text-[#BCBCBC] font-regular mt-0.5">Sri Chaitanya Technical Campus (JNTUH)</p>
-                            </div>
-                            <div>
-                                <h3 className="text-base font-semibold text-[#5B78F6] leading-snug">B.Com</h3>
-                                <p className="text-xs text-[#BCBCBC] font-regular mt-0.5">Siddhartha Degree College (OU)</p>
-                            </div>
+                            {aboutData?.education?.map((education) => (
+                                <div key={education._id}>
+                                    <h3 className="text-base font-semibold text-[#5B78F6] leading-snug">
+                                        {education.degree}
+                                    </h3>
+
+                                    <p className="text-xs text-[#BCBCBC] font-regular mt-0.5">
+                                        {education.institution}
+                                    </p>
+                                </div>
+                            ))}
                         </div>
                     </div>
                 </motion.div>

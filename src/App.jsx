@@ -7,6 +7,8 @@ import ContactPage from './pages/ContactPage';
 import Navbar from './components/global/Navbar';
 import Footer from './components/global/Footer';
 import Dashboard from './components/admin/Dashboard';
+import Profile from './components/about/Profile';
+import ServicesOffering from './components/servicesoffering/ServicesOffering';
 
 const Layout = () => {
   const location = useLocation();
@@ -20,6 +22,8 @@ const Layout = () => {
         <Route path="/about" element={<AboutPage />} />
         <Route path="/projects" element={<ProjectPage />} />
         <Route path="/contact" element={<ContactPage />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/services-offering" element={<ServicesOffering />} />
         <Route path="/admin" element={<Dashboard />} />
       </Routes>
       {!isAdmin && <Footer />}

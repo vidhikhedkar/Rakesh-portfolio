@@ -1,32 +1,52 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { fetchAboutData,updateAboutData } from '../../service/abouttab.service';
 
 const AboutTab = () => {
     const [profile, setProfile] = useState({
-        fullName: "Rakesh Parvathneni",
-        title: "UI/UX Designer",
-        bio: "I'm a UI/UX Designer focused on creating clean, intuitive and engaging digital experiences. I enjoy transforming complex ideas into simple interfaces with strong visual hierarchy, thoughtful user flows and attention to detail.",
-        imageUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=500&q=80",
+        fullName: "",
+        title: "",
+        bio: "",
+        imageUrl: "",
     });
 
-    const [experiences, setExperiences] = useState([
-        {
-            period: "2025 - Present",
-            role: "UI/UX Designer",
-            company: "KBK Business Solutions Pvt. Ltd.",
-            points: "Responsive Web & Landing Page Design\nSaaS & Enterprise Dashboard Design\nUser Flows & Wireframing\nHigh-Fidelity UI Design & Prototyping\nCompetitor & UX Research\nDeveloper Collaboration & Design Handoff"
-        }
-    ]);
+    const [experiences, setExperiences] = useState([]);
+    const [education, setEducation] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    const [education, setEducation] = useState([
-        { degree: "Certification Diploma in UI/UX Design", institution: "Creative Multimedia Academy, Dilsukhnagar" },
-        { degree: "MBA (HR)", institution: "Sri Chaitanya Technical Campus (JNTUH)" },
-        { degree: "B.Com", institution: "Siddhartha Degree College (OU)" }
-    ]);
+    useEffect(() => {
+        fetchAboutData()
+            .then((data) => {
+                if (data) {
+                    setProfile({
+                        fullName: data.fullName || "",
+                        title: data.title || "",
+                        bio: data.bio || "",
+                        imageUrl: data.imageUrl || "",
+                    });
+                    setExperiences(data.experiences || []);
+                    setEducation(data.education || []);
+                }
+                setLoading(false);
+            })
+            .catch((err) => {
+                console.error("Failed to load data", err);
+                setLoading(false);
+            });
+    }, []);
 
-    const handleSave = (e) => {
+    const handleSave = async (e) => {
         e.preventDefault();
-        alert("About section changes saved successfully!");
+        try {
+            await updateAboutData({ ...profile, experiences, education });
+            alert("About section changes saved successfully!");
+        } catch (error) {
+            alert("Failed to save changes.");
+        }
     };
+
+    if (loading) {
+        return <div className="p-6 text-sm text-gray-500">Loading about data...</div>;
+    }
 
     return (
         <form onSubmit={handleSave} className="space-y-3 w-FULL pb-10">
@@ -95,7 +115,6 @@ const AboutTab = () => {
                     </div>
                 </div>
             </div>
-
 
             {/* Experience Section */}
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 space-y-4">

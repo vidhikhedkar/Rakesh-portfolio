@@ -1,33 +1,88 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FiSave, FiMail, FiPhone, FiMapPin, FiGlobe, FiShare2 } from 'react-icons/fi';
 import { FaXTwitter, FaInstagram } from 'react-icons/fa6';
+import { getContactService, updateContactService } from '../../service/contactservice';
 
 const ContactTab = () => {
-    // State mirroring the contact details found in your frontend Contact component
     const [contactData, setContactData] = useState({
-        email: "rakeshparvathneni26@gmail.com",
-        phone1: "+91 96406 57114",
-        phone2: "+91 81860 54115",
-        city: "Hyderabad",
-        state: "Telangana, India",
-        websiteUrl: "#",
-        twitterUrl: "#",
-        instagramUrl: "#"
+        email: "",
+        phone1: "",
+        phone2: "",
+        city: "",
+        state: "",
+        websiteUrl: "",
+        twitterUrl: "",
+        instagramUrl: ""
     });
 
+    const [loading, setLoading] = useState(true);
+    const [saving, setSaving] = useState(false);
     const [savedMessage, setSavedMessage] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
+    const [saveMessage, setSaveMessage] = useState("");
+
+
+    useEffect(() => {
+        const fetchContact = async () => {
+            try {
+                setLoading(true);
+                const data = await getContactService();
+                if (data) {
+                    setContactData({
+                        email: data.email || "",
+                        phone1: data.phone1 || "",
+                        phone2: data.phone2 || "",
+                        city: data.city || "",
+                        state: data.state || "",
+                        websiteUrl: data.websiteUrl || "",
+                        twitterUrl: data.twitterUrl || "",
+                        instagramUrl: data.instagramUrl || ""
+                    });
+                }
+            } catch (err) {
+                setErrorMessage(err.message || "Failed to load contact data");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchContact();
+    }, []);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setContactData(prev => ({ ...prev, [name]: value }));
     };
 
-    const handleSave = (e) => {
+    const handleSave = async (e) => {
         e.preventDefault();
-        // Here you would typically sync with your backend/state management
-        setSavedMessage(true);
-        setTimeout(() => setSavedMessage(false), 2500);
+        try {
+            setSaving(true);
+            setErrorMessage("");
+            setSaveMessage("");
+
+            const response = await updateContactService(contactData);
+
+            // Extract response message safely depending on backend structure
+            const msg = response?.message || response?.data?.message || "Changes saved successfully!";
+            setSaveMessage(msg);
+            setSavedMessage(true);
+
+            setTimeout(() => setSavedMessage(false), 2500);
+        } catch (err) {
+            setErrorMessage(err.response?.data?.message || err.message || "Failed to save settings");
+        } finally {
+            setSaving(false);
+        }
     };
+
+    if (loading) {
+        return (
+            <div className="flex justify-center items-center py-24 bg-white rounded-2xl">
+                <p className="text-sm text-gray-400 animate-pulse">Loading contact configurations...</p>
+            </div>
+        );
+    }
 
     return (
         <div className="w-full">
@@ -38,10 +93,16 @@ const ContactTab = () => {
                 </div>
                 {savedMessage && (
                     <span className="text-xs font-medium text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-100 animate-in fade-in">
-                        Changes saved successfully!
+                        {saveMessage || "Changes saved successfully!"}
                     </span>
                 )}
             </div>
+
+            {errorMessage && (
+                <div className="mb-3 p-3 bg-red-50 border border-red-100 rounded-xl text-xs text-red-600">
+                    {errorMessage}
+                </div>
+            )}
 
             <form onSubmit={handleSave} className="space-y-3">
                 {/* Primary Contact Cards */}
@@ -168,9 +229,10 @@ const ContactTab = () => {
                 <div className="flex justify-end">
                     <button
                         type="submit"
-                        className="flex items-center gap-2 bg-[#5B78FF] text-white px-6 py-3 rounded-xl font-medium text-sm shadow-md shadow-[#5B78FF]/20 hover:brightness-105 transition-all cursor-pointer"
+                        disabled={saving}
+                        className="flex items-center gap-2 bg-[#5B78FF] text-white px-6 py-3 rounded-xl font-medium text-sm shadow-md shadow-[#5B78FF]/20 hover:brightness-105 transition-all cursor-pointer disabled:opacity-50"
                     >
-                        <FiSave /> Save Contact Settings
+                        <FiSave /> {saving ? "Saving..." : "Save Contact Settings"}
                     </button>
                 </div>
             </form>

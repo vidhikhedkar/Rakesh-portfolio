@@ -1,45 +1,62 @@
-import React, { useState } from 'react';
-import { FiTrendingUp, FiFolder, FiMail, FiActivity, FiEdit3, FiSave, FiPlus, FiTrash2 } from 'react-icons/fi';
+import React, { useState, useEffect } from 'react';
+import { FiEdit3, FiSave, FiPlus, FiTrash2 } from 'react-icons/fi';
+import { getHomeContentService, updateHomeContentService } from '../../service/hometab.service';
 
 const HomeTab = () => {
-    // State to handle editable dynamic dashboard and content fields
     const [isEditing, setIsEditing] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [selectedFile, setSelectedFile] = useState(null);
 
-    // Stats State
-    const [stats, setStats] = useState({
-        totalViews: "24,592",
-        viewsChange: "+12% this week",
-        activeProjects: "12",
-        projectsChange: "+2 added",
-        messages: "48",
-        unreadMessages: "5 unread"
-    });
-
-    // Profile & Bio State
+    // Profile & Bio State initialized empty so database data takes over
     const [profileData, setProfileData] = useState({
-        role: "UI/UX DESIGNER",
-        firstName: "Rakesh",
-        lastName: "Parvathneni",
-        location: "I am a UI/UX Designer based in Hyderabad.",
-        experienceYears: "07",
-        clientsCount: "+125",
-        totalProjectsCount: "+210",
-        tickerText: "K AND FEATURED",
-        ctaHeading: "Let's work together."
+        role: "",
+        firstName: "",
+        lastName: "",
+        location: "",
+        experienceYears: "",
+        clientsCount: "",
+        totalProjectsCount: "",
+        tickerText: "",
+        ctaHeading: "",
+        imageUrl: ""
     });
 
     // Services State
-    const [services, setServices] = useState([
-        { title: "Creative" },
-        { title: "Design" },
-        { title: "Development" },
-        { title: "Branding" },
-        { title: "Strategy" }
-    ]);
+    const [services, setServices] = useState([]);
 
-    const handleStatChange = (field, value) => {
-        setStats(prev => ({ ...prev, [field]: value }));
-    };
+    // Fetch data from MongoDB on component mount
+    useEffect(() => {
+        const fetchContent = async () => {
+            try {
+                setLoading(true);
+                const res = await getHomeContentService();
+                if (res && res.data) {
+                    const data = res.data;
+                    setProfileData({
+                        role: data.role || "",
+                        firstName: data.firstName || "",
+                        lastName: data.lastName || "",
+                        location: data.location || "",
+                        experienceYears: data.experienceYears || "",
+                        clientsCount: data.clientsCount || "",
+                        totalProjectsCount: data.totalProjectsCount || "",
+                        tickerText: data.tickerText || "",
+                        ctaHeading: data.ctaHeading || "",
+                        imageUrl: data.imageUrl || ""
+                    });
+                    if (data.services && data.services.length > 0) {
+                        setServices(data.services);
+                    }
+                }
+            } catch (error) {
+                console.error("Failed to fetch home content:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchContent();
+    }, []);
 
     const handleProfileChange = (field, value) => {
         setProfileData(prev => ({ ...prev, [field]: value }));
@@ -59,6 +76,49 @@ const HomeTab = () => {
         setServices(services.filter((_, i) => i !== index));
     };
 
+    // Save handler (bundles text fields + file into FormData for Cloudinary)
+    const handleEditToggle = async () => {
+        if (isEditing) {
+            try {
+                setLoading(true);
+                const formData = new FormData();
+                formData.append("role", profileData.role);
+                formData.append("firstName", profileData.firstName);
+                formData.append("lastName", profileData.lastName);
+                formData.append("location", profileData.location);
+                formData.append("experienceYears", profileData.experienceYears);
+                formData.append("clientsCount", profileData.clientsCount);
+                formData.append("totalProjectsCount", profileData.totalProjectsCount);
+                formData.append("tickerText", profileData.tickerText);
+                formData.append("ctaHeading", profileData.ctaHeading);
+                formData.append("services", JSON.stringify(services));
+
+                if (selectedFile) {
+                    formData.append("image", selectedFile);
+                }
+
+                const res = await updateHomeContentService(formData);
+                if (res && res.data) {
+                    setProfileData(prev => ({
+                        ...prev,
+                        ...res.data,
+                        imageUrl: res.data.imageUrl || prev.imageUrl
+                    }));
+                }
+                setSelectedFile(null);
+                setIsEditing(false);
+                alert("Changes saved successfully!");
+            } catch (error) {
+                console.error("Failed to update home content:", error);
+                alert("Failed to save changes.");
+            } finally {
+                setLoading(false);
+            }
+        } else {
+            setIsEditing(true);
+        }
+    };
+
     return (
         <div className="space-y-3">
             {/* Admin Control Bar */}
@@ -68,13 +128,13 @@ const HomeTab = () => {
                     <p className="text-xs text-gray-400 mt-0.5">Modify metrics, profile copy, stats, and content displayed on the home page view.</p>
                 </div>
                 <button
-                    onClick={() => setIsEditing(!isEditing)}
-                    className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#5B78FF] text-white text-sm font-medium hover:bg-[#4a65e0] transition shadow-sm cursor-pointer shrink-0"
+                    onClick={handleEditToggle}
+                    disabled={loading}
+                    className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#5B78FF] text-white text-sm font-medium hover:bg-[#4a65e0] transition shadow-sm cursor-pointer shrink-0 disabled:opacity-50"
                 >
-                    {isEditing ? <><FiSave /> Save Changes</> : <><FiEdit3 /> Edit Home Content</>}
+                    {isEditing ? <><FiSave /> {loading ? "Saving..." : "Save Changes"}</> : <><FiEdit3 /> Edit Home Content</>}
                 </button>
             </div>
-
 
             {/* Editable Profile Information Block */}
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 space-y-4">
@@ -135,7 +195,6 @@ const HomeTab = () => {
                         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-linear-to-r from-gray-50 to-white p-4 sm:p-5 rounded-2xl border border-gray-200 shadow-inner">
 
                             <div className="flex items-center gap-4 w-full sm:w-auto">
-                                {/* Enhanced Avatar Preview Box */}
                                 <div className="relative h-16 w-16 sm:h-20 sm:w-20 rounded-2xl bg-gray-100 overflow-hidden shrink-0 border-2 border-white shadow-md">
                                     {profileData.imageUrl ? (
                                         <img
@@ -154,16 +213,13 @@ const HomeTab = () => {
                                 <div className="flex-1">
                                     <h5 className="text-sm font-bold text-[#0F0F0F]">Profile Avatar</h5>
                                     <p className="text-xs text-gray-500 mt-0.5">
-                                        {isEditing
-                                            ? (profileData.imageUrl ? "Choose a new image to replace current avatar." : "Upload a high-res professional portrait (PNG/JPG).")
-                                            : (profileData.imageUrl ? "Active profile image uploaded." : "No image uploaded yet.")
-                                        }
+                                        {profileData.imageUrl ? "Active profile image uploaded." : "No image uploaded yet."}
                                     </p>
                                 </div>
                             </div>
 
                             <div className="w-full sm:w-auto">
-                                {isEditing ? (
+                                {isEditing && (
                                     <label className="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-[#5B78FF] hover:bg-[#4a65e0] text-white text-xs font-semibold rounded-xl shadow-xs cursor-pointer transition-all w-full sm:w-auto">
                                         <span>Choose File</span>
                                         <input
@@ -172,17 +228,13 @@ const HomeTab = () => {
                                             onChange={(e) => {
                                                 const file = e.target.files[0];
                                                 if (file) {
-                                                    const imageUrl = URL.createObjectURL(file);
-                                                    handleProfileChange('imageUrl', imageUrl);
+                                                    setSelectedFile(file);
+                                                    handleProfileChange('imageUrl', URL.createObjectURL(file));
                                                 }
                                             }}
                                             className="hidden"
                                         />
                                     </label>
-                                ) : (
-                                    <span className="inline-flex items-center px-3 py-1.5 bg-emerald-50 text-emerald-600 text-xs font-medium rounded-lg border border-emerald-100">
-                                        {profileData.imageUrl ? "Ready & Active" : "Action Required"}
-                                    </span>
                                 )}
                             </div>
 
@@ -191,7 +243,7 @@ const HomeTab = () => {
                 </div>
             </div>
 
-            {/* Editable Stats & Marquee Values */}
+            {/* Editable Counters & Ticker Settings */}
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 space-y-4">
                 <h4 className="text-base font-bold text-[#0F0F0F]">Counters & Ticker Settings</h4>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -256,6 +308,7 @@ const HomeTab = () => {
                     <h4 className="text-base font-bold text-[#0F0F0F]">Services Offerings Manager</h4>
                     {isEditing && (
                         <button
+                            type="button"
                             onClick={addService}
                             className="flex items-center gap-1 text-xs text-[#5B78FF] font-medium bg-blue-50 px-3 py-1.5 rounded-lg hover:bg-blue-100 transition"
                         >
@@ -275,6 +328,7 @@ const HomeTab = () => {
                                         className="w-full p-1.5 border border-gray-200 rounded-lg text-sm bg-white"
                                     />
                                     <button
+                                        type="button"
                                         onClick={() => removeService(index)}
                                         className="text-red-400 hover:text-red-600 p-1"
                                     >

@@ -1,46 +1,7 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { FaPlus } from "react-icons/fa";
-import BeautyBayAcademy from '../../assets/Beauty-Bay-Academy.jpg';
-import OnlineDBExtractor from '../../assets/Online-DB-Extractor.jpg';
-import SiddhaThirthham from '../../assets/Siddha-Thirthham.jpg';
-import KBKBusinessSolutions from '../../assets/KBK-Business-Solutions.jpg';
-import WCC from '../../assets/WCC.jpg';
-import CRMDashboard from '../../assets/CRM-Dashboard.jpg';
 import { GiDandelionFlower } from "react-icons/gi";
-
-const projects = [
-    {
-        title: "Beauty Bay Academy",
-        category: "EDUCATION • WEB DESIGN",
-        image: BeautyBayAcademy,
-    },
-    {
-        title: "Online DB Extractor",
-        category: "SAAS • DASHBOARD",
-        image: OnlineDBExtractor,
-    },
-    {
-        title: "Siddha Thirthham",
-        category: "WEB DESIGN • BOOKING PLATFORM",
-        image: SiddhaThirthham,
-    },
-    {
-        title: "KBK Business Solutions",
-        category: "CORPORATE • WEB DESIGN",
-        image: KBKBusinessSolutions,
-    },
-    {
-        title: "WCC",
-        category: "SPORTS • DIGITAL EXPERIENCE",
-        image: WCC,
-    },
-    {
-        title: "CRM Dashboard",
-        category: "DASHBOARD • BUSINESS PRODUCT",
-        image: CRMDashboard,
-    },
-];
+import { getProjectsService } from "../service/projecttab.service";
 
 const fadeUp = {
     hidden: {
@@ -156,24 +117,65 @@ const ProjectCard = ({
 };
 
 const Projects = () => {
+    const [projects, setProjects] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const fetchProjects = async () => {
+            try {
+                setLoading(true);
+                const data = await getProjectsService();
+                setProjects(data);
+                setError(null);
+            } catch (err) {
+                setError("Failed to load projects");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchProjects();
+    }, []);
+
+    if (loading) {
+        return (
+            <div className="flex justify-center items-center py-24 bg-[#f4f6f8]">
+                <p className="text-sm text-gray-500 animate-pulse">Loading projects...</p>
+            </div>
+        );
+    }
+
+    if (error || projects.length === 0) {
+        return (
+            <div className="flex justify-center items-center py-24 bg-[#f4f6f8]">
+                <p className="text-sm text-red-500">{error || "No projects found"}</p>
+            </div>
+        );
+    }
+
     return (
         <section className="bg-[#f4f6f8] px-2.5 py-12">
             <div className="mx-auto max-w-7xl">
                 {/* Desktop Layout - Unchanged structurally */}
                 <div className="hidden md:grid md:grid-cols-3 md:gap-x-4 md:gap-y-4 items-start">
                     <div className="flex flex-col gap-4">
-                        <ProjectCard
-                            project={projects[0]}
-                            index={0}
-                            className=""
-                            imageClassName="h-[210px]"
-                        />
-                        <ProjectCard
-                            project={projects[3]}
-                            index={3}
-                            className=""
-                            imageClassName="h-[335px]"
-                        />
+                        {projects[0] && (
+                            <ProjectCard
+                                project={projects[0]}
+                                index={0}
+                                className=""
+                                imageClassName="h-[210px]"
+                            />
+                        )}
+                        {projects[3] && (
+                            <ProjectCard
+                                project={projects[3]}
+                                index={3}
+                                className=""
+                                imageClassName="h-[335px]"
+                            />
+                        )}
                     </div>
 
                     <div className="flex flex-col gap-4">
@@ -188,39 +190,47 @@ const Projects = () => {
                             className="flex h-12 items-center justify-center bg-transparent px-2"
                         >
                             <h1 className="flex items-center gap-2 whitespace-nowrap text-[50px] font-bold leading-none tracking-[-1.5px] text-[#111111] pl-50">
-                                <span className="text-[#5870EE] text-[34px] leading-none font-light animate-pulse"><GiDandelionFlower /></span> 
+                                <span className="text-[#5870EE] text-[34px] leading-none font-light animate-pulse"><GiDandelionFlower /></span>
                                 <span className="">ALL PROJECTS</span>
                                 <span className="text-[#5870EE] text-[34px] leading-none font-light animate-pulse "><GiDandelionFlower /></span>
                             </h1>
                         </motion.div>
 
-                        <ProjectCard
-                            project={projects[1]}
-                            index={1}
-                            className=""
-                            imageClassName="h-[240px]"
-                        />
-                        <ProjectCard
-                            project={projects[4]}
-                            index={4}
-                            className=""
-                            imageClassName="h-[240px]"
-                        />
+                        {projects[1] && (
+                            <ProjectCard
+                                project={projects[1]}
+                                index={1}
+                                className=""
+                                imageClassName="h-[240px]"
+                            />
+                        )}
+                        {projects[4] && (
+                            <ProjectCard
+                                project={projects[4]}
+                                index={4}
+                                className=""
+                                imageClassName="h-[240px]"
+                            />
+                        )}
                     </div>
 
                     <div className="flex flex-col gap-4 pt-16">
-                        <ProjectCard
-                            project={projects[2]}
-                            index={2}
-                            className=""
-                            imageClassName="h-[240px]"
-                        />
-                        <ProjectCard
-                            project={projects[5]}
-                            index={5}
-                            className=""
-                            imageClassName="h-[240px]"
-                        />
+                        {projects[2] && (
+                            <ProjectCard
+                                project={projects[2]}
+                                index={2}
+                                className=""
+                                imageClassName="h-[240px]"
+                            />
+                        )}
+                        {projects[5] && (
+                            <ProjectCard
+                                project={projects[5]}
+                                index={5}
+                                className=""
+                                imageClassName="h-[240px]"
+                            />
+                        )}
                     </div>
                 </div>
 
@@ -235,7 +245,7 @@ const Projects = () => {
                     </div>
                     {projects.map((project, index) => (
                         <ProjectCard
-                            key={project.title}
+                            key={project._id || project.title}
                             project={project}
                             index={index}
                             className="w-full"
@@ -261,7 +271,7 @@ const Projects = () => {
 
                     {projects.map((project, index) => (
                         <ProjectCard
-                            key={project.title}
+                            key={project._id || project.title}
                             project={project}
                             index={index}
                             className="w-full"

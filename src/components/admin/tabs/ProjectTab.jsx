@@ -1,51 +1,65 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FiPlus, FiTrash2, FiEdit2, FiX } from 'react-icons/fi';
+import { getProjectsService, updateProjectsService, uploadImageService } from '../../service/projecttab.service';
+// import { getProjectsService, updateProjectsService, uploadImageService } from '../services/projectService'; 
 
 const ProjectTab = () => {
     const [deleteId, setDeleteId] = useState(null);
-
-    const [projects, setProjects] = useState([
-        {
-            id: 1,
-            title: "Beauty Bay Academy",
-            category: "EDUCATION • WEB DESIGN",
-            image: "BeautyBayAcademy",
-        },
-        {
-            id: 2,
-            title: "Online DB Extractor",
-            category: "SAAS • DASHBOARD",
-            image: "OnlineDBExtractor",
-        },
-        {
-            id: 3,
-            title: "Siddha Thirthham",
-            category: "WEB DESIGN • BOOKING PLATFORM",
-            image: "SiddhaThirthham",
-        },
-        {
-            id: 4,
-            title: "KBK Business Solutions",
-            category: "CORPORATE • WEB DESIGN",
-            image: "KBKBusinessSolutions",
-        },
-        {
-            id: 5,
-            title: "WCC",
-            category: "SPORTS • DIGITAL EXPERIENCE",
-            image: "WCC",
-        },
-        {
-            id: 6,
-            title: "CRM Dashboard",
-            category: "DASHBOARD • BUSINESS PRODUCT",
-            image: "CRMDashboard",
-        },
-    ]);
+    const [projects, setProjects] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [uploading, setUploading] = useState(false);
+    const [error, setError] = useState(null);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingId, setEditingId] = useState(null);
     const [formData, setFormData] = useState({ title: '', category: '', image: '' });
+
+    // Fetch projects on component mount
+    useEffect(() => {
+        fetchProjects();
+    }, []);
+
+    const fetchProjects = async () => {
+        try {
+            setLoading(true);
+            const data = await getProjectsService();
+            // Map MongoDB _id to id for seamless UI rendering
+            const formatted = data.map((item) => ({
+                ...item,
+                id: item._id
+            }));
+            setProjects(formatted);
+            setError(null);
+        } catch (err) {
+            setError(typeof err === 'string' ? err : 'Failed to fetch projects');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleSaveAll = async (updatedList) => {
+        try {
+            setLoading(true);
+            // Prepare payload matching backend expectations (expects an array of projects)
+            const payload = updatedList.map(({ title, category, image, order }, idx) => ({
+                title,
+                category,
+                image,
+                order: order !== undefined ? order : idx
+            }));
+            const data = await updateProjectsService(payload);
+            const formatted = data.map((item) => ({
+                ...item,
+                id: item._id
+            }));
+            setProjects(formatted);
+            setError(null);
+        } catch (err) {
+            setError(typeof err === 'string' ? err : 'Failed to save projects update');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const handleOpenAdd = () => {
         setEditingId(null);
@@ -59,27 +73,32 @@ const ProjectTab = () => {
         setIsModalOpen(true);
     };
 
-    const handleDelete = (id) => {
-        setProjects(projects.filter(p => p.id !== id));
+    const handleDelete = async (id) => {
+        const updated = projects.filter(p => p.id !== id);
+        setProjects(updated);
         setDeleteId(null);
+        await handleSaveAll(updated);
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        let updated;
         if (editingId) {
-            setProjects(projects.map(p => p.id === editingId ? { ...p, ...formData } : p));
+            updated = projects.map(p => p.id === editingId ? { ...p, ...formData } : p);
         } else {
             const newProject = {
-                id: Date.now(),
+                id: Date.now().toString(),
                 ...formData
             };
-            setProjects([...projects, newProject]);
+            updated = [...projects, newProject];
         }
+        setProjects(updated);
         setIsModalOpen(false);
+        await handleSaveAll(updated);
     };
 
     return (
-        <div className="w-full ">
+        <div className="w-full">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-3 bg-white p-3 rounded-2xl">
                 <div>
                     <h3 className="text-base sm:text-lg font-bold text-[#0F0F0F]">Manage Projects</h3>
@@ -93,14 +112,33 @@ const ProjectTab = () => {
                 </button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {error && (
+                <div className="mb-3 p-3 bg-red-50 border border-red-200 text-red-600 text-xs rounded-xl">
+                    {error}
+                </div>
+            )}
+
+            {loading && (
+                <div className="text-xs text-gray-400 mb-3">Syncing with server...</div>
+            )}
+
+            <div
+                className={`grid grid-cols-1 md:grid-cols-3 gap-3 ${projects.length > 6
+                        ? 'max-h-162.5 overflow-y-auto pr-2 no-scrollbar'
+                        : ''
+                    }`}
+            >
                 {projects.map((project) => (
                     <div key={project.id} className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between transition-all hover:shadow-md">
                         <div>
                             <div className="h-40 rounded-xl bg-gray-50 border border-gray-100 mb-4 flex items-center justify-center text-gray-400 font-medium text-xs overflow-hidden relative group">
-                                <div className="absolute inset-0 bg-[#5B78FF]/5 flex items-center justify-center text-[#5B78FF] font-semibold text-xs">
-                                    {project.image || "Image Reference"}
-                                </div>
+                                {project.image ? (
+                                    <img src={project.image} alt={project.title} className="w-full h-full object-cover" />
+                                ) : (
+                                    <div className="absolute inset-0 bg-[#5B78FF]/5 flex items-center justify-center text-[#5B78FF] font-semibold text-xs truncate px-2">
+                                        Image Reference
+                                    </div>
+                                )}
                             </div>
                             <span className="text-[10px] tracking-wider uppercase bg-blue-50 text-[#5B78FF] font-semibold px-2.5 py-1 rounded-full">
                                 {project.category}
@@ -108,7 +146,7 @@ const ProjectTab = () => {
                             <h4 className="text-base font-bold text-[#0F0F0F] mt-2">{project.title}</h4>
                         </div>
                         <div className="flex items-center justify-between mt-6 pt-4 border-t border-gray-100">
-                            <span className="text-xs text-gray-400">ID: {project.id}</span>
+                            <span className="text-xs text-gray-400 truncate max-w-30">ID: {project.id}</span>
                             <div className="flex gap-2">
                                 <button
                                     onClick={() => handleOpenEdit(project)}
@@ -116,7 +154,6 @@ const ProjectTab = () => {
                                 >
                                     <FiEdit2 size={12} /> Edit
                                 </button>
-
 
                                 <div className="relative">
                                     <button
@@ -128,13 +165,10 @@ const ProjectTab = () => {
 
                                     {deleteId === project.id && (
                                         <>
-                                            {/* Backdrop for mobile devices to handle outside clicks cleanly */}
                                             <div
                                                 className="fixed inset-0 z-40 bg-black/20 backdrop-blur-[1px] sm:hidden"
                                                 onClick={() => setDeleteId(null)}
                                             />
-
-                                            {/* Responsive popup: centered modal on mobile, absolute popover on tablet/desktop */}
                                             <div className="fixed sm:absolute left-4 right-4 sm:left-auto sm:right-0 bottom-4 sm:bottom-full sm:mb-2 z-50 w-auto sm:w-64 bg-white rounded-2xl p-4 shadow-xl border border-gray-100 space-y-3 animate-in fade-in zoom-in-95 duration-150 mx-auto sm:mx-0">
                                                 <div className="space-y-0.5">
                                                     <h4 className="text-xs font-bold text-[#0F0F0F]">Delete Project?</h4>
@@ -225,21 +259,29 @@ const ProjectTab = () => {
                                         <div>
                                             <h5 className="text-sm font-bold text-[#0F0F0F]">Project Asset</h5>
                                             <p className="text-xs text-gray-500 mt-0.5">
-                                                {formData.image ? "Image uploaded successfully" : "Upload a PNG or JPG file"}
+                                                {uploading ? "Uploading image..." : formData.image ? "Image uploaded successfully" : "Upload a PNG or JPG file"}
                                             </p>
                                         </div>
                                     </div>
 
                                     <label className="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-[#5B78FF] hover:bg-[#4a65e0] text-white text-xs font-semibold rounded-xl shadow-xs cursor-pointer transition-all shrink-0">
-                                        <span>Browse File</span>
+                                        <span>{uploading ? "Uploading..." : "Browse File"}</span>
                                         <input
                                             type="file"
                                             accept="image/*"
-                                            onChange={(e) => {
+                                            disabled={uploading}
+                                            onChange={async (e) => {
                                                 const file = e.target.files[0];
                                                 if (file) {
-                                                    const imageUrl = URL.createObjectURL(file);
-                                                    setFormData({ ...formData, image: imageUrl });
+                                                    try {
+                                                        setUploading(true);
+                                                        const result = await uploadImageService(file);
+                                                        setFormData({ ...formData, image: result.imageUrl });
+                                                    } catch (err) {
+                                                        setError(typeof err === 'string' ? err : 'Image upload failed');
+                                                    } finally {
+                                                        setUploading(false);
+                                                    }
                                                 }
                                             }}
                                             className="hidden"
@@ -258,7 +300,8 @@ const ProjectTab = () => {
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-5 py-2 text-xs font-medium text-white bg-[#5B78FF] hover:bg-[#4a66e5] rounded-xl shadow-md shadow-[#5B78FF]/20 cursor-pointer"
+                                    disabled={loading || uploading}
+                                    className="px-5 py-2 text-xs font-medium text-white bg-[#5B78FF] hover:bg-[#4a66e5] rounded-xl shadow-md shadow-[#5B78FF]/20 cursor-pointer disabled:opacity-50"
                                 >
                                     {editingId ? "Save Changes" : "Create Project"}
                                 </button>

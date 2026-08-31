@@ -6,6 +6,9 @@ import AboutTab from './tabs/AboutTab';
 import ProjectTab from './tabs/ProjectTab';
 import ContactTab from './tabs/ContactTab';
 import { Link } from 'react-router-dom';
+import ProfileTab from './tabs/ProfileTab';
+import { FaRegUserCircle } from 'react-icons/fa';
+import ServicesOfferingTab from './tabs/ServicesOfferingTab';
 
 const Dashboard = () => {
     const [activeTab, setActiveTab] = useState('home');
@@ -14,7 +17,9 @@ const Dashboard = () => {
     const navTabs = [
         { id: 'home', label: 'Home', icon: <FiHome /> },
         { id: 'about', label: 'About', icon: <FiUser /> },
+        { id: 'profile', label: 'Profile', icon: <FaRegUserCircle  /> },
         { id: 'project', label: 'Project', icon: <FiFolder /> },
+        { id: 'services-offering', label: 'Services Offering', icon: <FiFolder /> },
         { id: 'contact', label: 'Contact', icon: <FiMail /> },
     ];
 
@@ -184,7 +189,9 @@ const Dashboard = () => {
                             >
                                 {activeTab === 'home' && <HomeTab />}
                                 {activeTab === 'about' && <AboutTab />}
+                                {activeTab === 'profile' && <ProfileTab />}
                                 {activeTab === 'project' && <ProjectTab />}
+                                {activeTab === 'services-offering' && <ServicesOfferingTab />}
                                 {activeTab === 'contact' && <ContactTab />}
                             </motion.div>
                         </AnimatePresence>
