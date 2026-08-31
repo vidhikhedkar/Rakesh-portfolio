@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { fetchAboutData,updateAboutData } from '../../service/abouttab.service';
+import { fetchAboutData, updateAboutData } from '../../service/abouttab.service';
 
 const AboutTab = () => {
     const [profile, setProfile] = useState({
@@ -9,6 +9,7 @@ const AboutTab = () => {
         imageUrl: "",
     });
 
+    const [imageFile, setImageFile] = useState(null);
     const [experiences, setExperiences] = useState([]);
     const [education, setEducation] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -36,10 +37,28 @@ const AboutTab = () => {
 
     const handleSave = async (e) => {
         e.preventDefault();
+
         try {
-            await updateAboutData({ ...profile, experiences, education });
+            const formData = new FormData();
+
+            formData.append("fullName", profile.fullName);
+            formData.append("title", profile.title);
+            formData.append("bio", profile.bio);
+
+            formData.append("experiences", JSON.stringify(experiences));
+            formData.append("education", JSON.stringify(education));
+
+            // Only send image when a new image was selected
+            if (imageFile) {
+                formData.append("image", imageFile);
+            }
+
+            await updateAboutData(formData);
+
             alert("About section changes saved successfully!");
+
         } catch (error) {
+            console.error("Failed to save changes:", error);
             alert("Failed to save changes.");
         }
     };
@@ -89,14 +108,24 @@ const AboutTab = () => {
 
                             <label className="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-[#5B78FF] hover:bg-[#4a65e0] text-white text-xs font-semibold rounded-xl shadow-xs cursor-pointer transition-all shrink-0">
                                 <span>Browse File</span>
+
                                 <input
                                     type="file"
                                     accept="image/*"
                                     onChange={(e) => {
                                         const file = e.target.files[0];
+
                                         if (file) {
-                                            const imageUrl = URL.createObjectURL(file);
-                                            setProfile({ ...profile, imageUrl: imageUrl });
+                                            // Keep the actual file for uploading
+                                            setImageFile(file);
+
+                                            // Create temporary URL only for preview
+                                            const previewUrl = URL.createObjectURL(file);
+
+                                            setProfile((prev) => ({
+                                                ...prev,
+                                                imageUrl: previewUrl,
+                                            }));
                                         }
                                     }}
                                     className="hidden"
