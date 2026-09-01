@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { HiOutlineMail, HiOutlinePhone, HiOutlineLocationMarker } from "react-icons/hi";
 import { FaInstagram } from "react-icons/fa";
 import { BsGlobe, BsTwitterX } from "react-icons/bs";
+import emailjs from "@emailjs/browser";
 import { getContactService } from "../service/contactservice";
 
 const fadeUp = {
@@ -21,8 +22,18 @@ const Contact = () => {
         twitterUrl: "#",
         instagramUrl: "#"
     });
-    
+
     const [loading, setLoading] = useState(true);
+
+    const [formData, setFormData] = useState({
+        name: "",
+        email: "",
+        subject: "",
+        message: ""
+    });
+
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [submitStatus, setSubmitStatus] = useState({ success: false, message: "" });
 
     useEffect(() => {
         const fetchContactData = async () => {
@@ -50,9 +61,48 @@ const Contact = () => {
         fetchContactData();
     }, []);
 
+    const handleInputChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
     const handlePhoneClick = (phoneNumber) => {
         const cleanedNumber = phoneNumber.replace(/\s+/g, "");
         window.location.href = `tel:${cleanedNumber}`;
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+        setSubmitStatus({ success: false, message: "" });
+
+        const SERVICE_ID = "service_dup3fmp";
+        const TEMPLATE_ID = "template_ma4zka5";
+        const PUBLIC_KEY = "3B1wQUHIoAX5yDoci";
+
+        const templateParams = {
+            from_name: formData.name,
+            from_email: formData.email,
+            subject: formData.subject,
+            message: formData.message,
+            to_email: contactData.email
+        };
+
+        try {
+            await emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams, PUBLIC_KEY);
+            setSubmitStatus({
+                success: true,
+                message: "Your message has been sent successfully!"
+            });
+            setFormData({ name: "", email: "", subject: "", message: "" });
+        } catch (error) {
+            console.error("EmailJS Error:", error);
+            setSubmitStatus({
+                success: false,
+                message: "Failed to send message. Please try again later."
+            });
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
@@ -67,7 +117,6 @@ const Contact = () => {
                     transition={{ duration: 0.5 }}
                     className="lg:col-span-5 flex flex-col gap-8 pt-2"
                 >
-                    {/* Contact Info Header */}
                     <div>
                         <h4 className="text-[12px] font-semibold uppercase tracking-[1.5px] text-[#0F0F0F] mb-6">
                             Contact Info
@@ -102,7 +151,6 @@ const Contact = () => {
                                         Contact Us
                                     </p>
 
-                                    {/* First Phone Number */}
                                     <div className="flex items-center justify-between">
                                         <span
                                             onClick={() => handlePhoneClick(contactData.phone1)}
@@ -112,7 +160,6 @@ const Contact = () => {
                                         </span>
                                     </div>
 
-                                    {/* Second Phone Number */}
                                     <div className="flex items-center justify-between">
                                         <span
                                             onClick={() => handlePhoneClick(contactData.phone2)}
@@ -169,7 +216,7 @@ const Contact = () => {
                     className="lg:col-span-7 bg-white rounded-4xl p-6 shadow-[0_10px_40px_rgba(35,45,80,0.04)] relative overflow-hidden"
                 >
                     <div className="absolute right-11 top-0 h-9.5 w-0.5 bg-[#5870EE] group-hover:bg-[#5870EE] transition-colors duration-300" />
-                    <div className="absolute right-8 top-8 h-7 w-7 ">
+                    <div className="absolute right-7 top-8 h-8 w-8 pointer-events-none">
                         <svg
                             viewBox="0 0 32 32"
                             className="h-full w-full"
@@ -178,15 +225,13 @@ const Contact = () => {
                         >
                             <path
                                 d="M16 0
-                                        C16.8 8.5 23.5 15.2 32 16
-                                        C23.5 16.8 16.8 23.5 16 32
-                                        C15.2 23.5 8.5 16.8 0 16
-                                        C8.5 15.2 15.2 8.5 16 0Z
-                                    "
+         C16.8 8.5 23.5 15.2 32 16
+         C23.5 16.8 16.8 23.5 16 32
+         C15.2 23.5 8.5 16.8 0 16
+         C8.5 15.2 15.2 8.5 16 0Z"
                                 fill="white"
                                 stroke="#5870EE"
                                 strokeWidth="1.5"
-                                className="group-hover:stroke-[#5870EE] transition-colors duration-300"
                             />
                         </svg>
                     </div>
@@ -195,10 +240,19 @@ const Contact = () => {
                         Let’s work <span className="text-[#5B78F6]">together.</span>
                     </h2>
 
-                    <form onSubmit={(e) => e.preventDefault()} className="flex flex-col gap-3">
+                    {submitStatus.message && (
+                        <div className={`p-3 mb-4 rounded-xl text-sm ${submitStatus.success ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600'}`}>
+                            {submitStatus.message}
+                        </div>
+                    )}
+
+                    <form onSubmit={handleSubmit} className="flex flex-col gap-3">
                         <div>
                             <input
                                 type="text"
+                                name="name"
+                                value={formData.name}
+                                onChange={handleInputChange}
                                 placeholder="Name *"
                                 className="w-full bg-[#FBFBFC] border border-transparent focus:border-[#5B78F6] rounded-2xl px-5 py-3 text-[15px] text-[#171719] outline-none transition-all placeholder:text-[#757575]"
                                 required
@@ -208,6 +262,9 @@ const Contact = () => {
                         <div>
                             <input
                                 type="email"
+                                name="email"
+                                value={formData.email}
+                                onChange={handleInputChange}
                                 placeholder="Email *"
                                 className="w-full bg-[#FBFBFC] border border-transparent focus:border-[#5B78F6] rounded-2xl px-5 py-3 text-[15px] text-[#171719] outline-none transition-all placeholder:text-[#757575]"
                                 required
@@ -217,6 +274,9 @@ const Contact = () => {
                         <div>
                             <input
                                 type="text"
+                                name="subject"
+                                value={formData.subject}
+                                onChange={handleInputChange}
                                 placeholder="Your Subject *"
                                 className="w-full bg-[#FBFBFC] border border-transparent focus:border-[#5B78F6] rounded-2xl px-5 py-3 text-[15px] text-[#171719] outline-none transition-all placeholder:text-[#757575]"
                                 required
@@ -226,6 +286,9 @@ const Contact = () => {
                         <div>
                             <textarea
                                 rows={4}
+                                name="message"
+                                value={formData.message}
+                                onChange={handleInputChange}
                                 placeholder="Your Message *"
                                 className="w-full bg-[#FBFBFC] border border-transparent focus:border-[#5B78F6] rounded-2xl px-5 py-3 text-[15px] text-[#171719] outline-none transition-all placeholder:text-[#757575] resize-none"
                                 required
@@ -236,9 +299,10 @@ const Contact = () => {
                             whileHover={{ scale: 1.01 }}
                             whileTap={{ scale: 0.98 }}
                             type="submit"
-                            className="w-full bg-[#222225] text-white font-medium py-3 rounded-2xl transition-colors hover:bg-[#5B78F6] shadow-lg mt-1 cursor-pointer"
+                            disabled={isSubmitting}
+                            className="w-full bg-[#222225] text-white font-medium py-3 rounded-2xl transition-colors hover:bg-[#5B78F6] shadow-lg mt-1 cursor-pointer disabled:opacity-50"
                         >
-                            Send Message
+                            {isSubmitting ? "Sending..." : "Send Message"}
                         </motion.button>
                     </form>
                 </motion.div>
