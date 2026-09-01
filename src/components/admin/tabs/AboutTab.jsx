@@ -45,21 +45,53 @@ const AboutTab = () => {
             formData.append("title", profile.title);
             formData.append("bio", profile.bio);
 
-            formData.append("experiences", JSON.stringify(experiences));
-            formData.append("education", JSON.stringify(education));
+            formData.append(
+                "experiences",
+                JSON.stringify(experiences)
+            );
 
-            // Only send image when a new image was selected
+            formData.append(
+                "education",
+                JSON.stringify(education)
+            );
+
+            // Only upload if a NEW image was selected
             if (imageFile) {
                 formData.append("image", imageFile);
             }
 
-            await updateAboutData(formData);
+            // Send FormData to backend
+            const response = await updateAboutData(formData);
+
+            console.log("Updated About Data:", response);
+
+            // Backend returns Cloudinary URL
+            if (response?.data) {
+                setProfile({
+                    fullName: response.data.fullName || "",
+                    title: response.data.title || "",
+                    bio: response.data.bio || "",
+                    imageUrl: response.data.imageUrl || "",
+                });
+
+                // Clear selected file after successful upload
+                setImageFile(null);
+            }
 
             alert("About section changes saved successfully!");
 
         } catch (error) {
             console.error("Failed to save changes:", error);
-            alert("Failed to save changes.");
+
+            console.error(
+                "Backend error:",
+                error.response?.data
+            );
+
+            alert(
+                error.response?.data?.details ||
+                "Failed to save changes."
+            );
         }
     };
 
@@ -113,20 +145,20 @@ const AboutTab = () => {
                                     type="file"
                                     accept="image/*"
                                     onChange={(e) => {
-                                        const file = e.target.files[0];
+                                        const file = e.target.files?.[0];
 
-                                        if (file) {
-                                            // Keep the actual file for uploading
-                                            setImageFile(file);
+                                        if (!file) return;
 
-                                            // Create temporary URL only for preview
-                                            const previewUrl = URL.createObjectURL(file);
+                                        // Store actual file for backend upload
+                                        setImageFile(file);
 
-                                            setProfile((prev) => ({
-                                                ...prev,
-                                                imageUrl: previewUrl,
-                                            }));
-                                        }
+                                        // Temporary preview only
+                                        const previewUrl = URL.createObjectURL(file);
+
+                                        setProfile((prev) => ({
+                                            ...prev,
+                                            imageUrl: previewUrl,
+                                        }));
                                     }}
                                     className="hidden"
                                 />

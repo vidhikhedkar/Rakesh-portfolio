@@ -13,6 +13,7 @@ export const fetchAboutData = async () => {
 export const updateAboutData = async (data) => {
     try {
         const response = await api.put("/api/about", data);
+
         return response.data;
     } catch (error) {
         console.error("Error updating about data:", error);
