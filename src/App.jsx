@@ -11,6 +11,7 @@ import Profile from './components/about/Profile';
 import ServicesOffering from './components/servicesoffering/ServicesOffering';
 import Login from './auth/Login';
 import ProtectedRoute from './auth/ProtectedRoute';
+import ProjectDetails from './components/projects/ProjectDetails';
 
 
 const Layout = () => {
@@ -27,6 +28,7 @@ const Layout = () => {
         <Route path="/projects" element={<ProjectPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/projects/:id" element={<ProjectDetails />} />
         <Route path="/services-offering" element={<ServicesOffering />} />
         <Route path="/login" element={<Login />} />
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { GiDandelionFlower } from "react-icons/gi";
+import { useNavigate } from "react-router-dom";
 import { getProjectsService } from "../service/projecttab.service";
 
 const fadeUp = {
@@ -66,11 +67,13 @@ const PlusButton = () => {
 const ProjectCard = ({
     project,
     index,
+    onClick,
     className = "",
     imageClassName = "",
 }) => {
     return (
         <motion.article
+            onClick={onClick}
             variants={{
                 hidden: { opacity: 0, y: 25, scale: 0.97 },
                 show: { opacity: 1, y: 0, scale: 1 },
@@ -87,7 +90,7 @@ const ProjectCard = ({
             whileHover={{
                 y: -3,
             }}
-            className={`group relative overflow-hidden rounded-[20px] bg-white p-4 shadow-[0_4px_20px_rgba(35,45,80,0.025)] transition-shadow duration-300 hover:shadow-[0_12px_30px_rgba(35,45,80,0.08)] ${className}`}
+            className={`group relative overflow-hidden rounded-[20px] bg-white p-4 shadow-[0_4px_20px_rgba(35,45,80,0.025)] transition-shadow duration-300 hover:shadow-[0_12px_30px_rgba(35,45,80,0.08)] cursor-pointer ${className}`}
         >
             {/* Image */}
             <div
@@ -128,6 +131,7 @@ const Projects = () => {
     const [error, setError] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 6;
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchProjects = async () => {
@@ -151,7 +155,6 @@ const Projects = () => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const currentProjects = projects.slice(startIndex, startIndex + itemsPerPage);
 
-    // Dynamic desktop image height configurations to maintain your asymmetrical layout per page
     const getDesktopImageClassName = (index) => {
         switch (index % 6) {
             case 0:
@@ -171,6 +174,11 @@ const Projects = () => {
         }
     };
 
+    const handleCardClick = (project) => {
+        const projectId = project._id || project.id;
+        navigate(`/projects/${projectId}`);
+    };
+
     if (loading) {
         return (
             <div className="flex justify-center items-center py-24 bg-[#f4f6f8]">
@@ -187,7 +195,6 @@ const Projects = () => {
         );
     }
 
-    // Split current page items into 3 columns for desktop view
     const col1Projects = [currentProjects[0], currentProjects[3]].filter(Boolean);
     const col2Projects = [currentProjects[1], currentProjects[4]].filter(Boolean);
     const col3Projects = [currentProjects[2], currentProjects[5]].filter(Boolean);
@@ -210,6 +217,7 @@ const Projects = () => {
                                     <ProjectCard
                                         project={col1Projects[0]}
                                         index={startIndex + 0}
+                                        onClick={() => handleCardClick(col1Projects[0])}
                                         imageClassName={getDesktopImageClassName(0)}
                                     />
                                 )}
@@ -217,6 +225,7 @@ const Projects = () => {
                                     <ProjectCard
                                         project={col1Projects[1]}
                                         index={startIndex + 3}
+                                        onClick={() => handleCardClick(col1Projects[1])}
                                         imageClassName={getDesktopImageClassName(3)}
                                     />
                                 )}
@@ -244,6 +253,7 @@ const Projects = () => {
                                     <ProjectCard
                                         project={col2Projects[0]}
                                         index={startIndex + 1}
+                                        onClick={() => handleCardClick(col2Projects[0])}
                                         imageClassName={getDesktopImageClassName(1)}
                                     />
                                 )}
@@ -251,6 +261,7 @@ const Projects = () => {
                                     <ProjectCard
                                         project={col2Projects[1]}
                                         index={startIndex + 4}
+                                        onClick={() => handleCardClick(col2Projects[4])}
                                         imageClassName={getDesktopImageClassName(4)}
                                     />
                                 )}
@@ -261,6 +272,7 @@ const Projects = () => {
                                     <ProjectCard
                                         project={col3Projects[0]}
                                         index={startIndex + 2}
+                                        onClick={() => handleCardClick(col3Projects[0])}
                                         imageClassName={getDesktopImageClassName(2)}
                                     />
                                 )}
@@ -268,13 +280,14 @@ const Projects = () => {
                                     <ProjectCard
                                         project={col3Projects[1]}
                                         index={startIndex + 5}
+                                        onClick={() => handleCardClick(col3Projects[1])}
                                         imageClassName={getDesktopImageClassName(5)}
                                     />
                                 )}
                             </div>
                         </div>
 
-                        {/* Tablet Layout (2-column grid for intermediate screens) */}
+                        {/* Tablet Layout */}
                         <div className="hidden sm:grid sm:grid-cols-2 md:hidden gap-4">
                             <div className="col-span-2 flex items-center justify-center py-2">
                                 <h1 className="flex items-center gap-2 text-[28px] font-bold leading-none tracking-[-1.5px] text-[#111111]">
@@ -288,6 +301,7 @@ const Projects = () => {
                                     key={project._id || project.title}
                                     project={project}
                                     index={startIndex + index}
+                                    onClick={() => handleCardClick(project)}
                                     className="w-full"
                                     imageClassName="h-[200px]"
                                 />
@@ -314,6 +328,7 @@ const Projects = () => {
                                     key={project._id || project.title}
                                     project={project}
                                     index={startIndex + index}
+                                    onClick={() => handleCardClick(project)}
                                     className="w-full"
                                     imageClassName="h-[180px]"
                                 />
