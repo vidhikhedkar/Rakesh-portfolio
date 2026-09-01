@@ -16,7 +16,7 @@ const Navbar = () => {
   return (
     <>
       {/* Desktop & Standard Header Bar */}
-      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-100 hidden md:block">
+      <header className="sticky top-0 z-50 bg-[#f4f6fa] backdrop-blur-md border-b border-slate-100 hidden md:block">
         <div className="container">
           <div className="flex items-center justify-between h-20">
             <Link to="/" className="text-2xl font-black tracking-tight text-slate-900">
@@ -48,7 +48,7 @@ const Navbar = () => {
       </header>
 
       {/* Mobile Top Header (Brand & Menu Trigger) */}
-      <header className="sticky top-0 z-40 bg-white/70 backdrop-blur-lg border-b border-slate-100 flex md:hidden items-center justify-between px-5 h-16">
+      <header className="sticky top-0 z-40 bg-[#f4f6fa] backdrop-blur-lg border-b border-slate-100 flex md:hidden items-center justify-between px-5 h-16">
         <Link to="/" className="text-xl font-black tracking-tight text-slate-900">
           Rakesh<span className="text-blue-600">.P</span>
         </Link>
