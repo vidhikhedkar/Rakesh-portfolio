@@ -171,15 +171,15 @@ export const About = () => {
 
     return (
         <div className="bg-[#F3F4F8] text-[#111111] py-12 flex justify-center items-center font-sans">
-            <div className="container grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-5">
+            <div className="container grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-5">
 
                 {/* Profile Image Card */}
                 <motion.div
                     whileHover={{ y: -4 }}
                     transition={{ duration: 0.3 }}
-                    className="md:col-span-3 bg-white rounded-[22px] p-3 md:p-2 shadow-[0_2px_12px_rgba(0,0,0,0.03)] hover:shadow-[0_12px_30px_rgba(35,45,80,0.08)] flex items-center justify-center group overflow-hidden min-h-47.5 md:h-60 transition-all duration-300"
+                    className="md:col-span-3 bg-white rounded-[22px] p-3 md:p-2 shadow-[0_2px_12px_rgba(0,0,0,0.03)] hover:shadow-[0_12px_30px_rgba(35,45,80,0.08)] flex items-center justify-center group overflow-hidden min-h-47.5 md:h-75 transition-all duration-300"
                 >
-                    <div className="w-full h-full max-w-40 max-h-48 rounded-[18px] bg-linear-to-tr from-[#3b82f6] to-[#61c6e8] overflow-hidden">
+                    <div className="w-full h-full max-w-60 max-h-55 rounded-[18px] bg-linear-to-tr from-[#3b82f6] to-[#61c6e8] overflow-hidden">
                         <img
                             src={aboutData?.imageUrl}
                             alt={aboutData?.fullName}
@@ -190,19 +190,27 @@ export const About = () => {
 
                 {/* Header & Bio Section */}
                 <div className="md:col-span-8 flex flex-col min-h-50">
-                    <div className="flex items-center justify-center md:justify-start gap-2 mb-4 px-1">
-                        <span className="text-[#5870EE] text-[28px] leading-none font-light animate-pulse"><GiDandelionFlower /></span>
-                        <h2 className="text-[32px] sm:text-[36px] font-bold tracking-[-1.8px] uppercase leading-none text-[#0F0F0F]">
+                    <div className="w-full flex items-center justify-between mb-8">
+                        <span className="text-[#5870EE] text-[42px] sm:text-[52px] leading-none font-light animate-pulse shrink-0">
+                            <GiDandelionFlower />
+                        </span>
+
+                        {/* Heading */}
+                        <h2 className="text-[48px] sm:text-[64px] md:text-[76px] lg:text-[88px] xl:text-[96px] font-bold tracking-[-4px] uppercase leading-[0.9] text-[#0F0F0F] whitespace-nowrap">
                             SELF-SUMMARY
                         </h2>
-                        <span className="text-[#5870EE] text-[28px] leading-none font-light animate-pulse"><GiDandelionFlower /></span>
+
+                        {/* Right Flower */}
+                        <span className="text-[#5870EE] text-[42px] sm:text-[52px] leading-none font-light animate-pulse shrink-0">
+                            <GiDandelionFlower />
+                        </span>
                     </div>
 
                     {/* Summary Card */}
                     <motion.div
                         whileHover={{ y: -4 }}
                         transition={{ duration: 0.3 }}
-                        className="w-full lg:w-218 bg-white rounded-[22px] px-5 py-5 shadow-[0_2px_12px_rgba(0,0,0,0.03)] hover:shadow-[0_12px_30px_rgba(35,45,80,0.08)] flex flex-col justify-center relative overflow-hidden transition-all duration-300">
+                        className="w-full sm:w-225 bg-white rounded-[22px] px-5 py-7 shadow-[0_2px_12px_rgba(0,0,0,0.03)] hover:shadow-[0_12px_30px_rgba(35,45,80,0.08)] flex flex-col justify-center relative overflow-hidden transition-all duration-300">
 
                         <div className="absolute left-6 top-0 h-9.5 w-0.5 bg-[#d9deea] group-hover:bg-[#5870EE] transition-colors duration-300" />
                         <div className="absolute left-3 top-8 h-7 w-7">

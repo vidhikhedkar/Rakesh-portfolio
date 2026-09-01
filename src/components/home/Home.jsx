@@ -20,9 +20,7 @@ const Home = () => {
     const fetchHomeContent = async () => {
       try {
         const response = await getHomeContentService();
-
-        console.log("Home API Data:", response);
-
+        // console.log("Home API Data:", response);
         if (response.success) {
           setHomeContent(response.data);
         }
@@ -64,7 +62,7 @@ const Home = () => {
     <main className="bg-[#f4f6fa] py-10">
       <div className="container mx-auto px-4">
 
-        <div className="grid grid-cols-1 gap-5 lg:grid-cols-12">
+        <div className="grid grid-cols-1 gap-3 lg:grid-cols-12">
 
           {/* Profile Section -> Links to About/Profile */}
           <motion.section
@@ -156,7 +154,7 @@ const Home = () => {
           </motion.section>
 
 
-          <div className="grid grid-cols-1 gap-5 lg:col-span-6">
+          <div className="grid grid-cols-1 gap-2 lg:col-span-6">
             <motion.div
               initial={{
                 opacity: 0,
@@ -169,7 +167,7 @@ const Home = () => {
               transition={{
                 duration: 0.6,
               }}
-              className="flex h-10 w-full items-center overflow-hidden rounded-full bg-white px-5 shadow-[0_10px_35px_rgba(30,40,80,0.03)] sm:px-6"
+              className="flex h-15 w-full items-center overflow-hidden rounded-full bg-white px-5 shadow-[0_10px_35px_rgba(30,40,80,0.03)] sm:px-6"
             >
               <motion.div
                 animate={{
@@ -331,7 +329,7 @@ const Home = () => {
             whileHover={{
               y: -4,
             }}
-            className="group relative flex min-h-46.25 flex-col justify-between overflow-hidden rounded-[28px] bg-white p-5 shadow-[0_15px_50px_rgba(35,45,80,0.04)] lg:col-span-3"
+            className="group relative flex min-h-30 flex-col justify-between overflow-hidden rounded-[28px] bg-white p-5 shadow-[0_15px_50px_rgba(35,45,80,0.04)] lg:col-span-3"
           >
             <NavLink to="/projects" className="absolute inset-0 z-0" aria-label="Go to Approach" />
 
@@ -374,7 +372,7 @@ const Home = () => {
             animate="show"
             transition={{ delay: 0.25 }}
             whileHover={{ y: -4 }}
-            className="group relative flex min-h-72.5 flex-col overflow-hidden rounded-[28px] bg-white p-7 shadow-[0_15px_50px_rgba(35,45,80,0.04)] lg:col-span-6"
+            className="group relative flex min-h-60 flex-col overflow-hidden rounded-[28px] bg-white p-7 shadow-[0_15px_50px_rgba(35,45,80,0.04)] lg:col-span-6"
           >
             <NavLink to="/services-offering" className="absolute inset-0 z-0" aria-label="Go to Services" />
 
@@ -449,7 +447,7 @@ const Home = () => {
             animate="show"
             transition={{ delay: 0.3 }}
             whileHover={{ y: -4 }}
-            className="group relative flex min-h-75 flex-col overflow-hidden rounded-[28px] bg-white p-5 shadow-[0_15px_50px_rgba(35,45,80,0.04)] lg:col-span-3"
+            className="group relative flex min-h-40 flex-col overflow-hidden rounded-[28px] bg-white p-5 shadow-[0_15px_50px_rgba(35,45,80,0.04)] lg:col-span-3"
           >
             <NavLink to="/contact" className="absolute inset-0 z-0" aria-label="Go to Contact" />
 
@@ -553,7 +551,7 @@ const Home = () => {
             </div>
 
             {/* Bottom Content */}
-            <div className="mt-auto pb-1 relative z-10">
+            <div className="mt-auto pb-1 relative z-10 font-semibold text-[18px]">
               {homeContent?.ctaHeading}
             </div>
 
