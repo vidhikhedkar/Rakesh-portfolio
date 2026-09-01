@@ -75,14 +75,14 @@ const Contact = () => {
         setIsSubmitting(true);
         setSubmitStatus({ success: false, message: "" });
 
-        const SERVICE_ID = "service_dup3fmp";
-        const TEMPLATE_ID = "template_ma4zka5";
-        const PUBLIC_KEY = "3B1wQUHIoAX5yDoci";
+        const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+        const TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+        const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 
         const templateParams = {
             from_name: formData.name,
             from_email: formData.email,
-            subject: formData.subject,
+            title: formData.subject,
             message: formData.message,
             to_email: contactData.email
         };
