@@ -5,19 +5,22 @@ import HomeTab from './tabs/HomeTab';
 import AboutTab from './tabs/AboutTab';
 import ProjectTab from './tabs/ProjectTab';
 import ContactTab from './tabs/ContactTab';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import ProfileTab from './tabs/ProfileTab';
 import { FaRegUserCircle } from 'react-icons/fa';
 import ServicesOfferingTab from './tabs/ServicesOfferingTab';
+import { logoutService } from '../service/auth.service';
 
 const Dashboard = () => {
     const [activeTab, setActiveTab] = useState('home');
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [isLoggingOut, setIsLoggingOut] = useState(false);
+    const navigate = useNavigate();
 
     const navTabs = [
         { id: 'home', label: 'Home', icon: <FiHome /> },
         { id: 'about', label: 'About', icon: <FiUser /> },
-        { id: 'profile', label: 'Profile', icon: <FaRegUserCircle  /> },
+        { id: 'profile', label: 'Profile', icon: <FaRegUserCircle /> },
         { id: 'project', label: 'Project', icon: <FiFolder /> },
         { id: 'services-offering', label: 'Services Offering', icon: <FiFolder /> },
         { id: 'contact', label: 'Contact', icon: <FiMail /> },
@@ -26,6 +29,19 @@ const Dashboard = () => {
     const handleTabClick = (id) => {
         setActiveTab(id);
         setIsMobileMenuOpen(false);
+    };
+
+
+    const handleLogout = async () => {
+        try {
+            setIsLoggingOut(true);
+            await logoutService();
+            navigate('/login'); // Redirect to login page after successful sign-out
+        } catch (err) {
+            console.error("Failed to log out:", err);
+        } finally {
+            setIsLoggingOut(false);
+        }
     };
 
     return (
@@ -64,9 +80,12 @@ const Dashboard = () => {
                 </div>
 
                 <div className="pt-6 border-t border-gray-100">
-                    <button className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-red-500 hover:bg-red-50 transition-colors cursor-pointer">
+                    <button
+                        onClick={handleLogout}
+                        disabled={isLoggingOut}
+                        className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-red-500 hover:bg-red-50 transition-colors cursor-pointer">
                         <FiLogOut className="text-lg" />
-                        Sign Out
+                        {isLoggingOut ? "Signing Out..." : "Sign Out"}
                     </button>
                 </div>
             </aside>
@@ -129,9 +148,12 @@ const Dashboard = () => {
                             </div>
 
                             <div className="pt-6 border-t border-gray-100">
-                                <button className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-red-500 hover:bg-red-50 transition-colors cursor-pointer">
+                                <button
+                                    onClick={handleLogout}
+                                    disabled={isLoggingOut}
+                                    className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-red-500 hover:bg-red-50 transition-colors cursor-pointer">
                                     <FiLogOut className="text-lg" />
-                                    Sign Out
+                                    {isLoggingOut ? "Signing Out..." : "Sign Out"}
                                 </button>
                             </div>
                         </motion.aside>

@@ -276,7 +276,7 @@ const AboutTab = () => {
             </div>
 
             {/* Submit Button */}
-            <button type="submit" className="bg-[#5B78FF] text-white px-6 py-3 rounded-xl font-medium text-sm shadow-md shadow-[#5B78FF]/20 hover:bg-[#4a66e5] transition-colors">
+            <button type="submit" className="bg-[#5B78FF] text-white px-6 py-3 rounded-xl font-medium text-sm shadow-md shadow-[#5B78FF]/20 hover:bg-[#4a66e5] transition-colors cursor-pointer">
                 Save All Changes
             </button>
         </form>

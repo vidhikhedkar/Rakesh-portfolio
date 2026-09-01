@@ -9,6 +9,9 @@ import Footer from './components/global/Footer';
 import Dashboard from './components/admin/Dashboard';
 import Profile from './components/about/Profile';
 import ServicesOffering from './components/servicesoffering/ServicesOffering';
+import Login from './auth/Login';
+import ProtectedRoute from './auth/ProtectedRoute';
+
 
 const Layout = () => {
   const location = useLocation();
@@ -18,13 +21,24 @@ const Layout = () => {
     <>
       {!isAdmin && <Navbar />}
       <Routes>
+        {/* Public Routes */}
         <Route path="/" element={<HomePage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/projects" element={<ProjectPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/services-offering" element={<ServicesOffering />} />
-        <Route path="/admin" element={<Dashboard />} />
+        <Route path="/login" element={<Login />} />
+
+        {/* Secured/Protected Admin Routes */}
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
       {!isAdmin && <Footer />}
     </>

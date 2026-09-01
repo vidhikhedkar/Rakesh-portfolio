@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { NavLink } from "react-router-dom";
 import { FaGlobe, FaLinkedinIn, FaBehance } from "react-icons/fa6";
 import approach from '../../assets/approach.png';
@@ -10,10 +10,11 @@ import { LiaBookSolid } from "react-icons/lia";
 import { getHomeContentService } from "../service/hometab.service";
 
 const Home = () => {
-
   const [homeContent, setHomeContent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isHovered, setIsHovered] = useState(false);
+  const [hoveredIndex, setHoveredIndex] = useState(null);
 
   useEffect(() => {
     const fetchHomeContent = async () => {
@@ -397,12 +398,31 @@ const Home = () => {
                     y: -7,
                     scale: 1.08,
                   }}
-                  className="flex cursor-pointer items-center justify-center"
+                  onMouseEnter={() => setHoveredIndex(index)}
+                  onMouseLeave={() => setHoveredIndex(null)}
+                  className="flex cursor-pointer items-center justify-center relative"
                   aria-label={service.title}
                 >
                   <div className="flex h-12 w-12 items-center justify-center text-[32px] text-[#4A6AF4]">
                     {serviceIcons[index]}
                   </div>
+
+                  {/* Tooltip for Service Name on Hover */}
+                  <AnimatePresence>
+                    {hoveredIndex === index && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 5, scale: 0.95 }}
+                        animate={{ opacity: 1, y: -8, scale: 1 }}
+                        exit={{ opacity: 0, y: 2, scale: 0.95 }}
+                        transition={{ duration: 0.2, ease: "easeOut" }}
+                        className="absolute -top-10 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-lg bg-[#111111] px-3 py-1.5 text-[11px] font-medium text-white shadow-lg z-30 pointer-events-none"
+                      >
+                        {service.title}
+                        {/* Tooltip Arrow */}
+                        <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 h-2 w-2 rotate-45 bg-[#111111]" />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </motion.div>
               ))}
             </div>
@@ -434,15 +454,21 @@ const Home = () => {
             <NavLink to="/contact" className="absolute inset-0 z-0" aria-label="Go to Contact" />
 
             {/* Social Icons Continuous Scroll Container */}
-            <div className="flex h-29 w-full items-center rounded-4xl bg-[#f7f8fa] relative z-10 overflow-hidden">
+            <div
+              className="flex h-29 w-full items-center rounded-4xl bg-[#f7f8fa] relative z-10 overflow-hidden"
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+            >
               <motion.div
                 animate={{
-                  x: ["0%", "-50%"],
+                  x: isHovered ? ["0%", "0%"] : ["0%", "-50%"],
                 }}
                 transition={{
-                  duration: 3, // Lowered to 3 for an even faster scroll speed
-                  repeat: Infinity,
-                  ease: "linear",
+                  x: {
+                    duration: isHovered ? 0 : 3,
+                    repeat: isHovered ? 0 : Infinity,
+                    ease: "linear",
+                  }
                 }}
                 className="flex w-max items-center gap-4 px-4"
               >
