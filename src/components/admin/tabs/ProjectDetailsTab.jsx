@@ -1202,7 +1202,7 @@ const ProjectDetailsTab = () => {
                                         </div>
 
                                         {/* Icon Name */}
-                                        <div>
+                                        {/* <div>
                                             <label className="block text-xs font-semibold text-gray-700 mb-1">
                                                 Icon Name
                                             </label>
@@ -1215,10 +1215,10 @@ const ProjectDetailsTab = () => {
                                                 placeholder="e.g. CiGlobe"
                                                 className="w-full h-9 px-3 py-1 text-sm border border-gray-300 rounded-lg outline-none focus:border-[#5870EE] focus:ring-1 focus:ring-[#5870EE]"
                                             />
-                                        </div>
+                                        </div> */}
 
                                         {/* Position */}
-                                        <div>
+                                        {/* <div>
                                             <label className="block text-xs font-semibold text-gray-700 mb-1">
                                                 Position
                                             </label>
@@ -1231,7 +1231,7 @@ const ProjectDetailsTab = () => {
                                                 placeholder="e.g. top-left"
                                                 className="w-full h-9 px-3 py-1 text-sm border border-gray-300 rounded-lg outline-none focus:border-[#5870EE] focus:ring-1 focus:ring-[#5870EE]"
                                             />
-                                        </div>
+                                        </div> */}
 
                                         {/* Description */}
                                         <div className="md:col-span-2">

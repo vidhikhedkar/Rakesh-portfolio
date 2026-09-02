@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useParams, useNavigate } from "react-router-dom";
 import { getProjectDetailService, getProjectsService } from "../service/projecttab.service";
-import { FiServer, FiDatabase, FiCloud, FiCpu, FiShare2, FiShield, FiZap } from "react-icons/fi";
-import { FiCheckCircle, FiTrendingUp, FiAward, FiStar, FiTarget, FiLayers, FiPieChart, } from "react-icons/fi";
+import { FiServer, FiDatabase, FiCloud, FiCpu, FiShare2, FiShield, FiZap, FiAlertCircle, FiClock, FiTrendingDown, FiDollarSign, FiHelpCircle, FiLock, FiActivity, FiLayers, FiShieldOff } from "react-icons/fi";
+
+
+
 
 
 // ANIMATIONS
@@ -69,7 +71,16 @@ const ProjectDetails = ({ card, index, fadeUp }) => {
     const [error, setError] = useState("");
 
     const DEFAULT_ICONS = [FiServer, FiDatabase, FiCloud, FiCpu, FiLayers, FiShare2, FiShield, FiZap,];
-    const DEFAULT_CARD_ICONS = [FiZap, FiCheckCircle, FiTrendingUp, FiAward, FiStar, FiTarget, FiLayers, FiPieChart,];
+    const DEFAULT_CARD_ICONS = [
+        FiAlertCircle,
+        FiClock,
+        FiDollarSign,
+        FiTrendingDown,
+        FiLock,
+        FiShieldOff,
+        FiHelpCircle,
+    ];
+
 
     const getEcosystemIcon = (title = "", index = 0) => {
         const lowerTitle = title.toLowerCase();
@@ -83,60 +94,207 @@ const ProjectDetails = ({ card, index, fadeUp }) => {
 
     const getCardIcon = (title = "", index = 0) => {
         const lowerTitle = title.toLowerCase();
+
+        // Challenge Keywords
+        if (lowerTitle.includes("delay") || lowerTitle.includes("time") || lowerTitle.includes("slow")) return FiClock;
+        if (lowerTitle.includes("cost") || lowerTitle.includes("budget") || lowerTitle.includes("expense") || lowerTitle.includes("money")) return FiDollarSign;
+        if (lowerTitle.includes("drop") || lowerTitle.includes("loss") || lowerTitle.includes("risk")) return FiTrendingDown;
+        if (lowerTitle.includes("security") || lowerTitle.includes("threat") || lowerTitle.includes("leak")) return FiShieldOff;
+        if (lowerTitle.includes("issue") || lowerTitle.includes("problem") || lowerTitle.includes("challenge") || lowerTitle.includes("error")) return FiAlertCircle;
+        if (lowerTitle.includes("block") || lowerTitle.includes("limit") || lowerTitle.includes("lock")) return FiLock;
+
+        // Outcome Keywords
         if (lowerTitle.includes("speed") || lowerTitle.includes("fast") || lowerTitle.includes("quick")) return FiZap;
         if (lowerTitle.includes("result") || lowerTitle.includes("success") || lowerTitle.includes("done")) return FiCheckCircle;
         if (lowerTitle.includes("growth") || lowerTitle.includes("scale") || lowerTitle.includes("increase")) return FiTrendingUp;
         if (lowerTitle.includes("quality") || lowerTitle.includes("award") || lowerTitle.includes("best")) return FiAward;
         if (lowerTitle.includes("goal") || lowerTitle.includes("target")) return FiTarget;
+
+        // 3. Guaranteed unique icon by array position if no keywords match
         return DEFAULT_CARD_ICONS[index % DEFAULT_CARD_ICONS.length];
     };
-
 
     useEffect(() => {
         const fetchProjectDetails = async () => {
             try {
                 setLoading(true);
                 setError("");
-                // console.log("Fetching Project ID:", projectId);
+
+                console.log("=================================");
+                console.log("PROJECT DETAILS PAGE");
+                console.log("PROJECT ID:", projectId);
+                console.log("=================================");
+
                 if (!projectId) {
                     throw new Error("Project ID is missing.");
                 }
-                const data = await getProjectDetailService(projectId);
-                // console.log("PROJECT DETAIL API RESPONSE:", data);
-                let projectData;
-                if (Array.isArray(data)) {
-                    projectData = data.find(
-                        (project) => project._id === projectId
+
+                // ------------------------------------------------
+                // 1. Try single project API
+                // ------------------------------------------------
+                const response = await getProjectDetailService(projectId);
+
+                console.log("SINGLE PROJECT RESPONSE:", response);
+
+                let projectData = response?.data;
+
+                // ------------------------------------------------
+                // 2. If single API doesn't return project,
+                //    fallback to all projects
+                // ------------------------------------------------
+                if (!projectData || Array.isArray(projectData)) {
+
+                    console.log(
+                        "Single project data not found. Fetching all projects..."
                     );
-                } else {
-                    projectData =
-                        data?.project ||
-                        data?.data ||
-                        data;
+
+                    const allResponse = await getProjectsService();
+
+                    console.log(
+                        "ALL PROJECTS RESPONSE:",
+                        allResponse
+                    );
+
+                    const projectList = Array.isArray(allResponse)
+                        ? allResponse
+                        : allResponse?.data || [];
+
+                    projectData = projectList.find(
+                        (project) =>
+                            String(project._id) === String(projectId)
+                    );
                 }
-                // console.log("SELECTED PROJECT:", projectData);
+
+                // ------------------------------------------------
+                // 3. Check project
+                // ------------------------------------------------
                 if (!projectData) {
-                    throw new Error("Project details not found.");
+                    throw new Error(
+                        `Project not found for ID: ${projectId}`
+                    );
                 }
-                setDetails(projectData);
+
+                console.log(
+                    "FINAL SELECTED PROJECT:",
+                    projectData
+                );
+
+                // ------------------------------------------------
+                // 4. Normalize fields
+                // ------------------------------------------------
+                const normalizedProject = {
+                    ...projectData,
+
+                    // Main project title
+                    projectName:
+                        projectData.projectName ||
+                        projectData.title ||
+                        "",
+
+                    // Main project image
+                    heroImage:
+                        projectData.heroImage ||
+                        projectData.image ||
+                        "",
+
+                    // Description
+                    description:
+                        projectData.description ||
+                        projectData.productDescription ||
+                        "",
+
+                    // Category
+                    category:
+                        projectData.category ||
+                        "",
+
+                    // Other fields
+                    role:
+                        projectData.role ||
+                        "",
+
+                    year:
+                        projectData.year ||
+                        "",
+
+                    platform:
+                        projectData.platform ||
+                        "",
+
+                    tools:
+                        projectData.tools ||
+                        "",
+
+                    scope:
+                        projectData.scope ||
+                        "",
+
+                    client:
+                        projectData.client ||
+                        "",
+
+                    subtitle:
+                        projectData.subtitle ||
+                        "",
+
+                    brandImage:
+                        projectData.brandImage ||
+                        "",
+
+                    editorialImage:
+                        projectData.editorialImage ||
+                        "",
+
+                    sectionImages:
+                        Array.isArray(projectData.sectionImages)
+                            ? projectData.sectionImages
+                            : [],
+
+                    achievements:
+                        Array.isArray(projectData.achievements)
+                            ? projectData.achievements
+                            : [],
+
+                    ecosystem:
+                        Array.isArray(projectData.ecosystem)
+                            ? projectData.ecosystem
+                            : [],
+                };
+
+                console.log(
+                    "NORMALIZED PROJECT:",
+                    normalizedProject
+                );
+
+                setDetails(normalizedProject);
+
             } catch (err) {
+
                 console.error(
-                    "Project details fetch error:",
+                    "PROJECT DETAILS ERROR:",
                     err
                 );
+
+                console.error(
+                    "PROJECT DETAILS ERROR RESPONSE:",
+                    err?.response?.data
+                );
+
                 setError(
-                    err?.message ||
                     err?.response?.data?.message ||
+                    err?.message ||
                     "Failed to load project details."
                 );
+
             } finally {
                 setLoading(false);
             }
-        }
+        };
+
         fetchProjectDetails();
+
     }, [projectId]);
 
-    const IconComponent = getCardIcon(card?.title, index);
 
     useEffect(() => {
         const fetchProjects = async () => {
@@ -218,11 +376,11 @@ const ProjectDetails = ({ card, index, fadeUp }) => {
                 </span>
 
                 <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight mt-3 mb-4">
-                    {details.projectName || "Project"}
+                    {details.projectName || details.title || "Project"}
                 </h1>
 
                 <p className="text-sm text-[#434656] max-w-xl mx-auto mb-8">
-                    {details.description || ""}
+                    {details.description || details.productDescription || ""}
                 </p>
 
                 {/* Metadata */}
@@ -264,7 +422,6 @@ const ProjectDetails = ({ card, index, fadeUp }) => {
                 </motion.div>
             </motion.header>
 
-
             {details.heroImage && (
                 <motion.div
                     className="w-full px-0"
@@ -276,20 +433,13 @@ const ProjectDetails = ({ card, index, fadeUp }) => {
                         amount: 0.2,
                     }}
                 >
-                    {details.heroImage ? (
-                        <img
-                            src={details.heroImage}
-                            alt={`${details.projectName || "Project"} Hero`}
-                            className="w-full h-87.5 sm:h-112.5 object-cover shadow-sm"
-                        />
-                    ) : (
-                        <div className="w-full h-87.5 sm:h-112.5  bg-gray-100  flex items-center justify-center text-gray-400 text-sm border border-gray-200">
-                            No Hero Image Available
-                        </div>
-                    )}
+                    <img
+                        src={details.heroImage}
+                        alt={`${details.projectName || details.title || "Project"} Hero`}
+                        className="w-full h-87.5 sm:h-112.5 object-cover shadow-sm"
+                    />
                 </motion.div>
             )}
-
 
             {/* 3. PROJECT METADATA*/}
 
@@ -314,7 +464,7 @@ const ProjectDetails = ({ card, index, fadeUp }) => {
                         </h4>
 
                         <p className="font-medium text-[#191C1D]">
-                            {details.projectName || "-"}
+                            {details.projectName || details.title || "-"}
                         </p>
                     </motion.div>
 
@@ -1047,35 +1197,39 @@ const ProjectDetails = ({ card, index, fadeUp }) => {
                 >
 
                     {details.challengeSection?.cards?.map(
-                        (card, index) => (
-                            <motion.div
-                                key={
-                                    card?._id ||
-                                    index
-                                }
-                                className="bg-white border border-[#C3C5D9]/20 rounded-xl p-8 shadow-sm flex flex-col"
-                                variants={fadeUp}
-                                whileHover={{
-                                    y: -5,
-                                }}
-                            >
+                        (card, index) => {
 
-                                <div className="w-10 h-10 rounded-full bg-[#0055FF]/10 flex items-center justify-center text-[#1A65FF] mb-6">
-                                    {card.icon ||
-                                        "⚡"}
-                                </div>
+                            // Get a DIFFERENT icon for this card
+                            const CardIcon = getCardIcon(card?.title, index);
 
-                                <h3 className="text-lg font-semibold text-[#191C1D] mb-3">
-                                    {card.title || ""}
-                                </h3>
+                            return (
+                                <motion.div
+                                    key={card?._id || index}
+                                    className="bg-white border border-[#C3C5D9]/20 rounded-xl p-8 shadow-sm flex flex-col"
+                                    variants={fadeUp}
+                                    whileHover={{
+                                        y: -5,
+                                    }}
+                                >
 
-                                <p className="text-[#434656] text-sm leading-relaxed">
-                                    {card.description ||
-                                        ""}
-                                </p>
+                                    {/* CARD ICON */}
+                                    <div className="w-10 h-10 rounded-full bg-[#5870EE]/10 flex items-center justify-center text-[#5870EE] mb-6 shrink-0">
+                                        <CardIcon className="w-5 h-5" />
+                                    </div>
 
-                            </motion.div>
-                        )
+                                    {/* CARD TITLE */}
+                                    <h3 className="text-lg font-semibold text-[#191C1D] mb-3">
+                                        {card?.title || ""}
+                                    </h3>
+
+                                    {/* CARD DESCRIPTION */}
+                                    <p className="text-[#434656] text-sm leading-relaxed">
+                                        {card?.description || ""}
+                                    </p>
+
+                                </motion.div>
+                            );
+                        }
                     )}
 
                 </motion.div>
@@ -1151,9 +1305,9 @@ const ProjectDetails = ({ card, index, fadeUp }) => {
                                     y: -5,
                                 }}
                             >
-                                <div className="w-10 h-10 rounded-full bg-[#5870EE]/10 flex items-center justify-center text-[#5870EE] mb-6 shrink-0">
+                                {/* <div className="w-10 h-10 rounded-full bg-[#5870EE]/10 flex items-center justify-center text-[#5870EE] mb-6 shrink-0">
                                     <IconComponent className="w-5 h-5" />
-                                </div>
+                                </div> */}
 
                                 <h3 className="text-lg font-semibold text-[#191C1D] mb-3">
                                     {card?.title || ""}
