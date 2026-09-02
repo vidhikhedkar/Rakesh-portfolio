@@ -880,7 +880,7 @@ const ProjectDetailsTab = () => {
         <div className="">
             <div className="w-full">
                 {/*  PROJECT SELECT*/}
-                <div className="w-full bg-white border border-gray-200 rounded-2xl p-4 sm:p-6  mb-2 shadow-sm transition-all duration-200">
+                <div className="w-full bg-white border border-gray-200 rounded-2xl p-4   mb-2 shadow-sm transition-all duration-200">
                     <label
                         htmlFor="project-select"
                         className="block text-xs sm:text-sm font-semibold text-[#191C1D] mb-2 tracking-wide"
@@ -893,7 +893,7 @@ const ProjectDetailsTab = () => {
                             id="project-select"
                             value={selectedProjectId}
                             onChange={handleProjectSelect}
-                            className="w-full px-3 py-2.5 sm:px-4 sm:py-3 text-sm sm:text-base rounded-xl border border-[#C3C5D9] bg-white text-gray-900 outline-none focus:border-[#5870EE] focus:ring-2 focus:ring-[#5870EE]/20 transition-all cursor-pointer appearance-none pr-10 truncate"
+                            className="w-full px-3 py-2.5 sm:px-4 sm:py-2 text-sm sm:text-base rounded-xl border border-[#C3C5D9] bg-white text-gray-900 outline-none focus:border-[#5870EE] focus:ring-2 focus:ring-[#5870EE]/20 transition-all cursor-pointer appearance-none pr-10 truncate"
                         >
                             <option value="" disabled className="text-gray-400">
                                 Select Project
