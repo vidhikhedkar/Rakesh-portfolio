@@ -1,17 +1,16 @@
 import api from "./api.service";
 
-// ============================================================
-// GET ALL PROJECTS
-// GET /api/projects
-// ============================================================
-
 export const getProjectsService = async () => {
     try {
         const response = await api.get("/api/projects");
 
-        console.log("GET ALL PROJECTS:", response.data);
+        console.log(
+            "GET ALL PROJECTS:",
+            response.data
+        );
 
         return response.data;
+
     } catch (error) {
         console.error(
             "Get Projects Error:",
@@ -24,20 +23,27 @@ export const getProjectsService = async () => {
 
 
 // ============================================================
-// UPDATE PROJECT LIST
-// PUT /api/projects
+// CREATE NEW PROJECT
+// POST /api/projects
 // ============================================================
 
-export const updateProjectsService = async (projects) => {
+export const createProjectService = async (projectData) => {
     try {
-        const response = await api.put("/api/projects", {
-            projects,
-        });
+        const response = await api.post(
+            "/api/projects",
+            projectData
+        );
+
+        console.log(
+            "CREATE PROJECT:",
+            response.data
+        );
 
         return response.data;
+
     } catch (error) {
         console.error(
-            "Update Projects Error:",
+            "Create Project Error:",
             error.response?.data || error.message
         );
 
@@ -47,7 +53,7 @@ export const updateProjectsService = async (projects) => {
 
 
 // ============================================================
-// UPLOAD IMAGE TO CLOUDINARY
+// UPLOAD IMAGE
 // POST /api/projects/upload
 // ============================================================
 
@@ -72,6 +78,7 @@ export const uploadImageService = async (file) => {
         );
 
         return response.data;
+
     } catch (error) {
         console.error(
             "Cloudinary Upload Error:",
@@ -84,8 +91,7 @@ export const uploadImageService = async (file) => {
 
 
 // ============================================================
-// GET SINGLE PROJECT DETAILS
-// GET /api/projects/:id
+// GET SINGLE PROJECT
 // ============================================================
 
 export const getProjectDetailService = async (projectId) => {
@@ -100,6 +106,7 @@ export const getProjectDetailService = async (projectId) => {
         );
 
         return response.data;
+
     } catch (error) {
         console.error(
             "Get Project Detail Error:",
@@ -112,7 +119,7 @@ export const getProjectDetailService = async (projectId) => {
 
 
 // ============================================================
-// UPDATE SINGLE PROJECT DETAILS
+// UPDATE SINGLE PROJECT
 // PUT /api/projects/:id
 // ============================================================
 
@@ -127,14 +134,15 @@ export const updateProjectDetailService = async (
         );
 
         console.log(
-            "UPDATE PROJECT DETAIL:",
+            "UPDATE PROJECT:",
             response.data
         );
 
         return response.data;
+
     } catch (error) {
         console.error(
-            "Update Project Detail Error:",
+            "Update Project Error:",
             error.response?.data || error.message
         );
 
@@ -156,7 +164,13 @@ export const deleteProjectDetailService = async (
             `/api/projects/${projectId}`
         );
 
+        console.log(
+            "DELETE PROJECT:",
+            response.data
+        );
+
         return response.data;
+
     } catch (error) {
         console.error(
             "Delete Project Error:",
