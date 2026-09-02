@@ -1,6 +1,12 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { useParams, useNavigate } from "react-router-dom";
+import { getProjectDetailService, getProjectsService } from "../service/projecttab.service";
+import { FiServer, FiDatabase, FiCloud, FiCpu, FiShare2, FiShield, FiZap } from "react-icons/fi";
+import { FiCheckCircle, FiTrendingUp, FiAward, FiStar, FiTarget, FiLayers, FiPieChart, } from "react-icons/fi";
 
+
+// ANIMATIONS
 const fadeUp = {
     hidden: {
         opacity: 0,
@@ -53,11 +59,154 @@ const scaleIn = {
     },
 };
 
-const ProjectDetails = () => {
+
+const ProjectDetails = ({ card, index, fadeUp }) => {
+    const { projectId } = useParams();
+    const [projects, setProjects] = useState([]);
+    const navigate = useNavigate();
+    const [details, setDetails] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
+
+    const DEFAULT_ICONS = [FiServer, FiDatabase, FiCloud, FiCpu, FiLayers, FiShare2, FiShield, FiZap,];
+    const DEFAULT_CARD_ICONS = [FiZap, FiCheckCircle, FiTrendingUp, FiAward, FiStar, FiTarget, FiLayers, FiPieChart,];
+
+    const getEcosystemIcon = (title = "", index = 0) => {
+        const lowerTitle = title.toLowerCase();
+        if (lowerTitle.includes("db") || lowerTitle.includes("data")) return FiDatabase;
+        if (lowerTitle.includes("cloud") || lowerTitle.includes("api")) return FiCloud;
+        if (lowerTitle.includes("server") || lowerTitle.includes("backend")) return FiServer;
+        if (lowerTitle.includes("security") || lowerTitle.includes("auth")) return FiShield;
+        return DEFAULT_ICONS[index % DEFAULT_ICONS.length];
+    };
+
+
+    const getCardIcon = (title = "", index = 0) => {
+        const lowerTitle = title.toLowerCase();
+        if (lowerTitle.includes("speed") || lowerTitle.includes("fast") || lowerTitle.includes("quick")) return FiZap;
+        if (lowerTitle.includes("result") || lowerTitle.includes("success") || lowerTitle.includes("done")) return FiCheckCircle;
+        if (lowerTitle.includes("growth") || lowerTitle.includes("scale") || lowerTitle.includes("increase")) return FiTrendingUp;
+        if (lowerTitle.includes("quality") || lowerTitle.includes("award") || lowerTitle.includes("best")) return FiAward;
+        if (lowerTitle.includes("goal") || lowerTitle.includes("target")) return FiTarget;
+        return DEFAULT_CARD_ICONS[index % DEFAULT_CARD_ICONS.length];
+    };
+
+
+    useEffect(() => {
+        const fetchProjectDetails = async () => {
+            try {
+                setLoading(true);
+                setError("");
+                // console.log("Fetching Project ID:", projectId);
+                if (!projectId) {
+                    throw new Error("Project ID is missing.");
+                }
+                const data = await getProjectDetailService(projectId);
+                // console.log("PROJECT DETAIL API RESPONSE:", data);
+                let projectData;
+                if (Array.isArray(data)) {
+                    projectData = data.find(
+                        (project) => project._id === projectId
+                    );
+                } else {
+                    projectData =
+                        data?.project ||
+                        data?.data ||
+                        data;
+                }
+                // console.log("SELECTED PROJECT:", projectData);
+                if (!projectData) {
+                    throw new Error("Project details not found.");
+                }
+                setDetails(projectData);
+            } catch (err) {
+                console.error(
+                    "Project details fetch error:",
+                    err
+                );
+                setError(
+                    err?.message ||
+                    err?.response?.data?.message ||
+                    "Failed to load project details."
+                );
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchProjectDetails();
+    }, [projectId]);
+
+    const IconComponent = getCardIcon(card?.title, index);
+
+    useEffect(() => {
+        const fetchProjects = async () => {
+            try {
+                const response = await getProjectsService();
+                const projectList =
+                    Array.isArray(response)
+                        ? response
+                        : response?.data || [];
+                setProjects(projectList);
+            } catch (error) {
+                console.error("Failed to fetch projects:", error);
+            }
+        };
+        fetchProjects();
+    }, []);
+
+
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-[#F7F9FC] flex items-center justify-center">
+                <div className="text-center">
+                    <div className="w-10 h-10 border-4 border-[#1A65FF]/20 border-t-[#1A65FF] rounded-full animate-spin mx-auto mb-4"></div>
+                    <p className="text-sm text-[#434656]">
+                        Loading project...
+                    </p>
+                </div>
+            </div>
+        );
+    }
+
+
+    if (error) {
+        return (
+            <div className="min-h-screen bg-[#F7F9FC] flex items-center justify-center px-6">
+                <div className="text-center max-w-md">
+                    <h2 className="text-2xl font-bold text-[#191C1D] mb-3">
+                        Unable to load project
+                    </h2>
+                    <p className="text-sm text-red-500">
+                        {error}
+                    </p>
+                </div>
+            </div>
+        );
+    }
+
+    if (!details) {
+        return (
+            <div className="min-h-screen bg-[#F7F9FC] flex items-center justify-center">
+                <p className="text-gray-500">
+                    No project details found.
+                </p>
+            </div>
+        );
+    }
+
+
+    const currentIndex = projects.findIndex(
+        (project) => project._id === projectId
+    );
+
+    const nextProject =
+        currentIndex !== -1 && projects.length > 0
+            ? projects[(currentIndex + 1) % projects.length]
+            : null;
+
+
     return (
         <div className="bg-[#F7F9FC] text-[#191C1D] font-sans selection:bg-[#191C1D] selection:text-white">
-
-            {/* 1. Header Section */}
             <motion.header
                 className="max-w-7xl mx-auto px-6 pt-12 pb-8 text-center"
                 initial="hidden"
@@ -65,18 +214,18 @@ const ProjectDetails = () => {
                 variants={fadeUp}
             >
                 <span className="text-xs font-semibold tracking-widest text-[#1A65FF] uppercase">
-                    SaaS Product • UI/UX Design
+                    {details.category || "UI/UX Design"}
                 </span>
 
                 <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight mt-3 mb-4">
-                    ONLINE DB EXTRACTOR
+                    {details.projectName || "Project"}
                 </h1>
 
                 <p className="text-sm text-[#434656] max-w-xl mx-auto mb-8">
-                    Designing a clearer way to extract, manage and understand business data.
+                    {details.description || ""}
                 </p>
 
-                {/* Metadata Badges */}
+                {/* Metadata */}
                 <motion.div
                     className="flex flex-wrap justify-center gap-8 sm:gap-16 py-4 text-xs tracking-wider uppercase text-[#434656]"
                     variants={staggerContainer}
@@ -84,84 +233,133 @@ const ProjectDetails = () => {
                     animate="visible"
                 >
                     <motion.div variants={fadeUp}>
-                        <p className="font-bold text-[#191C1D] mb-1">Role</p>
-                        <p>UI/UX Designer</p>
+                        <p className="font-bold text-[#191C1D] mb-1">
+                            Role
+                        </p>
+
+                        <p>
+                            {details.role || "-"}
+                        </p>
                     </motion.div>
 
                     <motion.div variants={fadeUp}>
-                        <p className="font-bold text-[#191C1D] mb-1">Category</p>
-                        <p>SaaS Product Design</p>
+                        <p className="font-bold text-[#191C1D] mb-1">
+                            Category
+                        </p>
+
+                        <p>
+                            {details.subtitle || "-"}
+                        </p>
                     </motion.div>
 
                     <motion.div variants={fadeUp}>
-                        <p className="font-bold text-[#191C1D] mb-1">Year</p>
-                        <p>2026</p>
+                        <p className="font-bold text-[#191C1D] mb-1">
+                            Year
+                        </p>
+
+                        <p>
+                            {details.year || "-"}
+                        </p>
                     </motion.div>
                 </motion.div>
             </motion.header>
 
 
-            {/* 2. Hero Mockup Section */}
-            <motion.div
-                className="w-full px-0"
-                variants={fadeIn}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, amount: 0.2 }}
-            >
-                <img
-                    src="https://cdn.dribbble.com/userupload/16374797/file/original-bb5e9012b13464132574901859866139.png"
-                    alt="Meditation App"
-                    className="w-full h-full object-cover"
-                />
-            </motion.div>
+            {details.heroImage && (
+                <motion.div
+                    className="w-full px-0"
+                    variants={fadeIn}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{
+                        once: true,
+                        amount: 0.2,
+                    }}
+                >
+                    {details.heroImage ? (
+                        <img
+                            src={details.heroImage}
+                            alt={`${details.projectName || "Project"} Hero`}
+                            className="w-full h-87.5 sm:h-112.5 object-cover shadow-sm"
+                        />
+                    ) : (
+                        <div className="w-full h-87.5 sm:h-112.5  bg-gray-100  flex items-center justify-center text-gray-400 text-sm border border-gray-200">
+                            No Hero Image Available
+                        </div>
+                    )}
+                </motion.div>
+            )}
 
 
-            {/* Section 3 */}
-            <motion.section
-                className="container py-10"
-                variants={staggerContainer}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, amount: 0.2 }}
-            >
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-8 text-sm justify-center">
+            {/* 3. PROJECT METADATA*/}
 
-                    <motion.div className="space-y-2" variants={fadeUp}>
+            <section className="container py-10">
+                <motion.div
+                    className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-8 text-sm justify-center"
+                    variants={staggerContainer}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{
+                        once: true,
+                        amount: 0.2,
+                    }}
+                >
+
+                    <motion.div
+                        className="space-y-2"
+                        variants={fadeUp}
+                    >
                         <h4 className="font-bold text-[#434656] uppercase tracking-wider text-xs">
                             Project
                         </h4>
+
                         <p className="font-medium text-[#191C1D]">
-                            Online DB Extractor
+                            {details.projectName || "-"}
                         </p>
                     </motion.div>
 
-                    <motion.div className="space-y-2" variants={fadeUp}>
+
+                    <motion.div
+                        className="space-y-2"
+                        variants={fadeUp}
+                    >
                         <h4 className="font-bold text-[#434656] uppercase tracking-wider text-xs">
                             Role
                         </h4>
+
                         <p className="font-medium text-[#191C1D]">
-                            Lead UI/UX Designer
+                            {details.role || "-"}
                         </p>
                     </motion.div>
 
-                    <motion.div className="space-y-2" variants={fadeUp}>
+
+                    <motion.div
+                        className="space-y-2"
+                        variants={fadeUp}
+                    >
                         <h4 className="font-bold text-[#434656] uppercase tracking-wider text-xs">
                             Platform
                         </h4>
+
                         <p className="font-medium text-[#191C1D]">
-                            Web Application
+                            {details.platform || "-"}
                         </p>
                     </motion.div>
 
-                    <motion.div className="space-y-2" variants={fadeUp}>
+
+                    <motion.div
+                        className="space-y-2"
+                        variants={fadeUp}
+                    >
                         <h4 className="font-bold text-[#434656] uppercase tracking-wider text-xs">
                             Tools
                         </h4>
+
                         <p className="font-medium text-[#191C1D]">
-                            Figma, FigJam
+                            {details.tools || "-"}
                         </p>
                     </motion.div>
+
 
                     <motion.div
                         className="col-span-2 sm:col-span-1 space-y-2"
@@ -170,272 +368,224 @@ const ProjectDetails = () => {
                         <h4 className="font-bold text-[#434656] uppercase tracking-wider text-xs">
                             Scope
                         </h4>
+
                         <p className="font-medium text-[#191C1D]">
-                            UX Research, UI Design, Design System
+                            {details.scope || "-"}
                         </p>
                     </motion.div>
 
-                </div>
-            </motion.section>
+                </motion.div>
+
+            </section>
 
 
-            {/* Section 4 */}
+            {/*  4. BRAND + EDITORIAL + PRODUCT */}
+
             <section className="w-full py-8 bg-[#F7F9FC]">
 
                 <div className="container">
 
+                    {/* BRAND + EDITORIAL */}
+
                     <motion.div
-                        className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 mb-8"
+                        className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 mb-12"
                         variants={staggerContainer}
                         initial="hidden"
                         whileInView="visible"
-                        viewport={{ once: true, amount: 0.2 }}
+                        viewport={{
+                            once: true,
+                            amount: 0.2,
+                        }}
                     >
 
                         {/* Brand */}
+
                         <motion.div
                             className="h-72 sm:h-96 bg-neutral-200 rounded-3xl overflow-hidden shadow-md flex items-center justify-center relative group"
                             variants={scaleIn}
                             whileHover={{ y: -5 }}
-                            transition={{ duration: 0.25 }}
                         >
-                            <span className="text-[#434656] font-medium text-sm transition-opacity duration-300 group-hover:opacity-75">
-                                Brand & Typography Showcase
-                            </span>
+                            {details.brandImage ? (
+                                <img
+                                    src={details.brandImage}
+                                    alt="Brand"
+                                    className="w-full h-full object-cover"
+                                />
+                            ) : (
+                                <span className="text-[#434656] font-medium text-sm">
+                                    No Brand Image
+                                </span>
+                            )}
                         </motion.div>
 
+
                         {/* Editorial */}
+
                         <motion.div
                             className="h-72 sm:h-96 bg-[#191C1D] rounded-3xl overflow-hidden shadow-md flex items-center justify-center relative group"
                             variants={scaleIn}
                             whileHover={{ y: -5 }}
-                            transition={{ duration: 0.25 }}
                         >
-                            <span className="text-neutral-400 font-medium text-sm transition-opacity duration-300 group-hover:opacity-75">
-                                Editorial Mockup Showcase
-                            </span>
+                            {details.editorialImage ? (
+                                <img
+                                    src={details.editorialImage}
+                                    alt="Editorial"
+                                    className="w-full h-full object-cover"
+                                />
+                            ) : (
+                                <span className="text-neutral-400 font-medium text-sm">
+                                    No Editorial Image
+                                </span>
+                            )}
                         </motion.div>
 
                     </motion.div>
 
 
-                    {/* THE PRODUCT */}
+                    {/* PRODUCT */}
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
 
-                        {/* LEFT CONTENT */}
+                        {/* PRODUCT CONTENT (50% Width on Large Screens) */}
                         <motion.div
-                            className="lg:col-span-5 space-y-5 lg:pt-4"
+                            className="lg:col-span-6 space-y-5 lg:pt-4"
                             variants={fadeUp}
                             initial="hidden"
                             whileInView="visible"
-                            viewport={{ once: true, amount: 0.2 }}
+                            viewport={{
+                                once: true,
+                                amount: 0.2,
+                            }}
                         >
-
                             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#191C1D]">
-                                THE PRODUCT
+                                {details.productTitle || "THE PRODUCT"}
                             </h2>
 
                             <p className="text-[#434656] text-sm sm:text-base leading-relaxed max-w-xl">
-                                Online DB Extractor is an enterprise-grade SaaS platform
-                                designed to bridge the gap between complex raw databases
-                                and actionable business insights. It provides a structured,
-                                secure, and intuitive ecosystem for data analysts and
-                                engineers to manage extraction workflows without writing code.
+                                {details.productDescription || ""}
                             </p>
 
                             <p className="text-[#434656] text-xs sm:text-sm leading-relaxed max-w-xl">
-                                The project encompassed the complete redesign of the platform,
-                                from the initial marketing website and onboarding flow to the
-                                core extraction engine and administrative dashboards.
+                                {details.productDescriptionTwo || ""}
                             </p>
-
                         </motion.div>
 
 
-                        {/* RIGHT — PLATFORM ECOSYSTEM */}
+                        {/* PLATFORM ECOSYSTEM (50% Width on Large Screens) */}
                         <motion.div
-                            className="lg:col-span-7 bg-white border border-[#C3C5D9]/30 rounded-2xl p-6 sm:p-8"
+                            className="lg:col-span-6 bg-white border border-[#C3C5D9]/30 rounded-2xl p-6 sm:p-8"
                             variants={scaleIn}
                             initial="hidden"
                             whileInView="visible"
-                            viewport={{ once: true, amount: 0.2 }}
+                            viewport={{
+                                once: true,
+                                amount: 0.2,
+                            }}
                         >
-
                             <h3 className="text-sm sm:text-[15px] font-bold text-[#191C1D] mb-7 text-center">
                                 Platform Ecosystem Map
                             </h3>
 
-                            <div className="w-full max-w-95 mx-auto flex flex-col items-center">
+                            <div className="w-full max-w-xs mx-auto flex flex-col items-center">
+                                {details.ecosystem?.map((item, index) => {
+                                    const IconComponent = getEcosystemIcon(item.title, index);
 
-                                <motion.div
-                                    className="w-35 h-17 bg-[#EDEEEF] border border-[#C3C5D9] rounded-lg flex flex-col items-center justify-center text-center"
-                                    whileHover={{ scale: 1.03 }}
-                                >
-                                    <div className="text-[#1A65FF] text-sm leading-none mb-1">
-                                        🌐
-                                    </div>
+                                    return (
+                                        <React.Fragment key={item._id || index}>
+                                            <motion.div
+                                                className="w-48 min-h-20 bg-white border border-[#C3C5D9]/30 rounded-xl flex flex-col items-center justify-center text-center p-3 shadow-xs"
+                                                whileHover={{
+                                                    scale: 1.03,
+                                                }}
+                                            >
+                                                <div className="text-[#5870EE] mb-1.5 p-1.5 bg-[#5870EE]/10 rounded-lg">
+                                                    <IconComponent className="w-4 h-4" />
+                                                </div>
 
-                                    <div className="text-[13px] font-bold text-[#191C1D] leading-tight">
-                                        Marketing
-                                    </div>
+                                                <div className="text-[13px] font-bold text-[#191C1D] leading-tight">
+                                                    {item.title || ""}
+                                                </div>
 
-                                    <p className="text-[10px] text-[#434656] leading-tight mt-0.5">
-                                        Landing, Pricing
-                                    </p>
-                                </motion.div>
+                                                {item.description && (
+                                                    <p className="text-[10px] text-[#434656] leading-tight mt-1">
+                                                        {item.description}
+                                                    </p>
+                                                )}
+                                            </motion.div>
 
-
-                                <div className="w-20px h-11 border-l border-dashed border-[#C3C5D9]/50"></div>
-
-
-                                <motion.div
-                                    className="w-35 h-17 bg-[#EDEEEF] border border-[#C3C5D9]/30 rounded-lg flex flex-col items-center justify-center text-center"
-                                    whileHover={{ scale: 1.03 }}
-                                >
-                                    <div className="text-[#1A65FF] text-sm leading-none mb-1">
-                                        ↪
-                                    </div>
-
-                                    <div className="text-[13px] font-bold text-[#191C1D] leading-tight">
-                                        Auth &amp; Onboarding
-                                    </div>
-
-                                    <p className="text-[10px] text-[#434656] leading-tight mt-0.5">
-                                        Signup, Organization Setup
-                                    </p>
-                                </motion.div>
-
-
-                                <div className="w-20px h-11 border-l border-dashed border-[#D5D9E2]"></div>
-
-
-                                <div className="relative w-full flex justify-center gap-5">
-
-                                    <div className="absolute top-1/2 left-[calc(50%-20px)] right-[calc(50%-20px)] h-px bg-[#D5D9E2] -translate-y-1/2 z-0"></div>
-
-                                    <motion.div
-                                        className="relative z-10 w-35 h-17 bg-white border border-[#1A65FF]/20 rounded-lg flex flex-col items-center justify-center text-center"
-                                        whileHover={{ scale: 1.03 }}
-                                    >
-                                        <div className="text-[#1A65FF] text-sm leading-none mb-1">
-                                            ⚙
-                                        </div>
-
-                                        <div className="text-[13px] font-bold text-[#191C1D] leading-tight">
-                                            Core Engine
-                                        </div>
-
-                                        <p className="text-[10px] text-[#434656] leading-tight mt-0.5">
-                                            Connections, Workflows
-                                        </p>
-                                    </motion.div>
-
-
-                                    <motion.div
-                                        className="relative z-10 w-35 h-17 bg-white border border-[#1769FF]/20 rounded-lg flex flex-col items-center justify-center text-center"
-                                        whileHover={{ scale: 1.03 }}
-                                    >
-                                        <div className="text-[#1769FF] text-sm leading-none mb-1">
-                                            ▦
-                                        </div>
-
-                                        <div className="text-[13px] font-bold text-[#191C1D] leading-tight">
-                                            Dashboard
-                                        </div>
-
-                                        <p className="text-[10px] text-[#434656] leading-tight mt-0.5">
-                                            Analytics, Monitoring
-                                        </p>
-                                    </motion.div>
-
-                                </div>
-
-
-                                <div className="w-px h-11 border-l border-dashed border-[#D5D9E2]"></div>
-
-
-                                <div className="relative w-full flex justify-center gap-5">
-
-                                    <div className="absolute top-1/2 left-[calc(50%-20px)] right-[calc(50%-20px)] h-px bg-[#D5D9E2] -translate-y-1/2 z-0"></div>
-
-                                    <motion.div
-                                        className="relative z-10 w-35 h-17 bg-white border border-[#C3C5D9]/30 rounded-lg flex flex-col items-center justify-center text-center"
-                                        whileHover={{ scale: 1.03 }}
-                                    >
-                                        <div className="text-[#1769FF] text-sm leading-none mb-1">
-                                            ⚙
-                                        </div>
-
-                                        <div className="text-[13px] font-bold text-[#191C1D] leading-tight">
-                                            Settings
-                                        </div>
-
-                                        <p className="text-[10px] text-[#434656] leading-tight mt-0.5">
-                                            Account, Team
-                                        </p>
-                                    </motion.div>
-
-
-                                    <motion.div
-                                        className="relative z-10 w-35 h-17 bg-white border border-[#C3C5D9]/20 rounded-lg flex flex-col items-center justify-center text-center"
-                                        whileHover={{ scale: 1.03 }}
-                                    >
-                                        <div className="text-[#1769FF] text-sm leading-none mb-1">
-                                            ▤
-                                        </div>
-
-                                        <div className="text-[13px] font-bold text-[#191C1D] leading-tight">
-                                            Billing
-                                        </div>
-
-                                        <p className="text-[11px] text-[#434656] leading-tight mt-0.5">
-                                            Subscriptions, Invoices
-                                        </p>
-                                    </motion.div>
-
-                                </div>
-
+                                            {index < details.ecosystem.length - 1 && (
+                                                <div className="w-px h-8 border-l border-dashed border-[#D5D9E2]" />
+                                            )}
+                                        </React.Fragment>
+                                    );
+                                })}
                             </div>
                         </motion.div>
-
                     </div>
+
                 </div>
+
             </section>
 
 
-            {/* Section 5 */}
+            {/* 5. CHALLENGE + APPROACH */}
             <section className="container py-6 relative">
-
                 <motion.div
                     className="relative container py-8 bg-white"
                     variants={fadeIn}
                     initial="hidden"
                     whileInView="visible"
-                    viewport={{ once: true, amount: 0.2 }}
+                    viewport={{
+                        once: true,
+                        amount: 0.2,
+                    }}
                 >
 
-                    {/* Center vertical line */}
+                    {/* Vertical line */}
+
                     <motion.div
-                        className="absolute left-1/2 top-0 h-9.5 w-0.5 -translate-x-1/2 bg-[#5870EE] transition-colors duration-300"
-                        initial={{ scaleY: 0 }}
-                        whileInView={{ scaleY: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.7 }}
-                        style={{ transformOrigin: "top" }}
+                        className="absolute left-1/2 top-0 h-9.5 w-0.5 -translate-x-1/2 bg-[#5870EE]"
+                        initial={{
+                            scaleY: 0,
+                        }}
+                        whileInView={{
+                            scaleY: 1,
+                        }}
+                        viewport={{
+                            once: true,
+                        }}
+                        transition={{
+                            duration: 0.7,
+                        }}
+                        style={{
+                            transformOrigin: "top",
+                        }}
                     />
 
-                    {/* Center diamond */}
+
+                    {/* Diamond */}
+
                     <motion.div
                         className="absolute left-1/2 top-8 h-8 w-8 -translate-x-1/2 pointer-events-none"
-                        initial={{ opacity: 0, scale: 0, rotate: -45 }}
-                        whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
-                        viewport={{ once: true }}
+                        initial={{
+                            opacity: 0,
+                            scale: 0,
+                            rotate: -45,
+                        }}
+                        whileInView={{
+                            opacity: 1,
+                            scale: 1,
+                            rotate: 0,
+                        }}
+                        viewport={{
+                            once: true,
+                        }}
                         transition={{
                             duration: 0.6,
                             delay: 0.5,
                             ease: "backOut",
                         }}
                     >
+
                         <svg
                             viewBox="0 0 32 32"
                             className="h-full w-full"
@@ -453,124 +603,152 @@ const ProjectDetails = () => {
                                 strokeWidth="1.5"
                             />
                         </svg>
+
                     </motion.div>
 
 
-                    {/* Content Grid */}
+                    {/* Content */}
+
                     <motion.div
                         className="grid grid-cols-1 lg:grid-cols-2 gap-20 relative z-0"
                         variants={staggerContainer}
                         initial="hidden"
                         whileInView="visible"
-                        viewport={{ once: true, amount: 0.2 }}
+                        viewport={{
+                            once: true,
+                            amount: 0.2,
+                        }}
                     >
 
                         {/* Challenge */}
+
                         <motion.div
                             className="bg-gray-100 rounded-4xl p-8 sm:p-12 shadow-[0_4px_20px_rgba(35,45,80,0.02)] flex flex-col justify-between"
                             variants={fadeUp}
                             whileHover={{ y: -5 }}
                         >
+
                             <div>
+
                                 <span className="text-[11px] font-bold tracking-[0.2em] text-[#111827] uppercase block mb-4">
-                                    THE CHALLENGE
+                                    {details.challenge?.title ||
+                                        "THE CHALLENGE"}
                                 </span>
 
-                                <div className="space-y-4 text-[#4B5563] text-sm sm:text-base leading-relaxed font-normal">
-                                    <p>
-                                        Existing data extraction tools were heavily developer-focused, featuring cluttered interfaces, complex query languages, and steep learning curves.
-                                    </p>
+                                <div className="space-y-4 text-[#4B5563] text-sm sm:text-base leading-relaxed">
 
-                                    <p>
-                                        Business users and analysts struggled to retrieve needed data without engineering support. The challenge was to democratize access to data by building a tool that felt modern, approachable, and powerful without being overwhelming.
-                                    </p>
+                                    {details.challenge?.paragraphs?.map(
+                                        (paragraph, index) => (
+                                            <p key={index}>
+                                                {paragraph}
+                                            </p>
+                                        )
+                                    )}
+
                                 </div>
+
                             </div>
+
                         </motion.div>
 
 
                         {/* Approach */}
+
                         <motion.div
                             className="bg-gray-100 rounded-4xl p-8 sm:p-12 shadow-[0_4px_20px_rgba(35,45,80,0.02)] flex flex-col justify-between"
                             variants={fadeUp}
                             whileHover={{ y: -5 }}
                         >
+
                             <div>
+
                                 <span className="text-[11px] font-bold tracking-[0.2em] text-[#111827] uppercase block mb-4">
-                                    THE APPROACH
+                                    {details.approach?.title ||
+                                        "THE APPROACH"}
                                 </span>
 
-                                <div className="space-y-4 text-[#4B5563] text-sm sm:text-base leading-relaxed font-normal">
-                                    <p>
-                                        I adopted a 'progressive disclosure' approach. The interface guides users step-by-step: connecting sources, selecting parameters, and previewing results before extracting.
-                                    </p>
+                                <div className="space-y-4 text-[#4B5563] text-sm sm:text-base leading-relaxed">
 
-                                    <p>
-                                        Visually, I utilized a clean, light theme with high contrast typography and subtle interactions to maintain focus on the data itself. The blue/violet accent color was strategically used to indicate primary actions and active states.
-                                    </p>
+                                    {details.approach?.paragraphs?.map(
+                                        (paragraph, index) => (
+                                            <p key={index}>
+                                                {paragraph}
+                                            </p>
+                                        )
+                                    )}
+
                                 </div>
+
                             </div>
+
                         </motion.div>
 
                     </motion.div>
-                </motion.div>
-
-
-                {/* Images */}
-                <motion.div
-                    className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-10"
-                    variants={staggerContainer}
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true, amount: 0.2 }}
-                >
-
-                    <motion.div
-                        className="h-72 sm:h-96 bg-neutral-100 border border-neutral-200 rounded-3xl overflow-hidden shadow-md"
-                        variants={scaleIn}
-                        whileHover={{ scale: 1.015 }}
-                    >
-                        <img
-                            src="/images/haku-product-box.png"
-                            alt="Haku Product Box Mockup"
-                            className="w-full h-full object-cover"
-                        />
-                    </motion.div>
-
-                    <motion.div
-                        className="h-72 sm:h-96 bg-neutral-100 border border-neutral-200 rounded-3xl overflow-hidden shadow-md"
-                        variants={scaleIn}
-                        whileHover={{ scale: 1.015 }}
-                    >
-                        <img
-                            src="/images/foil-pouch-packaging.png"
-                            alt="Foil Pouch Packaging Mockup"
-                            className="w-full h-full object-cover"
-                        />
-                    </motion.div>
 
                 </motion.div>
+
+
+                {/* SECTION IMAGES */}
+
+                {details.sectionImages?.length > 0 && (
+                    <motion.div
+                        className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-10"
+                        variants={staggerContainer}
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{
+                            once: true,
+                            amount: 0.2,
+                        }}
+                    >
+
+                        {details.sectionImages.map(
+                            (image, index) => (
+                                <motion.div
+                                    key={index}
+                                    className="h-72 sm:h-96 bg-neutral-100 border border-neutral-200 rounded-3xl overflow-hidden shadow-md"
+                                    variants={scaleIn}
+                                    whileHover={{
+                                        scale: 1.015,
+                                    }}
+                                >
+                                    <img
+                                        src={image}
+                                        alt={`Project section ${index + 1
+                                            }`}
+                                        className="w-full h-full object-cover"
+                                    />
+                                </motion.div>
+                            )
+                        )}
+
+                    </motion.div>
+                )}
 
             </section>
 
 
-            {/* Section 6 */}
+            {/*  6. STRATEGIC OVERVIEW */}
             <section className="container py-4">
-
                 <motion.div
                     className="bg-white border border-[#C3C5D9]/30 rounded-3xl p-8 sm:p-14 shadow-sm mb-12"
                     variants={fadeUp}
                     initial="hidden"
                     whileInView="visible"
-                    viewport={{ once: true, amount: 0.2 }}
+                    viewport={{
+                        once: true,
+                        amount: 0.2,
+                    }}
                 >
 
                     <span className="text-[11px] font-bold tracking-widest text-[#1A65FF] uppercase block mb-2">
-                        Strategic Overview
+                        {details.strategicOverview?.label ||
+                            "Strategic Overview"}
                     </span>
 
                     <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#191C1D] mb-10">
-                        Project Deep Dive
+                        {details.strategicOverview?.title ||
+                            "Project Deep Dive"}
                     </h2>
 
 
@@ -579,53 +757,91 @@ const ProjectDetails = () => {
                         variants={staggerContainer}
                         initial="hidden"
                         whileInView="visible"
-                        viewport={{ once: true }}
+                        viewport={{
+                            once: true,
+                        }}
                     >
 
-                        <motion.div className="space-y-3" variants={fadeUp}>
+                        {/* Goal */}
+
+                        <motion.div
+                            className="space-y-3"
+                            variants={fadeUp}
+                        >
                             <h3 className="font-bold text-[#191C1D] text-base">
-                                The Goal
+                                {details.strategicOverview
+                                    ?.goal?.title ||
+                                    "The Goal"}
                             </h3>
 
                             <p className="text-[#434656] text-sm leading-relaxed">
-                                The primary objective was to transform a complex, technical data extraction process into a user-friendly SaaS experience.
+                                {details.strategicOverview
+                                    ?.goal?.description ||
+                                    ""}
                             </p>
                         </motion.div>
 
-                        <motion.div className="space-y-3" variants={fadeUp}>
+
+                        {/* Process */}
+
+                        <motion.div
+                            className="space-y-3"
+                            variants={fadeUp}
+                        >
                             <h3 className="font-bold text-[#191C1D] text-base">
-                                The Process
+                                {details.strategicOverview
+                                    ?.process?.title ||
+                                    "The Process"}
                             </h3>
 
                             <p className="text-[#434656] text-sm leading-relaxed">
-                                I focused on simplifying the user journey by categorizing workflows into clear, manageable steps—from source connection to data review.
+                                {details.strategicOverview
+                                    ?.process?.description ||
+                                    ""}
                             </p>
                         </motion.div>
 
-                        <motion.div className="space-y-3" variants={fadeUp}>
+
+                        {/* Impact */}
+
+                        <motion.div
+                            className="space-y-3"
+                            variants={fadeUp}
+                        >
                             <h3 className="font-bold text-[#191C1D] text-base">
-                                The Impact
+                                {details.strategicOverview
+                                    ?.impact?.title ||
+                                    "The Impact"}
                             </h3>
 
                             <p className="text-[#434656] text-sm leading-relaxed">
-                                The result is a structured platform that balances high information density with visual clarity, allowing data analysts to manage large datasets without cognitive overload.
+                                {details.strategicOverview
+                                    ?.impact?.description ||
+                                    ""}
                             </p>
                         </motion.div>
 
                     </motion.div>
+
                 </motion.div>
 
 
-                {/* Sub-grid */}
+                {/* METADATA + EXPERIENCE */}
+
                 <motion.div
                     variants={fadeUp}
                     initial="hidden"
                     whileInView="visible"
-                    viewport={{ once: true, amount: 0.2 }}
+                    viewport={{
+                        once: true,
+                        amount: 0.2,
+                    }}
                 >
+
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-white rounded-3xl shadow-sm p-6 sm:p-10 border border-neutral-100">
 
-                        {/* Metadata */}
+                        {/* METADATA */}
+
                         <div className="lg:col-span-4 w-full">
 
                             <motion.div
@@ -633,9 +849,10 @@ const ProjectDetails = () => {
                                 whileHover={{ y: -4 }}
                             >
 
-                                <div className="absolute right-11.5 top-0 h-10 w-0.5 bg-[#5870EE] transition-colors duration-300" />
+                                <div className="absolute right-11.5 top-0 h-10 w-0.5 bg-[#5870EE]" />
 
                                 <div className="absolute right-8 top-8 h-8 w-8 pointer-events-none">
+
                                     <svg
                                         viewBox="0 0 32 32"
                                         className="h-full w-full"
@@ -653,6 +870,7 @@ const ProjectDetails = () => {
                                             strokeWidth="1.5"
                                         />
                                     </svg>
+
                                 </div>
 
 
@@ -662,125 +880,136 @@ const ProjectDetails = () => {
                                         <p className="text-[#434656] uppercase tracking-wider text-[10px] font-bold mb-1">
                                             Year
                                         </p>
+
                                         <p className="text-[#1A65FF] font-semibold">
-                                            2026
+                                            {details.year || "-"}
                                         </p>
                                     </div>
+
 
                                     <div>
                                         <p className="text-[#434656] uppercase tracking-wider text-[10px] font-bold mb-1">
                                             Client
                                         </p>
+
                                         <p className="text-[#1A65FF] font-semibold">
-                                            KBK Business Solutions
+                                            {details.client || "-"}
                                         </p>
                                     </div>
+
 
                                     <div>
                                         <p className="text-[#434656] uppercase tracking-wider text-[10px] font-bold mb-1">
                                             Category
                                         </p>
+
                                         <p className="text-[#1A65FF] font-semibold">
-                                            SaaS/Web Application
+                                            {details.metadataCategory ||
+                                                details.category ||
+                                                "-"}
                                         </p>
                                     </div>
+
 
                                     <div>
                                         <p className="text-[#434656] uppercase tracking-wider text-[10px] font-bold mb-1">
                                             Tools
                                         </p>
+
                                         <p className="text-[#1A65FF] font-semibold">
-                                            Figma, Photoshop, Illustrator
+                                            {details.metadataTools ||
+                                                details.tools ||
+                                                "-"}
                                         </p>
                                     </div>
 
                                 </div>
+
                             </motion.div>
+
                         </div>
 
 
-                        {/* Right Content */}
+                        {/* EXPERIENCE */}
+
                         <div className="lg:col-span-8 space-y-6 lg:pl-4">
 
                             <h3 className="text-xl sm:text-2xl font-extrabold tracking-tight text-[#A5A5A5] uppercase">
-                                A More Structured SaaS Experience
+                                {details.experienceTitle || ""}
                             </h3>
+
 
                             <motion.div
                                 className="space-y-5"
                                 variants={staggerContainer}
                                 initial="hidden"
                                 whileInView="visible"
-                                viewport={{ once: true }}
+                                viewport={{
+                                    once: true,
+                                }}
                             >
 
-                                <motion.div
-                                    className="flex items-start gap-4"
-                                    variants={fadeUp}
-                                >
-                                    <div className="w-6 h-6 rounded-full bg-[#4F46E5]/20 text-[#1A65FF] flex items-center justify-center shrink-0 mt-0.5 text-xs font-bold border border-[#4F46E5]/30">
-                                        ✓
-                                    </div>
+                                {details.achievements?.map(
+                                    (achievement, index) => (
+                                        <motion.div
+                                            key={
+                                                achievement?._id ||
+                                                index
+                                            }
+                                            className="flex items-start gap-4"
+                                            variants={fadeUp}
+                                        >
 
-                                    <p className="text-[#888888] text-sm sm:text-base leading-relaxed">
-                                        Increased user onboarding completion rate by 45% through a simplified step-by-step extraction setup process.
-                                    </p>
-                                </motion.div>
+                                            <div className="w-6 h-6 rounded-full bg-[#4F46E5]/20 text-[#1A65FF] flex items-center justify-center shrink-0 mt-0.5 text-xs font-bold border border-[#4F46E5]/30">
+                                                ✓
+                                            </div>
 
+                                            <p className="text-[#888888] text-sm sm:text-base leading-relaxed">
+                                                {typeof achievement ===
+                                                    "string"
+                                                    ? achievement
+                                                    : achievement?.description ||
+                                                    achievement?.title ||
+                                                    ""}
+                                            </p>
 
-                                <motion.div
-                                    className="flex items-start gap-4"
-                                    variants={fadeUp}
-                                >
-                                    <div className="w-6 h-6 rounded-full bg-[#4F46E5]/20 text-[#1A65FF] flex items-center justify-center shrink-0 mt-0.5 text-xs font-bold border border-[#4F46E5]/30">
-                                        ✓
-                                    </div>
-
-                                    <p className="text-[#888888] text-sm sm:text-base leading-relaxed">
-                                        Established a scalable design system that reduced front-end development time for new features by 30%.
-                                    </p>
-                                </motion.div>
-
-
-                                <motion.div
-                                    className="flex items-start gap-4"
-                                    variants={fadeUp}
-                                >
-                                    <div className="w-6 h-6 rounded-full bg-[#4F46E5]/20 text-[#1A65FF] flex items-center justify-center shrink-0 mt-0.5 text-xs font-bold border border-[#4F46E5]/30">
-                                        ✓
-                                    </div>
-
-                                    <p className="text-[#888888] text-sm sm:text-base leading-relaxed">
-                                        Received overwhelmingly positive feedback from beta testers regarding the clean aesthetics and intuitive navigation.
-                                    </p>
-                                </motion.div>
+                                        </motion.div>
+                                    )
+                                )}
 
                             </motion.div>
 
                         </div>
+
                     </div>
+
                 </motion.div>
 
             </section>
 
 
-            {/* Section 7 */}
-            <motion.div
-                className="w-full px-0"
-                variants={fadeIn}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, amount: 0.2 }}
-            >
-                <img
-                    src="https://cdn.dribbble.com/userupload/16374797/file/original-bb5e9012b13464132574901859866139.png"
-                    alt="Meditation App"
-                    className="w-full h-full object-cover"
-                />
-            </motion.div>
+            {/* 7. SECTION 7 IMAGE */}
+            {details.section7Image && (
+                <motion.div
+                    className="w-full px-0"
+                    variants={fadeIn}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{
+                        once: true,
+                        amount: 0.2,
+                    }}
+                >
+                    <img
+                        src={details.section7Image}
+                        alt={`${details.projectName || "Project"} Section 7`}
+                        className="w-full h-87.5 sm:h-112.5 object-cover shadow-sm"
+                    />
+                </motion.div>
+            )}
 
 
-            {/* Section 8 */}
+            {/* 8. CHALLENGE CARDS */}
             <section className="container py-8">
 
                 <motion.div
@@ -788,15 +1017,19 @@ const ProjectDetails = () => {
                     variants={fadeUp}
                     initial="hidden"
                     whileInView="visible"
-                    viewport={{ once: true }}
+                    viewport={{
+                        once: true,
+                    }}
                 >
 
                     <span className="text-xs font-bold tracking-widest text-[#1A65FF] uppercase block mb-3">
-                        The Challenge
+                        {details.challengeSection?.label ||
+                            "The Challenge"}
                     </span>
 
                     <h2 className="text-xl sm:text-2xl font-semibold tracking-tight text-[#191C1D]">
-                        HOW DO YOU MAKE A TECHNICALLY COMPLEX DATA WORKFLOW FEEL SIMPLE?
+                        {details.challengeSection?.title ||
+                            ""}
                     </h2>
 
                 </motion.div>
@@ -807,87 +1040,72 @@ const ProjectDetails = () => {
                     variants={staggerContainer}
                     initial="hidden"
                     whileInView="visible"
-                    viewport={{ once: true, amount: 0.2 }}
+                    viewport={{
+                        once: true,
+                        amount: 0.2,
+                    }}
                 >
 
-                    <motion.div
-                        className="bg-white border border-[#C3C5D9]/20 rounded-xl p-8 shadow-sm flex flex-col"
-                        variants={fadeUp}
-                        whileHover={{ y: -5 }}
-                    >
-                        <div className="w-10 h-10 rounded-full bg-[#0055FF]/10 flex items-center justify-center text-[#1A65FF] mb-6">
-                            ⚡
-                        </div>
+                    {details.challengeSection?.cards?.map(
+                        (card, index) => (
+                            <motion.div
+                                key={
+                                    card?._id ||
+                                    index
+                                }
+                                className="bg-white border border-[#C3C5D9]/20 rounded-xl p-8 shadow-sm flex flex-col"
+                                variants={fadeUp}
+                                whileHover={{
+                                    y: -5,
+                                }}
+                            >
 
-                        <h3 className="text-lg font-semibold text-[#191C1D] mb-3">
-                            Complex Workflows
-                        </h3>
+                                <div className="w-10 h-10 rounded-full bg-[#0055FF]/10 flex items-center justify-center text-[#1A65FF] mb-6">
+                                    {card.icon ||
+                                        "⚡"}
+                                </div>
 
-                        <p className="text-[#434656] text-sm leading-relaxed">
-                            The existing system required users to navigate fragmented screens and technical jargon to set up a single extraction, leading to high drop-off rates.
-                        </p>
-                    </motion.div>
+                                <h3 className="text-lg font-semibold text-[#191C1D] mb-3">
+                                    {card.title || ""}
+                                </h3>
 
+                                <p className="text-[#434656] text-sm leading-relaxed">
+                                    {card.description ||
+                                        ""}
+                                </p>
 
-                    <motion.div
-                        className="bg-white border border-[#C3C5D9]/20 rounded-xl p-8 shadow-sm flex flex-col"
-                        variants={fadeUp}
-                        whileHover={{ y: -5 }}
-                    >
-                        <div className="w-10 h-10 rounded-full bg-[#0055FF]/10 flex items-center justify-center text-[#1A65FF] mb-6">
-                            📊
-                        </div>
-
-                        <h3 className="text-lg font-semibold text-[#191C1D] mb-3">
-                            Information Density
-                        </h3>
-
-                        <p className="text-[#434656] text-sm leading-relaxed">
-                            Displaying millions of rows of extracted data alongside metadata without overwhelming the user or sacrificing performance was a significant hurdle.
-                        </p>
-                    </motion.div>
-
-
-                    <motion.div
-                        className="bg-white border border-[#C3C5D9]/20 rounded-xl p-8 shadow-sm flex flex-col"
-                        variants={fadeUp}
-                        whileHover={{ y: -5 }}
-                    >
-                        <div className="w-10 h-10 rounded-full bg-[#0055FF]/10 flex items-center justify-center text-[#1A65FF] mb-6">
-                            👁️
-                        </div>
-
-                        <h3 className="text-lg font-semibold text-[#191C1D] mb-3">
-                            Product Clarity
-                        </h3>
-
-                        <p className="text-[#434656] text-sm leading-relaxed">
-                            The platform lacked a unified visual language, making it difficult for users to distinguish between actionable elements, static data, and system status.
-                        </p>
-                    </motion.div>
+                            </motion.div>
+                        )
+                    )}
 
                 </motion.div>
 
             </section>
 
 
-            {/* Section 9 */}
-            <motion.div
-                className="w-full px-0"
-                variants={fadeIn}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, amount: 0.2 }}
-            >
-                <img
-                    src="https://cdn.dribbble.com/userupload/16374797/file/original-bb5e9012b13464132574901859866139.png"
-                    alt="Meditation App"
-                    className="w-full h-full object-cover"
-                />
-            </motion.div>
+            {/* 9. SECTION 9 IMAGE */}
+
+            {details.section9Image && (
+                <motion.div
+                    className="w-full px-0"
+                    variants={fadeIn}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{
+                        once: true,
+                        amount: 0.2,
+                    }}
+                >
+                    <img
+                        src={details.section9Image}
+                        alt={`${details.projectName || "Project"} Section 9`}
+                        className="w-full h-87.5 sm:h-112.5 object-cover shadow-sm"
+                    />
+                </motion.div>
+            )}
 
 
-            {/* Section 10 */}
+            {/*  10. OUTCOME */}
             <section className="container py-8">
 
                 <motion.div
@@ -895,17 +1113,20 @@ const ProjectDetails = () => {
                     variants={fadeUp}
                     initial="hidden"
                     whileInView="visible"
-                    viewport={{ once: true }}
+                    viewport={{
+                        once: true,
+                    }}
                 >
 
                     <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#191C1D] mb-4">
-                        THE OUTCOME
+                        {details.outcome?.title ||
+                            "THE OUTCOME"}
                     </h2>
 
                     <p className="text-[#434656] text-sm font-regular leading-relaxed">
-                        The redesign transformed Online DB Extractor from a technical utility into a polished, enterprise-ready product. User testing showed a significant decrease in onboarding time and a vast improvement in task completion rates for complex queries.
+                        {details.outcome?.description ||
+                            ""}
                     </p>
-
                 </motion.div>
 
 
@@ -914,96 +1135,96 @@ const ProjectDetails = () => {
                     variants={staggerContainer}
                     initial="hidden"
                     whileInView="visible"
-                    viewport={{ once: true, amount: 0.2 }}
+                    viewport={{
+                        once: true,
+                        amount: 0.2,
+                    }}
                 >
 
-                    <motion.div
-                        className="bg-white border border-[#C3C5D9]/30 rounded-xl p-8 shadow-sm flex flex-col text-center"
-                        variants={fadeUp}
-                        whileHover={{ y: -5 }}
-                    >
-                        <h3 className="text-lg font-semibold text-[#191C1D] mb-3">
-                            Clearer Navigation
-                        </h3>
+                    {details.outcome?.cards?.map(
+                        (card, index) => (
+                            <motion.div
+                                key={card?._id || index}
+                                className="bg-white border border-[#C3C5D9]/20 rounded-xl p-8 shadow-xs flex flex-col"
+                                variants={fadeUp}
+                                whileHover={{
+                                    y: -5,
+                                }}
+                            >
+                                <div className="w-10 h-10 rounded-full bg-[#5870EE]/10 flex items-center justify-center text-[#5870EE] mb-6 shrink-0">
+                                    <IconComponent className="w-5 h-5" />
+                                </div>
 
-                        <p className="text-[#434656] text-sm leading-relaxed">
-                            Restructured the information architecture to allow users to intuitively navigate flow from connection setup to data extraction without confusion.
-                        </p>
-                    </motion.div>
+                                <h3 className="text-lg font-semibold text-[#191C1D] mb-3">
+                                    {card?.title || ""}
+                                </h3>
 
-
-                    <motion.div
-                        className="bg-white border border-[#C3C5D9]/30 rounded-xl p-8 shadow-sm flex flex-col text-center"
-                        variants={fadeUp}
-                        whileHover={{ y: -5 }}
-                    >
-                        <h3 className="text-lg font-semibold text-[#191C1D] mb-3">
-                            Consistent UI
-                        </h3>
-
-                        <p className="text-[#434656] text-sm leading-relaxed">
-                            Developed a comprehensive design system ensuring uniform interactions, typography, and color logic across all platform modules.
-                        </p>
-                    </motion.div>
-
-
-                    <motion.div
-                        className="bg-white border border-[#C3C5D9]/30 rounded-xl p-8 shadow-sm flex flex-col text-center"
-                        variants={fadeUp}
-                        whileHover={{ y: -5 }}
-                    >
-                        <h3 className="text-lg font-semibold text-[#191C1D] mb-3">
-                            Scalable Experience
-                        </h3>
-
-                        <p className="text-[#434656] text-sm leading-relaxed">
-                            Designed components and layouts that gracefully accommodate future feature additions and increasing data complexity.
-                        </p>
-                    </motion.div>
+                                <p className="text-[#434656] text-sm leading-relaxed">
+                                    {card?.description || ""}
+                                </p>
+                            </motion.div>
+                        )
+                    )}
 
                 </motion.div>
 
             </section>
 
 
-            {/* Footer */}
+            {/* ==================================================
+                FOOTER
+            ================================================== */}
+
             <motion.div
                 className="bg-[#F3F4F5] border border-[#C3C5D9]/20 py-20 px-6 text-center"
                 variants={fadeUp}
                 initial="hidden"
                 whileInView="visible"
-                viewport={{ once: true, amount: 0.2 }}
+                viewport={{
+                    once: true,
+                    amount: 0.2,
+                }}
             >
 
                 <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-[#191C1D] max-w-4xl mx-auto mb-12 leading-tight">
-                    DESIGNED TO MAKE COMPLEX DATA WORKFLOWS FEEL SIMPLE.
+                    {details.footerTitle || ""}
                 </h2>
 
             </motion.div>
 
 
-            {/* Next Project */}
+            {/* ==================================================
+                NEXT PROJECT
+            ================================================== */}
+
             <motion.div
                 className="flex justify-center py-30"
                 variants={fadeUp}
                 initial="hidden"
                 whileInView="visible"
-                viewport={{ once: true }}
+                viewport={{
+                    once: true,
+                }}
             >
 
-                <motion.button
-                    className="bg-neutral-800 hover:bg-[#191C1D] text-white font-medium px-8 py-4 rounded-2xl shadow-lg transition-all duration-200 transform hover:-translate-y-0.5 cursor-pointer"
-                    whileHover={{
-                        y: -3,
-                        scale: 1.02,
-                    }}
-                    whileTap={{
-                        scale: 0.97,
-                    }}
-                >
-                    Next Project
-                </motion.button>
-
+                {nextProject && (
+                    <motion.button
+                        type="button"
+                        onClick={() =>
+                            navigate(`/projects/${nextProject._id}`)
+                        }
+                        className="bg-neutral-800 hover:bg-[#191C1D] text-white font-medium px-8 py-4 rounded-2xl shadow-lg transition-all duration-200 transform hover:-translate-y-0.5 cursor-pointer"
+                        whileHover={{
+                            y: -3,
+                            scale: 1.02,
+                        }}
+                        whileTap={{
+                            scale: 0.97,
+                        }}
+                    >
+                        Next Project
+                    </motion.button>
+                )}
             </motion.div>
 
         </div>

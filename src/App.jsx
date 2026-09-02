@@ -28,7 +28,7 @@ const Layout = () => {
         <Route path="/projects" element={<ProjectPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/profile" element={<Profile />} />
-        <Route path="/projects/:id" element={<ProjectDetails />} />
+        <Route path="/projects/:projectId" element={<ProjectDetails />} />
         <Route path="/services-offering" element={<ServicesOffering />} />
         <Route path="/login" element={<Login />} />
 

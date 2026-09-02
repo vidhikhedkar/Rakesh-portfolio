@@ -10,6 +10,7 @@ import ProfileTab from './tabs/ProfileTab';
 import { FaRegUserCircle } from 'react-icons/fa';
 import ServicesOfferingTab from './tabs/ServicesOfferingTab';
 import { logoutService } from '../service/auth.service';
+import ProjectDetailsTab from './tabs/ProjectDetailsTab';
 
 const Dashboard = () => {
     const [activeTab, setActiveTab] = useState('home');
@@ -22,6 +23,7 @@ const Dashboard = () => {
         { id: 'about', label: 'About', icon: <FiUser /> },
         { id: 'profile', label: 'Profile', icon: <FaRegUserCircle /> },
         { id: 'project', label: 'Project', icon: <FiFolder /> },
+        { id: 'project-details', label: 'Project Details', icon: <FiFolder /> },
         { id: 'services-offering', label: 'Services Offering', icon: <FiFolder /> },
         { id: 'contact', label: 'Contact', icon: <FiMail /> },
     ];
@@ -213,6 +215,7 @@ const Dashboard = () => {
                                 {activeTab === 'about' && <AboutTab />}
                                 {activeTab === 'profile' && <ProfileTab />}
                                 {activeTab === 'project' && <ProjectTab />}
+                                {activeTab === 'project-details' && <ProjectDetailsTab />}
                                 {activeTab === 'services-offering' && <ServicesOfferingTab />}
                                 {activeTab === 'contact' && <ContactTab />}
                             </motion.div>

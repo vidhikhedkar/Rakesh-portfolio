@@ -133,12 +133,16 @@ const Projects = () => {
     const itemsPerPage = 6;
     const navigate = useNavigate();
 
+
     useEffect(() => {
         const fetchProjects = async () => {
             try {
                 setLoading(true);
-                const data = await getProjectsService();
-                setProjects(data);
+                const response = await getProjectsService();
+
+                // Extract array whether response is { data: [...] } or direct array [...]
+                const projectList = Array.isArray(response) ? response : (response?.data || []);
+                setProjects(projectList);
                 setError(null);
             } catch (err) {
                 setError("Failed to load projects");
@@ -261,7 +265,7 @@ const Projects = () => {
                                     <ProjectCard
                                         project={col2Projects[1]}
                                         index={startIndex + 4}
-                                        onClick={() => handleCardClick(col2Projects[4])}
+                                        onClick={() => handleCardClick(col2Projects[1])}
                                         imageClassName={getDesktopImageClassName(4)}
                                     />
                                 )}
@@ -360,8 +364,8 @@ const Projects = () => {
                                         whileHover={{ scale: 1.08 }}
                                         whileTap={{ scale: 0.93 }}
                                         className={`relative h-9 w-9 rounded-xl text-sm cursor-pointer font-medium transition-colors ${isActive
-                                                ? "text-white"
-                                                : "bg-white text-[#0F0F0F] hover:bg-[#E0E6FA]"
+                                            ? "text-white"
+                                            : "bg-white text-[#0F0F0F] hover:bg-[#E0E6FA]"
                                             }`}
                                     >
                                         {isActive && (

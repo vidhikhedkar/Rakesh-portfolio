@@ -22,16 +22,20 @@ const ProjectTab = () => {
     const fetchProjects = async () => {
         try {
             setLoading(true);
-            const data = await getProjectsService();
-            // Map MongoDB _id to id for seamless UI rendering
-            const formatted = data.map((item) => ({
+            const response = await getProjectsService();
+            const rawArray = Array.isArray(response) ? response : (response?.data || []);
+
+            // Ensure every project retains both _id and id safely
+            const dataArray = rawArray.map(item => ({
                 ...item,
-                id: item._id
+                id: item._id || item.id
             }));
-            setProjects(formatted);
+
+            setProjects(dataArray);
             setError(null);
         } catch (err) {
-            setError(typeof err === 'string' ? err : 'Failed to fetch projects');
+            const errorMessage = typeof err === "string" ? err : (err?.message || "Failed to fetch projects");
+            setError(errorMessage);
         } finally {
             setLoading(false);
         }
@@ -40,22 +44,36 @@ const ProjectTab = () => {
     const handleSaveAll = async (updatedList) => {
         try {
             setLoading(true);
-            // Prepare payload matching backend expectations (expects an array of projects)
-            const payload = updatedList.map(({ title, category, image, order }, idx) => ({
-                title,
-                category,
-                image,
-                order: order !== undefined ? order : idx
-            }));
+
+            const payload = updatedList.map((item, idx) => {
+                const projectPayload = {
+                    title: item.title,
+                    category: item.category,
+                    image: item.image,
+                    order: item.order !== undefined ? item.order : idx
+                };
+
+                // Include _id ONLY if it exists and is a valid 24-character Mongo ID
+                if (item._id || (item.id && item.id.length === 24)) {
+                    projectPayload._id = item._id || item.id;
+                }
+
+                return projectPayload;
+            });
+
             const data = await updateProjectsService(payload);
-            const formatted = data.map((item) => ({
+
+            // Normalize backend response with IDs
+            const formatted = (Array.isArray(data) ? data : data?.data || []).map((item) => ({
                 ...item,
-                id: item._id
+                id: item._id || item.id
             }));
+
             setProjects(formatted);
             setError(null);
         } catch (err) {
-            setError(typeof err === 'string' ? err : 'Failed to save projects update');
+            console.error("Save update error:", err);
+            setError(typeof err === 'string' ? err : (err?.response?.data?.message || 'Failed to save projects update'));
         } finally {
             setLoading(false);
         }
@@ -83,16 +101,17 @@ const ProjectTab = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         let updated;
+
         if (editingId) {
             updated = projects.map(p => p.id === editingId ? { ...p, ...formData } : p);
         } else {
+            // Create new project entry without a fake Mongo ID
             const newProject = {
-                id: Date.now().toString(),
                 ...formData
             };
             updated = [...projects, newProject];
         }
-        setProjects(updated);
+
         setIsModalOpen(false);
         await handleSaveAll(updated);
     };
@@ -124,8 +143,8 @@ const ProjectTab = () => {
 
             <div
                 className={`grid grid-cols-1 md:grid-cols-3 gap-3 ${projects.length > 6
-                        ? 'max-h-162.5 overflow-y-auto pr-2 no-scrollbar'
-                        : ''
+                    ? 'max-h-162.5 overflow-y-auto pr-2 no-scrollbar'
+                    : ''
                     }`}
             >
                 {projects.map((project) => (
