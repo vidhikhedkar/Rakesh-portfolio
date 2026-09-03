@@ -1,20 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { NavLink } from "react-router-dom";
 import { FaGlobe, FaLinkedinIn, FaBehance } from "react-icons/fa6";
 import approach from '../../assets/approach.png';
-import { CiMobile2, CiPen } from "react-icons/ci";
-import { GoPeople } from "react-icons/go";
-import { SlLayers } from "react-icons/sl";
-import { LiaBookSolid } from "react-icons/lia";
 import { getHomeContentService } from "../service/hometab.service";
+import { LuCreditCard, LuLayers3, LuMousePointer } from "react-icons/lu";
+import { MdOutlineContentCut } from "react-icons/md";
 
 const Home = () => {
   const [homeContent, setHomeContent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isHovered, setIsHovered] = useState(false);
-  const [hoveredIndex, setHoveredIndex] = useState(null);
 
   useEffect(() => {
     const fetchHomeContent = async () => {
@@ -64,16 +61,9 @@ const Home = () => {
     },
   };
 
-  const serviceIcons = [
-    <LiaBookSolid />,
-    <CiMobile2 />,
-    <SlLayers />,
-    <CiPen />,
-    <GoPeople />,
-  ];
 
   return (
-    <motion.main 
+    <motion.main
       initial="hidden"
       animate="show"
       variants={containerVariants}
@@ -129,7 +119,7 @@ const Home = () => {
                 transition={{ delay: 0.35, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
                 className="text-center sm:text-left relative z-10"
               >
-                <motion.p 
+                <motion.p
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.4 }}
@@ -156,7 +146,7 @@ const Home = () => {
                   </span>
                 </h1>
 
-                <motion.p 
+                <motion.p
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.6 }}
@@ -315,54 +305,150 @@ const Home = () => {
 
 
           {/* Services Offering -> Slides from Right */}
+
           <motion.section
             variants={slideFromRight}
-            whileHover={{ y: -6, scale: 1.01, transition: { duration: 0.25 } }}
-            className="group relative flex min-h-60 flex-col overflow-hidden rounded-[28px] bg-white p-7 shadow-[0_15px_50px_rgba(35,45,80,0.04)] lg:col-span-6"
+            whileHover={{
+              y: -6,
+              scale: 1.01,
+              transition: { duration: 0.25 },
+            }}
+            className="group relative flex min-h-75 flex-col overflow-hidden rounded-[28px] bg-white p-7 shadow-[0_15px_50px_rgba(35,45,80,0.04)] lg:col-span-6"
           >
-            <NavLink to="/services-offering" className="absolute inset-0 z-0" aria-label="Go to Services" />
+            <NavLink
+              to="/services-offering"
+              className="absolute inset-0 z-0"
+              aria-label="Go to Services"
+            />
 
-            <div className="flex flex-1 items-start justify-between px-6 pt-16 sm:px-10 relative z-10">
-              {homeContent?.services?.map((service, index) => (
-                <motion.div
-                  key={service.title + index}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 + index * 0.08, type: "spring", stiffness: 150 }}
-                  whileHover={{ y: -10, scale: 1.15, rotate: index % 2 === 0 ? 5 : -5 }}
-                  onMouseEnter={() => setHoveredIndex(index)}
-                  onMouseLeave={() => setHoveredIndex(null)}
-                  className="flex cursor-pointer items-center justify-center relative"
-                  aria-label={service.title}
-                >
-                  <div className="flex h-12 w-12 items-center justify-center text-[32px] text-[#4A6AF4] transition-colors duration-300 group-hover:text-[#111111]">
-                    {serviceIcons[index]}
-                  </div>
 
-                  <AnimatePresence>
-                    {hoveredIndex === index && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 5, scale: 0.9 }}
-                        animate={{ opacity: 1, y: -10, scale: 1 }}
-                        exit={{ opacity: 0, y: 2, scale: 0.9 }}
-                        transition={{ duration: 0.2, ease: "easeOut" }}
-                        className="absolute -top-12 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-xl bg-[#111111] px-3.5 py-2 text-[11px] font-medium text-white shadow-xl z-30 pointer-events-none"
-                      >
-                        {service.title}
-                        <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 h-2 w-2 rotate-45 bg-[#111111]" />
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </motion.div>
-              ))}
+            <div className="relative z-10 grid grid-cols-2 gap-4 pt-0 sm:grid-cols-4 sm:gap-4">
+
+              {/* UI/UX DESIGN */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  delay: 0.4,
+                  duration: 0.5,
+                  type: "spring",
+                  stiffness: 150,
+                }}
+                whileHover={{
+                  y: -6,
+                  scale: 1.03,
+                  transition: { duration: 0.25 },
+                }}
+                className="flex h-32.5 cursor-pointer flex-col items-center justify-center rounded-[18px] border border-[#F1F5F9] bg-[#F8FAFC]/60 transition-all duration-300 hover:border-[#DCE5FF] hover:shadow-[0_10px_30px_rgba(35,45,80,0.06)]"
+              >
+                <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-[13px] bg-[#EFF6FF] text-[#2563EB]">
+                  <LuMousePointer className="text-[27px]" />
+                </div>
+
+                <p className="text-center text-[14px] font-semibold tracking-[-0.2px] text-[#20283A]">
+                  UI/UX DESIGN
+                </p>
+              </motion.div>
+
+
+              {/* WEB & LANDING */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  delay: 0.48,
+                  duration: 0.5,
+                  type: "spring",
+                  stiffness: 150,
+                }}
+                whileHover={{
+                  y: -6,
+                  scale: 1.03,
+                  transition: { duration: 0.25 },
+                }}
+                className="flex h-32.5 cursor-pointer flex-col items-center justify-center rounded-[18px] border border-[#F1F5F9] bg-[#F8FAFC]/60 transition-all duration-300 hover:border-[#DCE5FF] hover:shadow-[0_10px_30px_rgba(35,45,80,0.06)]"
+              >
+                <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-[13px] bg-[#EFF6FF] text-[#2563EB]">
+                  <LuCreditCard className="text-[29px]" />
+                </div>
+
+                <p className="text-center text-[14px] font-semibold tracking-[-0.2px] text-[#20283A]">
+                  WEB & LANDING
+                </p>
+              </motion.div>
+
+
+              {/* SAAS & APPS */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  delay: 0.56,
+                  duration: 0.5,
+                  type: "spring",
+                  stiffness: 150,
+                }}
+                whileHover={{
+                  y: -6,
+                  scale: 1.03,
+                  transition: { duration: 0.25 },
+                }}
+                className="flex h-32.5 cursor-pointer flex-col items-center justify-center rounded-[18px] border border-[#F1F5F9] bg-[#F8FAFC]/60 transition-all duration-300 hover:border-[#DCE5FF] hover:shadow-[0_10px_30px_rgba(35,45,80,0.06)]"
+              >
+                <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-[13px] bg-[#EFF6FF] text-[#2563EB]">
+                  <LuLayers3 className="text-[27px]" />
+                </div>
+
+                <p className="text-center text-[14px] font-semibold tracking-[-0.2px] text-[#20283A]">
+                  SAAS & APPS
+                </p>
+              </motion.div>
+
+
+              {/* WIREFRAMES */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  delay: 0.64,
+                  duration: 0.5,
+                  type: "spring",
+                  stiffness: 150,
+                }}
+                whileHover={{
+                  y: -6,
+                  scale: 1.03,
+                  transition: { duration: 0.25 },
+                }}
+                className="flex h-32.5 cursor-pointer flex-col items-center justify-center rounded-[18px] border border-[#F1F5F9] bg-[#F8FAFC]/60 transition-all duration-300 hover:border-[#DCE5FF] hover:shadow-[0_10px_30px_rgba(35,45,80,0.06)]"
+              >
+                <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-[13px] bg-[#EFF6FF] text-[#2563EB]">
+                  <MdOutlineContentCut className="text-[29px]" />
+                </div>
+
+                <p className="text-center text-[14px] font-semibold tracking-[-0.2px] text-[#20283A]">
+                  WIREFRAMES
+                </p>
+              </motion.div>
+
             </div>
 
-            <div className="relative z-10">
-              <p className="text-[11px] font-normal uppercase tracking-wide text-[#BCBCBC]">WHAT I DO</p>
-              <h2 className="mt-2 text-[25px] font-medium leading-none tracking-[-0.5px] text-[#0F0F0F]">Services Offering</h2>
+            <div className="relative z-10 mt-auto">
+
+              <p className="text-[13px] font-normal uppercase tracking-wide text-[#BCBCBC]">
+                WHAT I DO
+              </p>
+
+              <h2 className="mt-3 text-[30px] font-medium leading-none tracking-[-1px] text-[#0F0F0F]">
+                Services Offering
+              </h2>
+
             </div>
 
+
+            {/* Plus Button */}
             <PlusButton to="/services-offering" />
+
           </motion.section>
 
 
@@ -505,58 +591,58 @@ const TickerDot = () => {
 
 
 const PlusButton = ({ to }) => {
-    const content = (
-        <motion.div
-            initial={{ opacity: 0.9 }}
-            whileHover={{ scale: 1.05 }}
-            transition={{
-                duration: 0.25,
-                ease: "easeOut",
-            }}
-            className="absolute bottom-5 right-5 h-10 w-10 cursor-pointer z-20"
-        >
-            <svg
-                viewBox="0 0 56 56"
-                className="h-full w-full overflow-visible"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-            >
-                <circle
-                    cx="28"
-                    cy="28"
-                    r="26"
-                    stroke="#EEF1F7"
-                    strokeWidth="2"
-                    className="transition-all duration-500 ease-out group-hover:stroke-[#DCE2EF]"
-                />
-                <line
-                    x1="0"
-                    y1="28"
-                    x2="28"
-                    y2="28"
-                    stroke="#E3E8FA"
-                    strokeWidth="2"
-                    className="transition-all duration-500 ease-out group-hover:stroke-[#5B78FF]"
-                />
-                <path
-                    d="M28 17
+  const content = (
+    <motion.div
+      initial={{ opacity: 0.9 }}
+      whileHover={{ scale: 1.05 }}
+      transition={{
+        duration: 0.25,
+        ease: "easeOut",
+      }}
+      className="absolute bottom-5 right-5 h-10 w-10 cursor-pointer z-20"
+    >
+      <svg
+        viewBox="0 0 56 56"
+        className="h-full w-full overflow-visible"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <circle
+          cx="28"
+          cy="28"
+          r="26"
+          stroke="#EEF1F7"
+          strokeWidth="2"
+          className="transition-all duration-500 ease-out group-hover:stroke-[#DCE2EF]"
+        />
+        <line
+          x1="0"
+          y1="28"
+          x2="28"
+          y2="28"
+          stroke="#E3E8FA"
+          strokeWidth="2"
+          className="transition-all duration-500 ease-out group-hover:stroke-[#5B78FF]"
+        />
+        <path
+          d="M28 17
             C28.7 23.5 32.5 27.3 39 28
             C32.5 28.7 28.7 32.5 28 39
             C27.3 32.5 23.5 28.7 17 28
             C23.5 27.3 27.3 23.5 28 17
             Z"
-                    fill="#E0E6FA"
-                    className="transition-all duration-500 ease-out group-hover:fill-[#5B78FF]"
-                />
-            </svg>
-        </motion.div>
-    );
+          fill="#E0E6FA"
+          className="transition-all duration-500 ease-out group-hover:fill-[#5B78FF]"
+        />
+      </svg>
+    </motion.div>
+  );
 
-    if (to) {
-        return <NavLink to={to}>{content}</NavLink>;
-    }
+  if (to) {
+    return <NavLink to={to}>{content}</NavLink>;
+  }
 
-    return content;
+  return content;
 };
 
 
