@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FiSave, FiPlus, FiTrash2, FiUploadCloud, FiX } from 'react-icons/fi';
 import { getProfileService, updateProfileService } from '../../service/profiletab.service';
 
+
 const ProfileTab = () => {
     const [profile, setProfile] = useState({
         name: '',
@@ -20,12 +21,14 @@ const ProfileTab = () => {
         certification: []
     });
 
+
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [savedMessage, setSavedMessage] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [saveMessage, setSaveMessage] = useState('');
     const [isDragging, setIsDragging] = useState(false);
+
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -57,32 +60,31 @@ const ProfileTab = () => {
                 setLoading(false);
             }
         };
-
         fetchProfile();
     }, []);
+    
 
     const triggerMessage = (msg) => {
         setSaveMessage(msg);
         setSavedMessage(true);
-
         setTimeout(() => {
             setSavedMessage(false);
             setSaveMessage('');
         }, 3000);
     };
 
+
     const handleBasicChange = (field, value) => {
         setProfile((prev) => ({ ...prev, [field]: value }));
     };
 
+
     const processFile = (file) => {
         if (!file) return;
-
         if (!file.type.startsWith('image/')) {
             setErrorMessage('Please select a valid image file');
             return;
         }
-
         const reader = new FileReader();
         reader.onloadend = () => {
             setProfile((prev) => ({ ...prev, avatar: reader.result }));
@@ -94,30 +96,17 @@ const ProfileTab = () => {
         reader.readAsDataURL(file);
     };
 
+
+
     const handleAvatarUpload = (e) => {
         processFile(e.target.files[0]);
     };
 
-    const handleDragOver = (e) => {
-        e.preventDefault();
-        setIsDragging(true);
-    };
-
-    const handleDragLeave = () => {
-        setIsDragging(false);
-    };
-
-    const handleDrop = (e) => {
-        e.preventDefault();
-        setIsDragging(false);
-        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-            processFile(e.dataTransfer.files[0]);
-        }
-    };
 
     const handleRemoveAvatar = () => {
         setProfile((prev) => ({ ...prev, avatar: '' }));
     };
+
 
     const handleExperienceChange = (field, value) => {
         setProfile((prev) => ({
@@ -126,19 +115,19 @@ const ProfileTab = () => {
         }));
     };
 
+
     const handleCertificationChange = (index, field, value) => {
         const updated = [...profile.certification];
-
         updated[index] = {
             ...updated[index],
             [field]: value
         };
-
         setProfile((prev) => ({
             ...prev,
             certification: updated
         }));
     };
+
 
     const handleAddCertification = () => {
         setProfile((prev) => ({
@@ -151,9 +140,9 @@ const ProfileTab = () => {
                 }
             ]
         }));
-
         triggerMessage('Certification added successfully!');
     };
+
 
     const handleDeleteCertification = (index) => {
         setProfile((prev) => ({
@@ -162,9 +151,9 @@ const ProfileTab = () => {
                 (_, i) => i !== index
             )
         }));
-
         triggerMessage('Certification deleted successfully!');
     };
+
 
 
     const handleArrayChange = (field, index, value) => {
@@ -173,14 +162,15 @@ const ProfileTab = () => {
         setProfile((prev) => ({ ...prev, [field]: updated }));
     };
 
+
     const handleAddArrayItem = (field, defaultValue = '') => {
         setProfile((prev) => ({
             ...prev,
             [field]: [...(prev[field] || []), defaultValue]
         }));
-
         triggerMessage('Data added successfully!');
     };
+
 
     const handleDeleteArrayItem = (field, index) => {
         const updated = profile[field].filter((_, i) => i !== index);
@@ -188,11 +178,13 @@ const ProfileTab = () => {
         triggerMessage('Data edited successfully!');
     };
 
+
     const handleEducationChange = (index, field, value) => {
         const updated = [...profile.education];
         updated[index][field] = value;
         setProfile((prev) => ({ ...prev, education: updated }));
     };
+
 
     const handleAddEducation = () => {
         setProfile((prev) => ({
@@ -202,28 +194,27 @@ const ProfileTab = () => {
         triggerMessage('Data added successfully!');
     };
 
+
     const handleDeleteEducation = (index) => {
         const updated = profile.education.filter((_, i) => i !== index);
         setProfile((prev) => ({ ...prev, education: updated }));
         triggerMessage('Data edited successfully!');
     };
 
+
     const handleSave = async (e) => {
         e.preventDefault();
         try {
             setSaving(true);
             setErrorMessage('');
-
             const response = await updateProfileService(profile);
             const updatedData = response.data || response;
-
             if (updatedData) {
                 setProfile((prev) => ({
                     ...prev,
                     ...updatedData
                 }));
             }
-
             triggerMessage('Data edited successfully!');
         } catch (err) {
             setErrorMessage(err.message || err.error || 'Failed to save profile settings');
@@ -232,6 +223,7 @@ const ProfileTab = () => {
         }
     };
 
+
     if (loading) {
         return (
             <div className="flex justify-center items-center py-24 bg-white rounded-2xl">
@@ -239,6 +231,7 @@ const ProfileTab = () => {
             </div>
         );
     }
+
 
     return (
         <div className="w-full">
@@ -263,7 +256,6 @@ const ProfileTab = () => {
             )}
 
             <form onSubmit={handleSave} className="space-y-6">
-                {/* Basic Information */}
                 <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 space-y-4">
                     <h4 className="text-sm font-bold text-[#0F0F0F] border-b border-gray-100 pb-2">Basic Info</h4>
 
@@ -348,7 +340,7 @@ const ProfileTab = () => {
                     </div>
                 </div>
 
-                {/* Experience Section */}
+
                 <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 space-y-4">
                     <h4 className="text-sm font-bold text-[#0F0F0F] border-b border-gray-100 pb-2">Experience</h4>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -391,7 +383,7 @@ const ProfileTab = () => {
                     </div>
                 </div>
 
-                {/* Education Section */}
+
                 <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 space-y-4">
                     <div className="flex justify-between items-center border-b border-gray-100 pb-2">
                         <h4 className="text-sm font-bold text-[#0F0F0F]">Education</h4>
@@ -434,7 +426,7 @@ const ProfileTab = () => {
                     </div>
                 </div>
 
-                {/* Skills Section */}
+ 
                 <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 space-y-4">
                     <div className="flex justify-between items-center border-b border-gray-100 pb-2">
                         <h4 className="text-sm font-bold text-[#0F0F0F]">Skills</h4>
@@ -467,7 +459,7 @@ const ProfileTab = () => {
                     </div>
                 </div>
 
-                {/* Tools Section */}
+
                 <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 space-y-4">
                     <div className="flex justify-between items-center border-b border-gray-100 pb-2">
                         <h4 className="text-sm font-bold text-[#0F0F0F]">Tools</h4>
@@ -500,8 +492,7 @@ const ProfileTab = () => {
                     </div>
                 </div>
 
-                {/* Certification Section */}
-                {/* Certification Section */}
+
                 <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 space-y-4">
 
                     <div className="flex justify-between items-center border-b border-gray-100 pb-2">
@@ -518,22 +509,17 @@ const ProfileTab = () => {
                             <FiPlus size={13} />
                             Add Certification
                         </button>
-
                     </div>
 
-                    <div className="space-y-3">
 
+                    <div className="space-y-3">
                         {Array.isArray(profile.certification) &&
                             profile.certification.map((cert, index) => (
-
                                 <div
                                     key={index}
                                     className="flex gap-3 items-center bg-gray-50 p-3 rounded-xl border border-gray-200"
                                 >
-
                                     <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-3">
-
-                                        {/* Certification Title */}
                                         <input
                                             type="text"
                                             placeholder="Certification title"
@@ -548,7 +534,6 @@ const ProfileTab = () => {
                                             className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#5B78FF]"
                                         />
 
-                                        {/* Academy */}
                                         <input
                                             type="text"
                                             placeholder="Academy / Institution"
@@ -562,10 +547,9 @@ const ProfileTab = () => {
                                             }
                                             className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#5B78FF]"
                                         />
-
                                     </div>
 
-                                    {/* Delete */}
+
                                     <button
                                         type="button"
                                         onClick={() =>
@@ -576,12 +560,10 @@ const ProfileTab = () => {
                                     >
                                         <FiTrash2 size={16} />
                                     </button>
-
                                 </div>
-
                             ))}
 
-                        {/* Empty State */}
+
                         {(!profile.certification ||
                             profile.certification.length === 0) && (
                                 <div className="text-center py-6 text-xs text-gray-400">
@@ -592,7 +574,7 @@ const ProfileTab = () => {
                     </div>
                 </div>
 
-                {/* Form Action Footer */}
+
                 <div className="flex justify-end pt-2">
                     <button
                         type="submit"

@@ -6,10 +6,12 @@ import { BsGlobe, BsTwitterX } from "react-icons/bs";
 import emailjs from "@emailjs/browser";
 import { getContactService } from "../service/contactservice";
 
+
 const fadeUp = {
     hidden: { opacity: 0, y: 20 },
     show: { opacity: 1, y: 0 },
 };
+
 
 const Contact = () => {
     const [contactData, setContactData] = useState({
@@ -35,6 +37,7 @@ const Contact = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitStatus, setSubmitStatus] = useState({ success: false, message: "" });
 
+
     useEffect(() => {
         const fetchContactData = async () => {
             try {
@@ -57,18 +60,21 @@ const Contact = () => {
                 setLoading(false);
             }
         };
-
         fetchContactData();
     }, []);
+
+
 
     const handleInputChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
+
     const handlePhoneClick = (phoneNumber) => {
         const cleanedNumber = phoneNumber.replace(/\s+/g, "");
         window.location.href = `tel:${cleanedNumber}`;
     };
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -86,7 +92,6 @@ const Contact = () => {
             message: formData.message,
             to_email: contactData.email
         };
-
         try {
             await emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams, PUBLIC_KEY);
             setSubmitStatus({
@@ -105,11 +110,10 @@ const Contact = () => {
         }
     };
 
+
     return (
         <section className="w-full bg-[#f4f6f8] px-4 py-12 md:px-10 lg:px-16 flex items-center justify-center">
             <div className="mx-auto w-full max-w-300 grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
-
-                {/* Left Side: Contact Info & Socials */}
                 <motion.div
                     variants={fadeUp}
                     initial="hidden"
@@ -123,7 +127,6 @@ const Contact = () => {
                         </h4>
 
                         <div className="flex flex-col gap-8 mb-4">
-                            {/* Mail */}
                             <div className="flex items-start gap-4 group">
                                 <a
                                     href={`mailto:${contactData.email}`}
@@ -131,6 +134,7 @@ const Contact = () => {
                                 >
                                     <HiOutlineMail className="text-2xl" />
                                 </a>
+
                                 <div className="space-y-1">
                                     <p className="text-[11px] font-semibold uppercase tracking-[1px] text-[#BCBCBC]">
                                         Mail Us
@@ -141,11 +145,11 @@ const Contact = () => {
                                 </div>
                             </div>
 
-                            {/* Contact Us (Combined Numbers) */}
                             <div className="flex items-start gap-4 group mb-4">
                                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white shadow-[0_4px_20px_rgba(35,45,80,0.03)] text-[#5B78F6]">
                                     <HiOutlinePhone className="text-2xl" />
                                 </div>
+
                                 <div className="flex-1 space-y-2">
                                     <p className="text-[11px] font-semibold uppercase tracking-[1px] text-[#8c92a4]">
                                         Contact Us
@@ -171,7 +175,6 @@ const Contact = () => {
                                 </div>
                             </div>
 
-                            {/* Location */}
                             <div className="flex items-start gap-4 group">
                                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white shadow-[0_4px_20px_rgba(35,45,80,0.03)] text-[#5B78F6]">
                                     <HiOutlineLocationMarker className="text-2xl" />
@@ -188,18 +191,20 @@ const Contact = () => {
                         </div>
                     </div>
 
-                    {/* Social Info */}
                     <div>
                         <h4 className="text-[12px] font-semibold uppercase tracking-[1.5px] text-[#0F0F0F] mb-4">
                             Social Info
                         </h4>
+
                         <div className="flex items-center gap-3 space-x-2">
                             <a href={contactData.websiteUrl} target="_blank" rel="noopener noreferrer" className="flex h-12 w-12 items-center justify-center rounded-full bg-white shadow-[0_4px_20px_rgba(35,45,80,0.03)] text-[#5B78F6] hover:bg-[#5B78F6] hover:text-white transition-all duration-300">
                                 <BsGlobe className="text-xl" />
                             </a>
+
                             <a href={contactData.twitterUrl} target="_blank" rel="noopener noreferrer" className="flex h-12 w-12 items-center justify-center rounded-full bg-white shadow-[0_4px_20px_rgba(35,45,80,0.03)] text-[#5B78F6] hover:bg-[#5B78F6] hover:text-white transition-all duration-300">
                                 <BsTwitterX className="text-xl" />
                             </a>
+
                             <a href={contactData.instagramUrl} target="_blank" rel="noopener noreferrer" className="flex h-12 w-12 items-center justify-center rounded-full bg-white shadow-[0_4px_20px_rgba(35,45,80,0.03)] text-[#5B78F6] hover:bg-[#5B78F6] hover:text-white transition-all duration-300">
                                 <FaInstagram className="text-xl" />
                             </a>
@@ -207,7 +212,7 @@ const Contact = () => {
                     </div>
                 </motion.div>
 
-                {/* Right Side: Form Card */}
+
                 <motion.div
                     variants={fadeUp}
                     initial="hidden"
@@ -306,7 +311,6 @@ const Contact = () => {
                         </motion.button>
                     </form>
                 </motion.div>
-
             </div>
         </section>
     );

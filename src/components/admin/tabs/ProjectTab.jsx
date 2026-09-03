@@ -1,13 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FiPlus, FiTrash2, FiEdit2, FiX } from 'react-icons/fi';
-import {
-    getProjectsService,
-    createProjectService,
-    updateProjectDetailService,
-    deleteProjectDetailService,
-    uploadImageService
-} from '../../service/projecttab.service';
-// import { getProjectsService, updateProjectsService, uploadImageService } from '../services/projectService'; 
+import { getProjectsService, createProjectService, updateProjectDetailService, deleteProjectDetailService, uploadImageService } from '../../service/projecttab.service';
+
 
 const ProjectTab = () => {
     const [deleteId, setDeleteId] = useState(null);
@@ -15,131 +9,78 @@ const ProjectTab = () => {
     const [loading, setLoading] = useState(false);
     const [uploading, setUploading] = useState(false);
     const [error, setError] = useState(null);
-
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingId, setEditingId] = useState(null);
     const [formData, setFormData] = useState({ title: '', category: '', image: '' });
 
-    // Fetch projects on component mount
+
     useEffect(() => {
         fetchProjects();
     }, []);
 
+
     const fetchProjects = async () => {
         try {
             setLoading(true);
-
             const response =
                 await getProjectsService();
-
             const rawArray = Array.isArray(response)
                 ? response
                 : response?.data || [];
-
             const dataArray = rawArray.map((item) => ({
                 ...item,
                 id: item._id || item.id,
             }));
-
             setProjects(dataArray);
             setError(null);
-
         } catch (err) {
             console.error(
                 "Fetch projects error:",
                 err
             );
-
             setError(
                 err?.message ||
                 "Failed to fetch projects."
             );
-
         } finally {
             setLoading(false);
         }
     };
-    // const handleSaveAll = async (updatedList) => {
-    //     try {
-    //         setLoading(true);
-
-    //         const payload = updatedList.map((item, idx) => {
-    //             const projectPayload = {
-    //                 title: item.title,
-    //                 category: item.category,
-    //                 image: item.image,
-    //                 order: item.order !== undefined ? item.order : idx
-    //             };
-
-    //             // Include _id ONLY if it exists and is a valid 24-character Mongo ID
-    //             if (item._id || (item.id && item.id.length === 24)) {
-    //                 projectPayload._id = item._id || item.id;
-    //             }
-
-    //             return projectPayload;
-    //         });
-
-    //         const data = await updateProjectsService(payload);
-
-    //         // Normalize backend response with IDs
-    //         const formatted = (Array.isArray(data) ? data : data?.data || []).map((item) => ({
-    //             ...item,
-    //             id: item._id || item.id
-    //         }));
-
-    //         setProjects(formatted);
-    //         setError(null);
-    //     } catch (err) {
-    //         console.error("Save update error:", err);
-    //         setError(typeof err === 'string' ? err : (err?.response?.data?.message || 'Failed to save projects update'));
-    //     } finally {
-    //         setLoading(false);
-    //     }
-    // };
-
 
 
     const handleOpenAdd = () => {
         setEditingId(null);
-
         setFormData({
             title: "",
             category: "",
             image: "",
         });
-
         setIsModalOpen(true);
     };
 
 
     const handleOpenEdit = (project) => {
         setEditingId(project.id);
-
         setFormData({
             title: project.title || "",
             category: project.category || "",
             image: project.image || "",
         });
-
         setIsModalOpen(true);
     };
+
 
     const handleDelete = async (id) => {
         try {
             setLoading(true);
             setError(null);
-
             await deleteProjectDetailService(id);
-
             setProjects((prev) =>
                 prev.filter((project) => project.id !== id)
             );
-
             setDeleteId(null);
-
         } catch (err) {
             console.error("Delete project error:", err);
-
             setError(
                 err?.message ||
                 "Failed to delete project."
@@ -152,15 +93,9 @@ const ProjectTab = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         try {
             setLoading(true);
             setError(null);
-
-            // =====================================================
-            // EDIT EXISTING PROJECT
-            // =====================================================
-
             if (editingId) {
                 const response =
                     await updateProjectDetailService(
@@ -171,21 +106,18 @@ const ProjectTab = () => {
                             image: formData.image,
                         }
                     );
-
                 if (!response?.success) {
                     throw new Error(
                         response?.message ||
                         "Failed to update project."
                     );
                 }
-
                 const updatedProject = {
                     ...response.data,
                     id:
                         response.data._id ||
                         response.data.id,
                 };
-
                 setProjects((prev) =>
                     prev.map((project) =>
                         project.id === editingId
@@ -193,12 +125,7 @@ const ProjectTab = () => {
                             : project
                     )
                 );
-
             }
-
-            // =====================================================
-            // CREATE NEW PROJECT
-            // =====================================================
 
             else {
                 const response =
@@ -222,31 +149,20 @@ const ProjectTab = () => {
                         response.data._id ||
                         response.data.id,
                 };
-
                 setProjects((prev) => [
                     ...prev,
                     newProject,
                 ]);
             }
-
             setIsModalOpen(false);
-
             setFormData({
                 title: "",
                 category: "",
                 image: "",
             });
-
         } catch (err) {
-            console.error(
-                "Save project error:",
-                err
-            );
-
-            setError(
-                err?.message ||
-                "Failed to save project."
-            );
+            console.error("Save project error:", err);
+            setError(err?.message || "Failed to save project.");
         } finally {
             setLoading(false);
         }
@@ -354,7 +270,7 @@ const ProjectTab = () => {
                 ))}
             </div>
 
-            {/* Modal for Add / Edit Project */}
+
             {isModalOpen && (
                 <div className="fixed inset-0 bg-black/50 backdrop-blur-xs flex items-center justify-center z-50 p-4">
                     <div className="bg-white rounded-2xl max-w-xl w-full p-6 shadow-xl border border-gray-100 relative animate-in fade-in zoom-in-95 duration-200">

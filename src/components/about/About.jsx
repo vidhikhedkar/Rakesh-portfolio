@@ -83,9 +83,7 @@ export const About = () => {
         const getAboutData = async () => {
             try {
                 const response = await fetchAboutData();
-
                 console.log("About API Data:", response);
-
                 setAboutData(response);
             } catch (error) {
                 console.error("Failed to fetch about data:", error);
@@ -93,13 +91,11 @@ export const About = () => {
                 setLoading(false);
             }
         };
-
         getAboutData();
     }, []);
 
 
     const toolkitItems = [
-        // CSS
         {
             icon: (
                 <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none">
@@ -111,7 +107,6 @@ export const About = () => {
             ),
             name: "CSS3"
         },
-        // HTML
         {
             icon: (
                 <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none">
@@ -123,7 +118,6 @@ export const About = () => {
             ),
             name: "HTML5"
         },
-        // Photoshop
         {
             icon: (
                 <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none">
@@ -134,7 +128,6 @@ export const About = () => {
             ),
             name: "Photoshop"
         },
-        // Figma
         {
             icon: (
                 <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none">
@@ -147,7 +140,6 @@ export const About = () => {
             ),
             name: "Figma"
         },
-        // Illustrator
         {
             icon: (
                 <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none">
@@ -169,11 +161,10 @@ export const About = () => {
         );
     }
 
+
     return (
         <div className="bg-[#F3F4F8] text-[#111111] py-12 flex justify-center items-center font-sans">
             <div className="container grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-5">
-
-                {/* Profile Image Card */}
                 <motion.div
                     whileHover={{ y: -4 }}
                     transition={{ duration: 0.3 }}
@@ -188,25 +179,22 @@ export const About = () => {
                     </div>
                 </motion.div>
 
-                {/* Header & Bio Section */}
                 <div className="md:col-span-8 flex flex-col min-h-50">
                     <div className="w-full flex items-center justify-between mb-8">
                         <span className="text-[#5870EE] text-[42px] sm:text-[52px] leading-none font-light animate-pulse shrink-0">
                             <GiDandelionFlower />
                         </span>
 
-                        {/* Heading */}
                         <h2 className="text-[48px] sm:text-[64px] md:text-[76px] lg:text-[88px] xl:text-[96px] font-bold tracking-[-4px] uppercase leading-[0.9] text-[#0F0F0F] whitespace-nowrap">
                             SELF-SUMMARY
                         </h2>
 
-                        {/* Right Flower */}
                         <span className="text-[#5870EE] text-[42px] sm:text-[52px] leading-none font-light animate-pulse shrink-0">
                             <GiDandelionFlower />
                         </span>
                     </div>
 
-                    {/* Summary Card */}
+
                     <motion.div
                         whileHover={{ y: -4 }}
                         transition={{ duration: 0.3 }}
@@ -239,13 +227,14 @@ export const About = () => {
                         <h1 className="text-[21px] sm:text-[23px] font-medium tracking-[-0.6px] text-[#0F0F0F] mb-1.5 mt-16">
                             {aboutData?.fullName}
                         </h1>
+
                         <p className="text-[10px] sm:text-[13px] text-[#BCBCBC] font-normal leading-[1.55] max-w-none">
                             {aboutData?.bio}
                         </p>
                     </motion.div>
                 </div>
 
-                {/* Experience Card */}
+
                 <motion.div
                     whileHover={{ y: -4 }}
                     transition={{ duration: 0.3 }}
@@ -281,7 +270,7 @@ export const About = () => {
                     </div>
                 </motion.div>
 
-                {/* Education Card */}
+
                 <motion.div
                     whileHover={{ y: -4 }}
                     transition={{ duration: 0.3 }}
@@ -305,13 +294,13 @@ export const About = () => {
                     </div>
                 </motion.div>
 
-                {/* Toolkit Card */}
+
                 <motion.div
                     whileHover={{ y: -4 }}
                     transition={{ duration: 0.3 }}
                     className="md:col-span-3 h-55 bg-white rounded-[22px] p-4 shadow-[0_2px_12px_rgba(0,0,0,0.03)] hover:shadow-[0_12px_30px_rgba(35,45,80,0.08)] flex flex-col justify-between group cursor-pointer relative overflow-hidden transition-all duration-300"
                 >
-                    {/* Scrolling Toolkit */}
+
                     <div className="bg-[#FBFBFC] rounded-2xl p-4 h-25 border border-gray-100 overflow-hidden relative flex items-center group-hover:border-[#5870EE]/30 transition-colors duration-300">
 
                         <motion.div
@@ -325,7 +314,8 @@ export const About = () => {
                             }}
                             className="flex w-max"
                         >
-                            {/* FIRST SET */}
+
+
                             <div className="flex items-center gap-3 pr-3 shrink-0">
                                 {toolkitItems.map((item, index) => (
                                     <div
@@ -337,7 +327,7 @@ export const About = () => {
                                 ))}
                             </div>
 
-                            {/* SECOND IDENTICAL SET */}
+
                             <div className="flex items-center gap-3 pr-3 shrink-0">
                                 {toolkitItems.map((item, index) => (
                                     <div
@@ -351,7 +341,7 @@ export const About = () => {
                         </motion.div>
                     </div>
 
-                    {/* Bottom Content */}
+
                     <div>
                         <p className="text-[12px] uppercase tracking-widest text-[#BCBCBC] font-medium mb-0.5">
                             HAVE AN EYE
@@ -367,7 +357,7 @@ export const About = () => {
                     </div>
                 </motion.div>
 
-                {/* Let's Work Together Card */}
+
                 <motion.section
                     variants={fadeUp}
                     initial="hidden"
@@ -435,8 +425,6 @@ export const About = () => {
                 </motion.section>
 
 
-
-                {/* Credentials / More About Me Card */}
                 <motion.div
                     whileHover={{ y: -4 }}
                     transition={{ duration: 0.3 }}
@@ -460,7 +448,6 @@ export const About = () => {
                         </div>
                     </div>
                 </motion.div>
-
             </div>
         </div >
     );

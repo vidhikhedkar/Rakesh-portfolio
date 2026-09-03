@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { FiEdit3, FiSave, FiPlus, FiTrash2 } from 'react-icons/fi';
 import { getHomeContentService, updateHomeContentService } from '../../service/hometab.service';
 
+
 const HomeTab = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [loading, setLoading] = useState(false);
     const [selectedFile, setSelectedFile] = useState(null);
 
-    // Profile & Bio State initialized empty so database data takes over
+
     const [profileData, setProfileData] = useState({
         role: "",
         firstName: "",
@@ -21,10 +22,12 @@ const HomeTab = () => {
         imageUrl: ""
     });
 
-    // Services State
+   
+    
     const [services, setServices] = useState([]);
 
-    // Fetch data from MongoDB on component mount
+
+    
     useEffect(() => {
         const fetchContent = async () => {
             try {
@@ -54,13 +57,15 @@ const HomeTab = () => {
                 setLoading(false);
             }
         };
-
         fetchContent();
     }, []);
+
+
 
     const handleProfileChange = (field, value) => {
         setProfileData(prev => ({ ...prev, [field]: value }));
     };
+
 
     const handleServiceChange = (index, value) => {
         const updated = [...services];
@@ -68,15 +73,17 @@ const HomeTab = () => {
         setServices(updated);
     };
 
+
     const addService = () => {
         setServices([...services, { title: "New Service" }]);
     };
+
 
     const removeService = (index) => {
         setServices(services.filter((_, i) => i !== index));
     };
 
-    // Save handler (bundles text fields + file into FormData for Cloudinary)
+
     const handleEditToggle = async () => {
         if (isEditing) {
             try {
@@ -92,11 +99,9 @@ const HomeTab = () => {
                 formData.append("tickerText", profileData.tickerText);
                 formData.append("ctaHeading", profileData.ctaHeading);
                 formData.append("services", JSON.stringify(services));
-
                 if (selectedFile) {
                     formData.append("image", selectedFile);
                 }
-
                 const res = await updateHomeContentService(formData);
                 if (res && res.data) {
                     setProfileData(prev => ({
@@ -119,9 +124,9 @@ const HomeTab = () => {
         }
     };
 
+
     return (
         <div className="space-y-3">
-            {/* Admin Control Bar */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
                 <div>
                     <h3 className="text-base sm:text-lg font-bold text-[#0F0F0F]">Home Page Admin Panel</h3>
@@ -136,7 +141,6 @@ const HomeTab = () => {
                 </button>
             </div>
 
-            {/* Editable Profile Information Block */}
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 space-y-4">
                 <h4 className="text-base font-bold text-[#0F0F0F]">Hero Profile Configuration</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -243,7 +247,7 @@ const HomeTab = () => {
                 </div>
             </div>
 
-            {/* Editable Counters & Ticker Settings */}
+
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 space-y-4">
                 <h4 className="text-base font-bold text-[#0F0F0F]">Counters & Ticker Settings</h4>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -260,6 +264,7 @@ const HomeTab = () => {
                             <p className="text-sm font-semibold text-gray-800 bg-gray-50 p-2 rounded-xl">{profileData.experienceYears}</p>
                         )}
                     </div>
+                    
                     <div>
                         <label className="block text-xs uppercase text-gray-400 font-medium mb-1">Clients Count</label>
                         {isEditing ? (
@@ -273,6 +278,7 @@ const HomeTab = () => {
                             <p className="text-sm font-semibold text-gray-800 bg-gray-50 p-2 rounded-xl">{profileData.clientsCount}</p>
                         )}
                     </div>
+
                     <div>
                         <label className="block text-xs uppercase text-gray-400 font-medium mb-1">Total Projects</label>
                         {isEditing ? (
@@ -286,6 +292,7 @@ const HomeTab = () => {
                             <p className="text-sm font-semibold text-gray-800 bg-gray-50 p-2 rounded-xl">{profileData.totalProjectsCount}</p>
                         )}
                     </div>
+
                     <div>
                         <label className="block text-xs uppercase text-gray-400 font-medium mb-1">Ticker Text Content</label>
                         {isEditing ? (
@@ -302,7 +309,6 @@ const HomeTab = () => {
                 </div>
             </div>
 
-            {/* Editable Services Offerings Manager */}
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 space-y-4">
                 <div className="flex justify-between items-center">
                     <h4 className="text-base font-bold text-[#0F0F0F]">Services Offerings Manager</h4>
@@ -316,6 +322,7 @@ const HomeTab = () => {
                         </button>
                     )}
                 </div>
+                
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                     {services.map((service, index) => (
                         <div key={index} className="flex items-center gap-2 bg-gray-50 p-3 rounded-xl border border-gray-100">

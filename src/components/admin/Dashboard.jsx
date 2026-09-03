@@ -12,11 +12,13 @@ import ServicesOfferingTab from './tabs/ServicesOfferingTab';
 import { logoutService } from '../service/auth.service';
 import ProjectDetailsTab from './tabs/ProjectDetailsTab';
 
+
 const Dashboard = () => {
     const [activeTab, setActiveTab] = useState('home');
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isLoggingOut, setIsLoggingOut] = useState(false);
     const navigate = useNavigate();
+
 
     const navTabs = [
         { id: 'home', label: 'Home', icon: <FiHome /> },
@@ -28,6 +30,7 @@ const Dashboard = () => {
         { id: 'contact', label: 'Contact', icon: <FiMail /> },
     ];
 
+    
     const handleTabClick = (id) => {
         setActiveTab(id);
         setIsMobileMenuOpen(false);
@@ -38,7 +41,7 @@ const Dashboard = () => {
         try {
             setIsLoggingOut(true);
             await logoutService();
-            navigate('/login'); // Redirect to login page after successful sign-out
+            navigate('/login'); 
         } catch (err) {
             console.error("Failed to log out:", err);
         } finally {
@@ -46,10 +49,9 @@ const Dashboard = () => {
         }
     };
 
+
     return (
         <div className="flex h-screen w-full bg-[#F3F4F8] font-sans text-[#111111] overflow-hidden relative">
-
-            {/* Desktop Sidebar */}
             <aside className="hidden lg:flex w-64 bg-white border-r border-gray-200 flex-col justify-between p-6 shrink-0 z-20">
                 <div>
                     <Link to="/" className="flex items-center gap-3 mb-3 px-2">
@@ -92,11 +94,10 @@ const Dashboard = () => {
                 </div>
             </aside>
 
-            {/* Mobile Sidebar Backdrop & Drawer */}
+
             <AnimatePresence>
                 {isMobileMenuOpen && (
                     <>
-                        {/* Backdrop */}
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
@@ -105,7 +106,6 @@ const Dashboard = () => {
                             className="fixed inset-0 bg-black/40 backdrop-blur-xs z-40 lg:hidden"
                         />
 
-                        {/* Slide-out Drawer */}
                         <motion.aside
                             initial={{ x: '-100%' }}
                             animate={{ x: 0 }}
@@ -121,6 +121,7 @@ const Dashboard = () => {
                                         </div>
                                         <h1 className="text-xl font-bold tracking-tight text-[#0F0F0F]">Admin Panel</h1>
                                     </div>
+
                                     <button
                                         onClick={() => setIsMobileMenuOpen(false)}
                                         className="p-2 text-gray-400 hover:text-gray-600 rounded-xl cursor-pointer"
@@ -163,13 +164,10 @@ const Dashboard = () => {
                 )}
             </AnimatePresence>
 
-            {/* Main Content Area */}
-            <main className="flex-1 flex flex-col h-full overflow-hidden">
 
-                {/* Top Header */}
+            <main className="flex-1 flex flex-col h-full overflow-hidden">
                 <header className="h-20 bg-white border-b border-gray-200 px-4 sm:px-8 flex items-center justify-between shrink-0 z-10">
                     <div className="flex items-center gap-3">
-                        {/* Mobile Menu Trigger Button */}
                         <button
                             onClick={() => setIsMobileMenuOpen(true)}
                             className="lg:hidden p-2 rounded-xl text-gray-600 hover:bg-gray-100 transition-colors cursor-pointer"
@@ -200,7 +198,7 @@ const Dashboard = () => {
                     </div>
                 </header>
 
-                {/* Dynamic Tab Content Wrapper */}
+
                 <div className="flex-1 overflow-y-auto p-3 no-scrollbar">
                     <div className="w-full mx-auto">
                         <AnimatePresence mode="wait">
@@ -222,7 +220,6 @@ const Dashboard = () => {
                         </AnimatePresence>
                     </div>
                 </div>
-
             </main>
         </div>
     );

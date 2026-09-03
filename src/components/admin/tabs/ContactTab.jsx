@@ -45,14 +45,15 @@ const ContactTab = () => {
                 setLoading(false);
             }
         };
-
         fetchContact();
     }, []);
+
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setContactData(prev => ({ ...prev, [name]: value }));
     };
+
 
     const handleSave = async (e) => {
         e.preventDefault();
@@ -60,14 +61,10 @@ const ContactTab = () => {
             setSaving(true);
             setErrorMessage("");
             setSaveMessage("");
-
             const response = await updateContactService(contactData);
-
-            // Extract response message safely depending on backend structure
             const msg = response?.message || response?.data?.message || "Changes saved successfully!";
             setSaveMessage(msg);
             setSavedMessage(true);
-
             setTimeout(() => setSavedMessage(false), 2500);
         } catch (err) {
             setErrorMessage(err.response?.data?.message || err.message || "Failed to save settings");
@@ -76,6 +73,8 @@ const ContactTab = () => {
         }
     };
 
+
+
     if (loading) {
         return (
             <div className="flex justify-center items-center py-24 bg-white rounded-2xl">
@@ -83,6 +82,7 @@ const ContactTab = () => {
             </div>
         );
     }
+
 
     return (
         <div className="w-full">
@@ -98,14 +98,15 @@ const ContactTab = () => {
                 )}
             </div>
 
+
             {errorMessage && (
                 <div className="mb-3 p-3 bg-red-50 border border-red-100 rounded-xl text-xs text-red-600">
                     {errorMessage}
                 </div>
             )}
 
+
             <form onSubmit={handleSave} className="space-y-3">
-                {/* Primary Contact Cards */}
                 <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 space-y-4">
                     <h4 className="text-sm font-bold text-[#0F0F0F] flex items-center gap-2 border-b border-gray-100 pb-3">
                         <FiMail className="text-[#5B78FF]" /> Direct Communications
@@ -150,7 +151,7 @@ const ContactTab = () => {
                     </div>
                 </div>
 
-                {/* Location Information */}
+
                 <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 space-y-4">
                     <h4 className="text-sm font-bold text-[#0F0F0F] flex items-center gap-2 border-b border-gray-100 pb-3">
                         <FiMapPin className="text-[#5B78FF]" /> Geographic Location
@@ -183,7 +184,7 @@ const ContactTab = () => {
                     </div>
                 </div>
 
-                {/* Social Profiles */}
+        
                 <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 space-y-4">
                     <h4 className="text-sm font-bold text-[#0F0F0F] flex items-center gap-2 border-b border-gray-100 pb-3">
                         <FiShare2 className="text-[#5B78FF]" /> Social Links URL
@@ -225,7 +226,7 @@ const ContactTab = () => {
                     </div>
                 </div>
 
-                {/* Form Action Footer */}
+                
                 <div className="flex justify-end">
                     <button
                         type="submit"

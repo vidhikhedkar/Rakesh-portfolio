@@ -97,18 +97,18 @@ const Home = () => {
             />
 
             <div className="relative flex h-full flex-col justify-center sm:gap-10 gap-5 sm:flex-row sm:items-center sm:justify-start">
-              {/* Profile Image */}
+              {/* Profile Image Container - rounded-2xl added here */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.7, rotate: -10 }}
                 animate={{ opacity: 1, scale: 1, rotate: 0 }}
                 transition={{ delay: 0.2, duration: 0.9, type: "spring", stiffness: 90 }}
                 whileHover={{ scale: 1.05, rotate: 2, transition: { duration: 0.3 } }}
-                className="relative mx-auto h-50 w-50 shrink-0 overflow-hidden rounded-tl-[30px] rounded-br-[30px] bg-[#6d88ff] sm:mx-0 z-10 shadow-lg"
+                className="relative h-60 w-50 shrink-0 overflow-hidden rounded-2xl"
               >
                 <motion.img
                   src={homeContent?.imageUrl}
                   alt={`${homeContent?.firstName} ${homeContent?.lastName}`}
-                  className="h-full w-full object-contain grayscale transition duration-700 group-hover:scale-110 group-hover:grayscale-0"
+                  className="h-full w-full object-cover transition duration-700 group-hover:scale-110"
                 />
               </motion.div>
 

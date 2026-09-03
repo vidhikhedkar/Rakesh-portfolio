@@ -20,7 +20,9 @@ const Profile = () => {
         certification: []
     });
 
+
     const [loading, setLoading] = useState(true);
+
 
     useEffect(() => {
         const fetchProfileData = async () => {
@@ -51,9 +53,9 @@ const Profile = () => {
                 setLoading(false);
             }
         };
-
         fetchProfileData();
     }, []);
+
 
     if (loading) {
         return (
@@ -63,13 +65,11 @@ const Profile = () => {
         );
     }
 
+
     return (
         <section className="bg-[#F8F9FA] flex items-center justify-center py-10">
             <div className="container flex flex-col lg:flex-row gap-8 lg:gap-16 items-start">
-
-                {/* Left Profile Card Column */}
                 <div className="w-full lg:w-[320px] shrink-0 bg-white rounded-2xl p-6 flex flex-col items-center text-center shadow-xs">
-                    {/* Avatar */}
                     <div className="relative h-44 w-44 sm:h-52 sm:w-52 rounded-2xl bg-linear-to-b from-[#5B78F6] to-[#3B59E8] overflow-hidden shadow-md mb-6">
                         {profile.avatar ? (
                             <img
@@ -84,7 +84,6 @@ const Profile = () => {
                         )}
                     </div>
 
-                    {/* Name & Handle */}
                     {profile.name && (
                         <h2 className="text-xl sm:text-2xl font-semibold text-[#0F0F0F] tracking-tight">
                             {profile.name}
@@ -96,23 +95,26 @@ const Profile = () => {
                         </p>
                     )}
 
-                    {/* Social Icons */}
+
                     <div className="flex items-center justify-center gap-3 mb-6">
                         <a href="#website" aria-label="Website" className="h-10 w-10 rounded-full bg-white border border-gray-400 flex items-center justify-center text-[#5B78F6] hover:text-[#5B78F6] hover:border-[#5B78F6] transition-all shadow-xs">
                             <FiGlobe size={16} />
                         </a>
+
                         <a href="#twitter" aria-label="Twitter" className="h-10 w-10 rounded-full bg-white border border-gray-400 flex items-center justify-center text-[#5B78F6] hover:text-[#5B78F6] hover:border-[#5B78F6] transition-all shadow-xs">
                             <FiTwitter size={16} />
                         </a>
+
                         <a href="#instagram" aria-label="Instagram" className="h-10 w-10 rounded-full bg-white border border-gray-400 flex items-center justify-center text-[#5B78F6] hover:text-[#5B78F6] hover:border-[#5B78F6] transition-all shadow-xs">
                             <FiInstagram size={16} />
                         </a>
+
                         <a href="#facebook" aria-label="Facebook" className="h-10 w-10 rounded-full bg-white border border-gray-400 flex items-center justify-center text-[#5B78F6] hover:text-[#5B78F6] hover:border-[#5B78F6] transition-all shadow-xs">
                             <FiFacebook size={16} />
                         </a>
                     </div>
 
-                    {/* Contact Button */}
+
                     <a
                         href="#contact"
                         className="w-full py-3 bg-[#323232] hover:bg-[#333333] text-white text-xs sm:text-sm font-semibold rounded-2xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
@@ -122,10 +124,8 @@ const Profile = () => {
                     </a>
                 </div>
 
-                {/* Right Details Column */}
-                <div className="flex-1 space-y-10 w-full">
 
-                    {/* About Me */}
+                <div className="flex-1 space-y-10 w-full">
                     {profile.about && (
                         <div className="space-y-8 pb-10">
                             <h3 className="text-xs sm:text-sm font-bold tracking-widest uppercase text-[#0F0F0F]">
@@ -137,7 +137,6 @@ const Profile = () => {
                         </div>
                     )}
 
-                    {/* Experience */}
                     {(profile.experience?.duration || profile.experience?.role || profile.experience?.company || profile.experience?.description) && (
                         <div className="space-y-4 pb-4">
                             <h3 className="text-xs sm:text-sm font-bold tracking-widest uppercase text-[#0F0F0F]">
@@ -168,7 +167,6 @@ const Profile = () => {
                         </div>
                     )}
 
-                    {/* Education */}
                     {profile.education?.length > 0 && (
                         <div className="space-y-7">
                             <h3 className="text-xs font-medium uppercase tracking-wide text-[#0F0F0F] sm:text-sm">
@@ -198,7 +196,7 @@ const Profile = () => {
                         </div>
                     )}
 
-                    {/* Skills */}
+
                     {profile.skills?.length > 0 && (
                         <div className="space-y-8">
                             <h3 className="text-xs sm:text-lg font-bold tracking-widest uppercase text-[#0F0F0F]">
@@ -215,10 +213,9 @@ const Profile = () => {
                         </div>
                     )}
 
-                    {/* Tools & Certification Grid */}
+
                     {(profile.tools?.length > 0 || profile.certification?.length > 0) && (
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-                            {/* Tools */}
                             {profile.tools?.length > 0 && (
                                 <div className="space-y-6">
                                     <h3 className="text-xs sm:text-sm font-bold tracking-widest uppercase text-[#0F0F0F]">
@@ -232,7 +229,7 @@ const Profile = () => {
                                 </div>
                             )}
 
-                            {/* Certification */}
+                      
                             {profile.certification?.length > 0 && (
                                 <div className="space-y-6">
                                     <h3 className="text-xs sm:text-sm font-bold tracking-widest uppercase text-[#191C1D]">
@@ -258,9 +255,7 @@ const Profile = () => {
                             )}
                         </div>
                     )}
-
                 </div>
-
             </div>
         </section>
     );

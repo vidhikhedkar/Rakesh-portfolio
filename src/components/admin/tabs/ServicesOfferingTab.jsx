@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { FiPlus, FiTrash2, FiSave, FiLoader } from 'react-icons/fi';
-import {
-    fetchServices,
-    updateServices,
-    deleteService,
-} from '../../service/servicesoffering.service';
+import { fetchServices, updateServices, deleteService, } from '../../service/servicesoffering.service';
+
 
 const ServicesOfferingTab = () => {
     const [offerings, setOfferings] = useState([]);
     const [loading, setLoading] = useState(true);
     const [statusMessage, setStatusMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+
+
 
     useEffect(() => {
         const loadServices = async () => {
@@ -24,9 +23,10 @@ const ServicesOfferingTab = () => {
                 setLoading(false);
             }
         };
-
         loadServices();
     }, []);
+
+
 
     const handleChange = (index, field, value) => {
         setOfferings((prev) =>
@@ -41,24 +41,19 @@ const ServicesOfferingTab = () => {
         );
     };
 
-    // ADD NEW SERVICE AT TOP
+
     const handleAddItem = () => {
-        // Check if an unsaved service already exists
         const hasUnsavedService = offerings.some(
             (service) => !service._id
         );
-
         if (hasUnsavedService) {
-            setErrorMessage(
-                'Please save the newly added service before adding another one.'
-            );
-
+            setErrorMessage('Please save the newly added service before adding another one.');
             setTimeout(() => {
                 setErrorMessage('');
             }, 3000);
-
             return;
         }
+
 
         const newService = {
             num: '01',
@@ -67,32 +62,26 @@ const ServicesOfferingTab = () => {
             cardDesc: '',
         };
 
-        // Add new service at the TOP
+
         setOfferings((prev) => {
             const updated = [newService, ...prev];
-
             return updated.map((item, index) => ({
                 ...item,
                 num: String(index + 1).padStart(2, '0'),
             }));
         });
-
         setStatusMessage('');
         setErrorMessage('');
     };
 
-    // DELETE SERVICE
+
     const handleDeleteItem = async (index, service) => {
         try {
             setErrorMessage('');
             setStatusMessage('');
-
-            // If service is already saved in database
             if (service?._id) {
                 await deleteService(service._id);
             }
-
-            // Remove service from local state
             setOfferings((prev) => {
                 const updated = prev
                     .filter((_, i) => i !== index)
@@ -103,9 +92,7 @@ const ServicesOfferingTab = () => {
 
                 return updated;
             });
-
             setStatusMessage('Service deleted successfully!');
-
             setTimeout(() => {
                 setStatusMessage('');
             }, 3000);
@@ -115,22 +102,17 @@ const ServicesOfferingTab = () => {
         }
     };
 
-    // SAVE SERVICES
+
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         setStatusMessage('');
         setErrorMessage('');
-
         try {
             const response = await updateServices(offerings);
-
             const savedServices = response?.data || response;
-
             setOfferings(savedServices);
-
             setStatusMessage('Services updated successfully!');
-
             setTimeout(() => {
                 setStatusMessage('');
             }, 3000);
@@ -140,6 +122,7 @@ const ServicesOfferingTab = () => {
         }
     };
 
+
     if (loading) {
         return (
             <div className="flex justify-center items-center h-64">
@@ -148,10 +131,9 @@ const ServicesOfferingTab = () => {
         );
     }
 
+
     return (
         <div className="max-w-full p-6 bg-white rounded-3xl shadow-sm border border-gray-100">
-
-            {/* Header */}
             <div className="flex items-center justify-between mb-8 pb-4 border-b border-gray-100">
                 <div>
                     <h2 className="text-2xl font-semibold text-[#191C1D]">
@@ -174,14 +156,14 @@ const ServicesOfferingTab = () => {
                 </button>
             </div>
 
-            {/* Success Message */}
+
             {statusMessage && (
                 <div className="mb-6 p-4 bg-emerald-50 text-emerald-700 rounded-xl text-sm font-medium border border-emerald-100">
                     {statusMessage}
                 </div>
             )}
 
-            {/* Error Message */}
+
             {errorMessage && (
                 <div className="mb-6 p-4 bg-red-50 text-red-700 rounded-xl text-sm font-medium border border-red-100">
                     {errorMessage}
@@ -189,8 +171,6 @@ const ServicesOfferingTab = () => {
             )}
 
             <form onSubmit={handleSubmit}>
-
-                {/* Scrollable Services List */}
                 <div
                     className={`space-y-6 ${offerings.length > 4
                         ? 'max-h-150 overflow-y-auto pr-2 no-scrollbar'
@@ -205,9 +185,7 @@ const ServicesOfferingTab = () => {
                                 : 'border-gray-200/60'
                                 }`}
                         >
-                            {/* Item Header */}
                             <div className="flex items-center justify-between mb-4">
-
                                 <div className="flex items-center gap-2">
                                     <span className="text-xs font-bold px-2.5 py-1 bg-white rounded-lg border border-gray-200 text-[#5B78FF]">
                                         Item #{service.num}
@@ -220,7 +198,6 @@ const ServicesOfferingTab = () => {
                                     )}
                                 </div>
 
-                                {/* Delete Button */}
                                 {offerings.length > 1 && (
                                     <button
                                         type="button"
@@ -235,10 +212,8 @@ const ServicesOfferingTab = () => {
                                 )}
                             </div>
 
-                            {/* Fields */}
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 
-                                {/* Service Title */}
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div>
                                     <label className="block text-xs font-medium text-gray-700 mb-1">
                                         Service Title
@@ -259,7 +234,7 @@ const ServicesOfferingTab = () => {
                                     />
                                 </div>
 
-                                {/* Left Description */}
+
                                 <div>
                                     <label className="block text-xs font-medium text-gray-700 mb-1">
                                         Left List Description
@@ -280,7 +255,7 @@ const ServicesOfferingTab = () => {
                                     />
                                 </div>
 
-                                {/* Card Description */}
+                             
                                 <div>
                                     <label className="block text-xs font-medium text-gray-700 mb-1">
                                         Right Grid Card Description
@@ -300,13 +275,12 @@ const ServicesOfferingTab = () => {
                                         required
                                     />
                                 </div>
-
                             </div>
                         </div>
                     ))}
                 </div>
 
-                {/* Save Button - stays below scroll */}
+
                 <div className="flex justify-end pt-6">
                     <button
                         type="submit"
@@ -316,7 +290,6 @@ const ServicesOfferingTab = () => {
                         Save Changes
                     </button>
                 </div>
-
             </form>
         </div>
     );

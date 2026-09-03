@@ -9,10 +9,12 @@ const AboutTab = () => {
         imageUrl: "",
     });
 
+
     const [imageFile, setImageFile] = useState(null);
     const [experiences, setExperiences] = useState([]);
     const [education, setEducation] = useState([]);
     const [loading, setLoading] = useState(true);
+
 
     useEffect(() => {
         fetchAboutData()
@@ -37,35 +39,24 @@ const AboutTab = () => {
 
     const handleSave = async (e) => {
         e.preventDefault();
-
         try {
             const formData = new FormData();
-
             formData.append("fullName", profile.fullName);
             formData.append("title", profile.title);
             formData.append("bio", profile.bio);
-
             formData.append(
                 "experiences",
                 JSON.stringify(experiences)
             );
-
             formData.append(
                 "education",
                 JSON.stringify(education)
             );
-
-            // Only upload if a NEW image was selected
             if (imageFile) {
                 formData.append("image", imageFile);
             }
-
-            // Send FormData to backend
             const response = await updateAboutData(formData);
-
             console.log("Updated About Data:", response);
-
-            // Backend returns Cloudinary URL
             if (response?.data) {
                 setProfile({
                     fullName: response.data.fullName || "",
@@ -73,21 +64,15 @@ const AboutTab = () => {
                     bio: response.data.bio || "",
                     imageUrl: response.data.imageUrl || "",
                 });
-
-                // Clear selected file after successful upload
                 setImageFile(null);
             }
-
             alert("About section changes saved successfully!");
-
         } catch (error) {
             console.error("Failed to save changes:", error);
-
             console.error(
                 "Backend error:",
                 error.response?.data
             );
-
             alert(
                 error.response?.data?.details ||
                 "Failed to save changes."
@@ -95,9 +80,11 @@ const AboutTab = () => {
         }
     };
 
+
     if (loading) {
         return <div className="p-6 text-sm text-gray-500">Loading about data...</div>;
     }
+
 
     return (
         <form onSubmit={handleSave} className="space-y-3 w-FULL pb-10">
@@ -146,15 +133,9 @@ const AboutTab = () => {
                                     accept="image/*"
                                     onChange={(e) => {
                                         const file = e.target.files?.[0];
-
                                         if (!file) return;
-
-                                        // Store actual file for backend upload
                                         setImageFile(file);
-
-                                        // Temporary preview only
                                         const previewUrl = URL.createObjectURL(file);
-
                                         setProfile((prev) => ({
                                             ...prev,
                                             imageUrl: previewUrl,
@@ -165,6 +146,7 @@ const AboutTab = () => {
                             </label>
                         </div>
                     </div>
+
                     <div>
                         <label className="block text-xs font-medium text-gray-500 mb-1">Bio Description</label>
                         <textarea
@@ -177,7 +159,6 @@ const AboutTab = () => {
                 </div>
             </div>
 
-            {/* Experience Section */}
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 space-y-4">
                 <h4 className="text-base font-bold text-[#0F0F0F]">Edit Experience</h4>
                 {experiences.map((exp, index) => (
@@ -196,6 +177,7 @@ const AboutTab = () => {
                                     className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-[#5B78FF]"
                                 />
                             </div>
+
                             <div>
                                 <label className="block text-xs font-medium text-gray-500 mb-1">Role / Job Title</label>
                                 <input
@@ -210,6 +192,7 @@ const AboutTab = () => {
                                 />
                             </div>
                         </div>
+
                         <div>
                             <label className="block text-xs font-medium text-gray-500 mb-1">Company Name</label>
                             <input
@@ -223,6 +206,7 @@ const AboutTab = () => {
                                 className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-[#5B78FF]"
                             />
                         </div>
+
                         <div>
                             <label className="block text-xs font-medium text-gray-500 mb-1">Bullet Points (Put each on a new line)</label>
                             <textarea
@@ -240,7 +224,6 @@ const AboutTab = () => {
                 ))}
             </div>
 
-            {/* Education Section */}
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 space-y-3">
                 <h4 className="text-base font-bold text-[#0F0F0F]">Edit Education</h4>
                 {education.map((edu, index) => (
@@ -258,6 +241,7 @@ const AboutTab = () => {
                                 className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-[#5B78FF]"
                             />
                         </div>
+
                         <div>
                             <label className="block text-xs font-medium text-gray-500 mb-1">Institution</label>
                             <input
@@ -275,7 +259,7 @@ const AboutTab = () => {
                 ))}
             </div>
 
-            {/* Submit Button */}
+
             <button type="submit" className="bg-[#5B78FF] text-white px-6 py-3 rounded-xl font-medium text-sm shadow-md shadow-[#5B78FF]/20 hover:bg-[#4a66e5] transition-colors cursor-pointer">
                 Save All Changes
             </button>
