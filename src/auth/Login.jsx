@@ -25,7 +25,7 @@ const Login = () => {
             const data = await loginService(formData);
             // Save user info to localStorage so ProtectedRoute allows access
             localStorage.setItem("userInfo", JSON.stringify(data.user));
-            console.log("Login success:", data);
+            // console.log("Login success:", data);
             navigate("/admin"); // Redirect securely to the admin dashboard
         } catch (err) {
             setError(err.message || "Failed to log in. Please check your credentials.");

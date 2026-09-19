@@ -11,7 +11,7 @@ export const getProjectsService = async () => {
     try {
         const response = await api.get("/api/projects");
 
-        console.log("ALL PROJECTS:", response.data);
+        // console.log("ALL PROJECTS:", response.data);
 
         return response.data;
     } catch (error) {

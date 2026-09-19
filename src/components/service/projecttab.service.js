@@ -3,14 +3,8 @@ import api from "./api.service";
 export const getProjectsService = async () => {
     try {
         const response = await api.get("/api/projects");
-
-        console.log(
-            "GET ALL PROJECTS:",
-            response.data
-        );
-
+        // console.log("GET ALL PROJECTS:",response.data);
         return response.data;
-
     } catch (error) {
         console.error(
             "Get Projects Error:",
@@ -34,10 +28,7 @@ export const createProjectService = async (projectData) => {
             projectData
         );
 
-        console.log(
-            "CREATE PROJECT:",
-            response.data
-        );
+        // console.log("CREATE PROJECT:",response.data);
 
         return response.data;
 
@@ -72,10 +63,7 @@ export const uploadImageService = async (file) => {
             formData
         );
 
-        console.log(
-            "CLOUDINARY UPLOAD RESPONSE:",
-            response.data
-        );
+        // console.log("CLOUDINARY UPLOAD RESPONSE:",response.data);
 
         return response.data;
 
@@ -96,17 +84,9 @@ export const uploadImageService = async (file) => {
 
 export const getProjectDetailService = async (projectId) => {
     try {
-        const response = await api.get(
-            `/api/projects/${projectId}`
-        );
-
-        console.log(
-            "GET PROJECT DETAIL:",
-            response.data
-        );
-
+        const response = await api.get(`/api/projects/${projectId}`);
+        // console.log("GET PROJECT DETAIL:",response.data);
         return response.data;
-
     } catch (error) {
         console.error(
             "Get Project Detail Error:",
@@ -128,16 +108,8 @@ export const updateProjectDetailService = async (
     projectData
 ) => {
     try {
-        const response = await api.put(
-            `/api/projects/${projectId}`,
-            projectData
-        );
-
-        console.log(
-            "UPDATE PROJECT:",
-            response.data
-        );
-
+        const response = await api.put(`/api/projects/${projectId}`,projectData);
+        // console.log("UPDATE PROJECT:",response.data);
         return response.data;
 
     } catch (error) {
@@ -145,7 +117,6 @@ export const updateProjectDetailService = async (
             "Update Project Error:",
             error.response?.data || error.message
         );
-
         throw error.response?.data || error;
     }
 };
@@ -160,15 +131,8 @@ export const deleteProjectDetailService = async (
     projectId
 ) => {
     try {
-        const response = await api.delete(
-            `/api/projects/${projectId}`
-        );
-
-        console.log(
-            "DELETE PROJECT:",
-            response.data
-        );
-
+        const response = await api.delete(`/api/projects/${projectId}`);
+        // console.log("DELETE PROJECT:",response.data);
         return response.data;
 
     } catch (error) {

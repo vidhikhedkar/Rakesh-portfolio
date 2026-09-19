@@ -120,10 +120,10 @@ const ProjectDetails = ({ card, index, fadeUp }) => {
                 setLoading(true);
                 setError("");
 
-                console.log("=================================");
-                console.log("PROJECT DETAILS PAGE");
-                console.log("PROJECT ID:", projectId);
-                console.log("=================================");
+                // console.log("=================================");
+                // console.log("PROJECT DETAILS PAGE");
+                // console.log("PROJECT ID:", projectId);
+                // console.log("=================================");
 
                 if (!projectId) {
                     throw new Error("Project ID is missing.");
@@ -134,7 +134,7 @@ const ProjectDetails = ({ card, index, fadeUp }) => {
                 // ------------------------------------------------
                 const response = await getProjectDetailService(projectId);
 
-                console.log("SINGLE PROJECT RESPONSE:", response);
+                // console.log("SINGLE PROJECT RESPONSE:", response);
 
                 let projectData = response?.data;
 
@@ -144,16 +144,11 @@ const ProjectDetails = ({ card, index, fadeUp }) => {
                 // ------------------------------------------------
                 if (!projectData || Array.isArray(projectData)) {
 
-                    console.log(
-                        "Single project data not found. Fetching all projects..."
-                    );
+                    // console.log("Single project data not found. Fetching all projects...");
 
                     const allResponse = await getProjectsService();
 
-                    console.log(
-                        "ALL PROJECTS RESPONSE:",
-                        allResponse
-                    );
+                    // console.log("ALL PROJECTS RESPONSE:",allResponse);
 
                     const projectList = Array.isArray(allResponse)
                         ? allResponse
@@ -174,10 +169,7 @@ const ProjectDetails = ({ card, index, fadeUp }) => {
                     );
                 }
 
-                console.log(
-                    "FINAL SELECTED PROJECT:",
-                    projectData
-                );
+                // console.log("FINAL SELECTED PROJECT:",   projectData);
 
                 // ------------------------------------------------
                 // 4. Normalize fields
@@ -261,10 +253,7 @@ const ProjectDetails = ({ card, index, fadeUp }) => {
                             : [],
                 };
 
-                console.log(
-                    "NORMALIZED PROJECT:",
-                    normalizedProject
-                );
+                // console.log( "NORMALIZED PROJECT:",normalizedProject);
 
                 setDetails(normalizedProject);
 
@@ -290,9 +279,7 @@ const ProjectDetails = ({ card, index, fadeUp }) => {
                 setLoading(false);
             }
         };
-
         fetchProjectDetails();
-
     }, [projectId]);
 
 

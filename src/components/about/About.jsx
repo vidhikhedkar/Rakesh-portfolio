@@ -87,7 +87,7 @@ export const About = () => {
         const getAboutData = async () => {
             try {
                 const response = await fetchAboutData();
-                console.log("About API Data:", response);
+                // console.log("About API Data:", response);
                 setAboutData(response);
             } catch (error) {
                 console.error("Failed to fetch about data:", error);

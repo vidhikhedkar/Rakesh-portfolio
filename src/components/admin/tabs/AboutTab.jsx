@@ -56,7 +56,7 @@ const AboutTab = () => {
                 formData.append("image", imageFile);
             }
             const response = await updateAboutData(formData);
-            console.log("Updated About Data:", response);
+            // console.log("Updated About Data:", response);
             if (response?.data) {
                 setProfile({
                     fullName: response.data.fullName || "",

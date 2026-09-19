@@ -3,7 +3,7 @@ import api from './api.service';
 export const getProfileService = async () => {
     try {
         const response = await api.get('/api/profile');
-        console.log("profileeee",response.data)
+        // console.log("profileeee",response.data)
         return response.data;
     } catch (error) {
         console.error('Get Profile Error:', error);
