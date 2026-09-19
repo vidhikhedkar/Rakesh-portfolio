@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiHome, FiUser, FiFolder, FiMail, FiLogOut, FiMenu, FiX } from 'react-icons/fi';
+import { FiHome, FiUser, FiFolder, FiMail, FiLogOut, FiMenu, FiX, FiFileText } from 'react-icons/fi';
 import HomeTab from './tabs/HomeTab';
 import AboutTab from './tabs/AboutTab';
 import ProjectTab from './tabs/ProjectTab';
@@ -11,7 +11,7 @@ import { FaRegUserCircle } from 'react-icons/fa';
 import ServicesOfferingTab from './tabs/ServicesOfferingTab';
 import { logoutService } from '../service/auth.service';
 import ProjectDetailsTab from './tabs/ProjectDetailsTab';
-
+import ResumeTab from './tabs/ResumeTab';
 
 const Dashboard = () => {
     const [activeTab, setActiveTab] = useState('home');
@@ -24,13 +24,14 @@ const Dashboard = () => {
         { id: 'home', label: 'Home', icon: <FiHome /> },
         { id: 'about', label: 'About', icon: <FiUser /> },
         { id: 'profile', label: 'Profile', icon: <FaRegUserCircle /> },
+        { id: 'resume', label: 'Resume', icon: <FiFileText /> },
         { id: 'project', label: 'Project', icon: <FiFolder /> },
         { id: 'project-details', label: 'Project Details', icon: <FiFolder /> },
         { id: 'services-offering', label: 'Services Offering', icon: <FiFolder /> },
         { id: 'contact', label: 'Contact', icon: <FiMail /> },
     ];
 
-    
+
     const handleTabClick = (id) => {
         setActiveTab(id);
         setIsMobileMenuOpen(false);
@@ -41,7 +42,7 @@ const Dashboard = () => {
         try {
             setIsLoggingOut(true);
             await logoutService();
-            navigate('/login'); 
+            navigate('/login');
         } catch (err) {
             console.error("Failed to log out:", err);
         } finally {
@@ -212,6 +213,7 @@ const Dashboard = () => {
                                 {activeTab === 'home' && <HomeTab />}
                                 {activeTab === 'about' && <AboutTab />}
                                 {activeTab === 'profile' && <ProfileTab />}
+                                {activeTab === 'resume' && <ResumeTab />}
                                 {activeTab === 'project' && <ProjectTab />}
                                 {activeTab === 'project-details' && <ProjectDetailsTab />}
                                 {activeTab === 'services-offering' && <ServicesOfferingTab />}

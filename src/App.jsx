@@ -12,6 +12,7 @@ import ServicesOffering from './components/servicesoffering/ServicesOffering';
 import Login from './auth/Login';
 import ProtectedRoute from './auth/ProtectedRoute';
 import ProjectDetails from './components/projects/ProjectDetails';
+import MyApproch from './components/approach/MyApproch';
 
 
 const Layout = () => {
@@ -30,6 +31,7 @@ const Layout = () => {
         <Route path="/profile" element={<Profile />} />
         <Route path="/projects/:projectId" element={<ProjectDetails />} />
         <Route path="/services-offering" element={<ServicesOffering />} />
+        <Route path="/my-approch" element={<MyApproch />} />
         <Route path="/login" element={<Login />} />
 
         {/* Secured/Protected Admin Routes */}

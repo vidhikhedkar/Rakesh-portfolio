@@ -37,12 +37,13 @@ const Navbar = () => {
                 );
               })}
             </nav>
-            <Link
-              to="/contact"
+            <a
+              href={`${import.meta.env.VITE_BACKEND_URL}/api/resume/download`}
+              download="Rakesh_Parvathneni_Resume.pdf"
               className="px-6 py-2.5 rounded-full bg-[#323232] text-white font-medium text-sm hover:bg-slate-800 transition-colors shadow-sm"
             >
-              Let's talk
-            </Link>
+              Get Resume
+            </a>
           </div>
         </div>
       </header>
@@ -59,13 +60,13 @@ const Navbar = () => {
         >
           <HiMenuAlt3 size={22} />
         </button>
-{/* 
+        {/* 
         <Link
           to="/contact"
           onClick={() => setIsOpen(false)}
           className="px-4 text-center block py-2 rounded-2xl bg-[#323232] text-white font-bold text-sm shadow-xl"
         >
-          Let's talk
+          Get Resume
         </Link> */}
       </header>
 
@@ -114,13 +115,13 @@ const Navbar = () => {
               })}
             </nav>
 
-            <Link
-              to="/contact"
-              onClick={() => setIsOpen(false)}
+            <a
+              href={`${import.meta.env.VITE_BACKEND_URL}/api/resume/download`}
+              download="Rakesh_Parvathneni_Resume.pdf"
               className="w-full text-center block py-4 rounded-2xl bg-[#323232] text-white font-bold text-sm shadow-xl"
             >
-              Let's talk
-            </Link>
+              Get Resume
+            </a>
           </div>
         </div>
       )}

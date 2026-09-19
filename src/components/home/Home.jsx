@@ -2,15 +2,16 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { NavLink } from "react-router-dom";
 import { FaGlobe, FaLinkedinIn, FaBehance } from "react-icons/fa6";
-import approach from '../../assets/approach.png';
+import approach from '../../assets/approach.webp';
 import { getHomeContentService } from "../service/hometab.service";
 import { LuCreditCard, LuLayers3, LuMousePointer } from "react-icons/lu";
 import { MdOutlineContentCut } from "react-icons/md";
+import signature from "../../assets/signature.webp";
+
 
 const Home = () => {
   const [homeContent, setHomeContent] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
@@ -123,7 +124,7 @@ const Home = () => {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.4 }}
-                  className="mb-1 text-[13px] font-medium uppercase tracking-wide text-[#BCBCBC]"
+                  className="mb-1 text-[13px] font-medium uppercase tracking-wide text-gray-600"
                 >
                   {homeContent?.role}
                 </motion.p>
@@ -150,7 +151,7 @@ const Home = () => {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.6 }}
-                  className="mt-4 max-w-52.5 text-[15px] leading-5 text-[#949597]"
+                  className="mt-4 max-w-52.5 text-[15px] leading-5 text-gray-600"
                 >
                   {homeContent?.location}
                 </motion.p>
@@ -165,46 +166,55 @@ const Home = () => {
             {/* Ticker Section -> Slides from Right */}
             <motion.div
               variants={slideFromRight}
-              className="flex h-15 w-full items-center overflow-hidden rounded-full bg-white px-5 shadow-[0_10px_35px_rgba(30,40,80,0.03)] sm:px-6"
+              className="flex h-15 w-full items-center overflow-hidden rounded-full bg-white shadow-[0_10px_35px_rgba(30,40,80,0.03)]"
             >
-              <motion.div
-                animate={{
-                  x: ["0%", "-50%"],
-                }}
-                transition={{
-                  duration: 16,
-                  repeat: Infinity,
-                  ease: "linear",
-                  repeatType: "loop",
-                }}
-                className="flex min-w-max items-center gap-4 whitespace-nowrap text-[9px] font-medium uppercase tracking-wide text-[#b8bbc4] px-10"
-              >
-                <div className="flex shrink-0 items-center gap-4 pr-4">
-                  <TickerItem text={homeContent?.tickerText} />
-                  <TickerDot />
-                  <TickerItem text={homeContent?.tickerText} />
-                  <TickerDot />
-                  <TickerItem text={homeContent?.tickerText} />
-                  <TickerDot />
-                  <TickerItem text={homeContent?.tickerText} />
-                  <TickerDot />
-                  <TickerItem text={homeContent?.tickerText} />
-                  <TickerDot />
-                </div>
+              {/* Fixed left space */}
+              <div className="w-6 shrink-0" />
 
-                <div className="flex shrink-0 items-center gap-4 pr-4">
-                  <TickerItem text={homeContent?.tickerText} />
-                  <TickerDot />
-                  <TickerItem text={homeContent?.tickerText} />
-                  <TickerDot />
-                  <TickerItem text={homeContent?.tickerText} />
-                  <TickerDot />
-                  <TickerItem text={homeContent?.tickerText} />
-                  <TickerDot />
-                  <TickerItem text={homeContent?.tickerText} />
-                  <TickerDot />
-                </div>
-              </motion.div>
+              {/* Scrolling area */}
+              <div className="min-w-0 flex-1 overflow-hidden">
+                <motion.div
+                  animate={{
+                    x: ["0%", "-50%"],
+                  }}
+                  transition={{
+                    duration: 16,
+                    repeat: Infinity,
+                    ease: "linear",
+                    repeatType: "loop",
+                  }}
+                  className="flex min-w-max items-center gap-4 whitespace-nowrap text-[13px] font-medium uppercase tracking-wide text-gray-600"
+                >
+                  <div className="flex shrink-0 items-center gap-4 pr-4">
+                    <TickerItem text={homeContent?.tickerText} />
+                    <TickerDot />
+                    <TickerItem text={homeContent?.tickerText} />
+                    <TickerDot />
+                    <TickerItem text={homeContent?.tickerText} />
+                    <TickerDot />
+                    <TickerItem text={homeContent?.tickerText} />
+                    <TickerDot />
+                    <TickerItem text={homeContent?.tickerText} />
+                    <TickerDot />
+                  </div>
+
+                  <div className="flex shrink-0 items-center gap-4 pr-4">
+                    <TickerItem text={homeContent?.tickerText} />
+                    <TickerDot />
+                    <TickerItem text={homeContent?.tickerText} />
+                    <TickerDot />
+                    <TickerItem text={homeContent?.tickerText} />
+                    <TickerDot />
+                    <TickerItem text={homeContent?.tickerText} />
+                    <TickerDot />
+                    <TickerItem text={homeContent?.tickerText} />
+                    <TickerDot />
+                  </div>
+                </motion.div>
+              </div>
+
+              {/* Fixed right space */}
+              <div className="w-6 shrink-0" />
             </motion.div>
 
 
@@ -213,24 +223,58 @@ const Home = () => {
               {/* Signature / Credentials -> Slides from Right */}
               <motion.section
                 variants={slideFromRight}
-                whileHover={{ y: -6, scale: 1.01, transition: { duration: 0.25 } }}
+                whileHover={{
+                  y: -6,
+                  scale: 1.01,
+                  transition: { duration: 0.25 },
+                }}
                 className="group relative flex min-h-46.25 flex-col justify-between overflow-hidden rounded-[28px] bg-white p-5 shadow-[0_15px_50px_rgba(35,45,80,0.04)]"
               >
-                <NavLink to="/profile" className="absolute inset-0 z-0" aria-label="Go to Credentials" />
+                <NavLink
+                  to="/profile"
+                  className="absolute inset-0 z-0"
+                  aria-label="Go to Credentials"
+                />
 
-                <div className="flex flex-1 items-center justify-center">
+                {/* Signature */}
+                <div className="relative z-10 flex flex-1 items-center justify-center">
                   <motion.div
-                    animate={{ rotate: [0, 4, -4, 0], y: [0, -4, 0] }}
-                    transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                    className="select-none font-[cursive] text-4xl font-light text-[#d7d8dc] sm:text-5xl group-hover:text-[#5b78ff] transition-colors duration-500"
+                    animate={{
+                      rotate: [0, 3, -3, 0],
+                      y: [0, -4, 0],
+                    }}
+                    transition={{
+                      duration: 4,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
                   >
-                    Signature
+                    <img
+                      src={signature}
+                      alt="Signature"
+                      className="block w-36
+                    sm:w-70
+                                      h-auto
+                    object-contain
+                    opacity-90
+                    transition-all
+                    duration-500
+                    group-hover:scale-105
+                    group-hover:opacity-100
+                "
+                    />
                   </motion.div>
                 </div>
 
+                {/* Bottom Content */}
                 <div className="relative z-10">
-                  <p className="text-[13px] uppercase text-[#BCBCBC]">More About Me</p>
-                  <h2 className="mt-1 text-[15px] font-medium text-[#0F0F0F]">My Profile</h2>
+                  <p className="text-[13px] uppercase text-gray-600">
+                    More About Me
+                  </p>
+
+                  <h2 className="mt-1 text-[15px] font-medium text-[#0F0F0F]">
+                    My Profile
+                  </h2>
                 </div>
 
                 <PlusButton to="/profile" />
@@ -267,7 +311,7 @@ const Home = () => {
                 </div>
 
                 <div className="relative z-10">
-                  <p className="text-[11px] uppercase text-[#BCBCBC]">Showcase</p>
+                  <p className="text-[11px] uppercase text-gray-600">Showcase</p>
                   <h2 className="mt-1 text-[15px] font-medium text-[#0F0F0F]">Projects</h2>
                 </div>
 
@@ -283,7 +327,7 @@ const Home = () => {
             whileHover={{ y: -6, scale: 1.01, transition: { duration: 0.25 } }}
             className="group relative flex min-h-30 flex-col justify-between overflow-hidden rounded-[28px] bg-white p-5 shadow-[0_15px_50px_rgba(35,45,80,0.04)] lg:col-span-3"
           >
-            <NavLink to="/projects" className="absolute inset-0 z-0" aria-label="Go to Approach" />
+            <NavLink to="/my-approch" className="absolute inset-0 z-0" aria-label="Go to Approach" />
 
             <div className="flex flex-1 items-center justify-center">
               <motion.div
@@ -296,11 +340,11 @@ const Home = () => {
             </div>
 
             <div className="relative z-10">
-              <p className="text-[11px] uppercase text-[#BCBCBC]">Simple & Useful</p>
-              <h2 className="mt-1 text-[15px] font-medium text-[#0F0F0F]">My Approach</h2>
+              <p className="text-[11px] uppercase text-gray-600">Simple & Useful</p>
+              <h2 className="mt-1 text-[17px] font-medium text-[#0F0F0F]">My Approach</h2>
             </div>
 
-            <PlusButton to="/projects" />
+            <PlusButton to="/my-approch" />
           </motion.section>
 
 
@@ -435,11 +479,11 @@ const Home = () => {
 
             <div className="relative z-10 mt-auto">
 
-              <p className="text-[13px] font-normal uppercase tracking-wide text-[#BCBCBC]">
+              <p className="text-[13px] font-normal uppercase tracking-wide text-gray-600">
                 WHAT I DO
               </p>
 
-              <h2 className="mt-3 text-[30px] font-medium leading-none tracking-[-1px] text-[#0F0F0F]">
+              <h2 className="mt-3 text-[17px] font-medium text-[#0F0F0F]">
                 Services Offering
               </h2>
 
@@ -661,7 +705,7 @@ const Stat = ({ number, label }) => {
       >
         {number}
       </motion.div>
-      <div className="mt-3 max-w-20 text-[11px] uppercase leading-4 text-[#BCBCBC]">
+      <div className="mt-3 max-w-20 text-[11px] uppercase leading-4 text-gray-600">
         {label}
       </div>
     </motion.div>

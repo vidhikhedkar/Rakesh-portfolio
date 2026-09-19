@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { FiArrowRight } from 'react-icons/fi';
-import { SiFigma } from 'react-icons/si';
 import { motion } from 'framer-motion';
 import { NavLink } from 'react-router-dom';
 import { fetchServices } from '../service/servicesoffering.service';
+import { GiDandelionFlower } from 'react-icons/gi';
+import { FaCss3Alt } from 'react-icons/fa6';
+import { TiHtml5 } from 'react-icons/ti';
+import { TbBrandAdobeIllustrator, TbBrandAdobePhotoshop } from 'react-icons/tb';
+import { PiFigmaLogoDuotone } from 'react-icons/pi';
 
 const ServicesOffering = () => {
     const [services, setServices] = useState([]);
@@ -95,58 +98,71 @@ const ServicesOffering = () => {
         },
     };
 
+
     const toolkitItems = [
         {
             icon: (
-                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none">
-                    <path d="M4 3L5.5 18.5L12 20.5L18.5 18.5L20 3H4Z" fill="#264de4" />
-                    <path d="M12 4.5V19L17.2 17.4L18.4 4.5H12Z" fill="#2965f1" />
-                    <path d="M8.5 8H16L15.7 11.5H8.8L9 14.5H15.5L15.1 17.5L12 18.4L8.9 17.5L8.7 15H6.2L6.6 19.5L12 21L17.4 19.5L18.1 12V8H8.5Z" fill="#ffffff" />
-                    <path d="M12 11.5H15.3L15.5 9.5H12V11.5ZM12 17.5V15.5H14.8L15 14H12V12H17.8L17.5 16L12 17.5Z" fill="#ffffff" />
-                </svg>
+                <FaCss3Alt className="w-8 h-8 text-[#1572B6]" />
             ),
             name: "CSS3"
         },
         {
             icon: (
-                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none">
-                    <path d="M4 3L5.5 18.5L12 20.5L18.5 18.5L20 3H4Z" fill="#e44d26" />
-                    <path d="M12 4.5V19L17.2 17.4L18.4 4.5H12Z" fill="#f16529" />
-                    <path d="M8.5 8H16L15.7 11.5H8.8L9 14.5H15.5L15.1 17.5L12 18.4L8.9 17.5L8.7 15H6.2L6.6 19.5L12 21L17.4 19.5L18.1 12V8H8.5Z" fill="#ffffff" />
-                    <path d="M12 11.5H15.3L15.5 9.5H12V11.5ZM12 17.5V15.5H14.8L15 14H12V12H17.8L17.5 16L12 17.5Z" fill="#ffffff" />
-                </svg>
+                <TiHtml5 className="w-8 h-8 text-[#E34F26]" />
             ),
             name: "HTML5"
         },
         {
             icon: (
-                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none">
-                    <rect width="24" height="24" rx="4" fill="#001d3d" />
-                    <path d="M6 6H9.5C10.8807 6 12 7.11929 12 8.5C12 9.88071 10.8807 11 9.5 11H8V18H6V6ZM8 9.5H9.5C10.0523 9.5 10.5 9.05228 10.5 8.5C10.5 7.94772 10.0523 7.5 9.5 7.5H8V9.5Z" fill="#31a8ff" />
-                    <path d="M13.5 12.5C13.5 10.0147 15.5147 8 18 8C19.3807 8 20.6193 8.61929 21.4558 9.57999L20.1066 10.7842C19.5746 10.2227 18.826 9.5 18 9.5C16.3431 9.5 15 10.8431 15 12.5C15 14.1569 16.3431 15.5 18 15.5C18.826 15.5 19.5746 14.7773 20.1066 14.2158L21.4558 15.42C20.6193 16.3807 19.3807 17 18 17C15.5147 17 13.5 14.9853 13.5 12.5Z" fill="#31a8ff" />
-                </svg>
+                <TbBrandAdobePhotoshop className="w-8 h-8 text-[#001E36]" />
             ),
             name: "Photoshop"
         },
         {
             icon: (
-                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none">
-                    <path d="M5 24C3.34315 24 2 22.6569 2 21C2 19.3431 3.34315 18 5 18H8V21C8 22.6569 6.65685 24 5 24Z" fill="#0acf83" />
-                    <path d="M2 15C2 13.3431 3.34315 12 5 12H8V18H5C3.34315 18 2 16.6569 2 15Z" fill="#a259ff" />
-                    <path d="M2 9C2 7.34315 3.34315 6 5 6H8V12H5C3.34315 12 2 10.6569 2 9Z" fill="#f24e1e" />
-                    <path d="M8 3C8 1.34315 9.34315 0 11 0H14V6H11C9.34315 6 8 4.65685 8 3Z" fill="#ff7262" />
-                    <path d="M14 0H17C18.6569 0 20 1.34315 20 3C20 4.65685 18.6569 6 17 6H14V0Z" fill="#1abcfe" />
+                <svg
+                    width="32"
+                    height="32"
+                    viewBox="0 0 38 57"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+                    {/* Top Left - Red */}
+                    <path
+                        d="M0 9.5C0 4.25 4.25 0 9.5 0H19V19H9.5C4.25 19 0 14.75 0 9.5Z"
+                        fill="#F24E1E"
+                    />
+
+                    {/* Top Right - Orange/Coral */}
+                    <path
+                        d="M19 0H28.5C33.75 0 38 4.25 38 9.5C38 14.75 33.75 19 28.5 19H19V0Z"
+                        fill="#FF7262"
+                    />
+
+                    {/* Middle Left - Purple */}
+                    <path
+                        d="M0 28.5C0 23.25 4.25 19 9.5 19H19V38H9.5C4.25 38 0 33.75 0 28.5Z"
+                        fill="#A259FF"
+                    />
+
+                    {/* Middle Right - Blue */}
+                    <path
+                        d="M19 19H28.5C33.75 19 38 23.25 38 28.5C38 33.75 33.75 38 28.5 38C23.25 38 19 33.75 19 28.5V19Z"
+                        fill="#1ABCFE"
+                    />
+
+                    {/* Bottom - Green */}
+                    <path
+                        d="M0 47.5C0 42.25 4.25 38 9.5 38H19V47.5C19 52.75 14.75 57 9.5 57C4.25 57 0 52.75 0 47.5Z"
+                        fill="#0ACF83"
+                    />
                 </svg>
             ),
             name: "Figma"
         },
         {
             icon: (
-                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none">
-                    <rect width="24" height="24" rx="4" fill="#330000" />
-                    <path d="M5.5 18.5L8.5 10.5L11.5 18.5H9.8L9.2 16.8H7.8L7.2 18.5H5.5ZM8 15.5H9L8.5 13.8L8 15.5Z" fill="#ff9a00" />
-                    <path d="M13 11.5C13 10.1193 14.1193 9 15.5 9H19V10.5H15.5C14.9477 10.5 14.5 10.9477 14.5 11.5C14.5 12.0523 14.9477 12.5 15.5 12.5H17.5C18.8807 12.5 20 13.6193 20 15C20 16.3807 18.8807 17.5 17.5 17.5H13V16H17.5C18.0523 16 18.5 15.5523 18.5 15C18.5 14.4477 18.0523 14 17.5 14H15.5C14.1193 14 13 12.8807 13 11.5Z" fill="#ff9a00" />
-                </svg>
+                <TbBrandAdobeIllustrator className="w-8 h-8 text-[#FF9A00]" />
             ),
             name: "Illustrator"
         }
@@ -205,7 +221,7 @@ const ServicesOffering = () => {
                                         className="group"
                                     >
                                         <div className="flex items-start gap-4">
-                                            <span className="mt-1 w-4 shrink-0 text-[10px] font-medium tracking-wide text-[#737688]">
+                                            <span className="mt-1 w-4 shrink-0 text-[10px] font-medium tracking-wide text-gray-600">
                                                 {service.num || `0${idx + 1}`}
                                             </span>
 
@@ -243,39 +259,12 @@ const ServicesOffering = () => {
                             }}
                             className="mb-8 flex items-center justify-center gap-1.5 sm:gap-2"
                         >
-                            <motion.span
-                                animate={{
-                                    rotate: [0, 10, -10, 0],
-                                    scale: [1, 1.08, 1],
-                                }}
-                                transition={{
-                                    duration: 3,
-                                    repeat: Infinity,
-                                    ease: "easeInOut",
-                                }}
-                                className="text-[32px] font-light leading-none text-[#5B78FF] sm:text-[42px]"
-                            >
-                                ✻
-                            </motion.span>
-
-                            <h2 className="whitespace-nowrap text-[38px] font-medium leading-none tracking-[-2px] text-[#111111] sm:text-[48px] lg:text-[54px]">
+                            <span className="text-[#5870EE] text-[42px] sm:text-[52px] leading-none font-light animate-pulse"><GiDandelionFlower /></span>
+                            <h2 className="whitespace-nowrap  leading-none ext-[88px] xl:text-[80px] font-bold tracking-[-4px]">
                                 MY OFFERINGS
                             </h2>
 
-                            <motion.span
-                                animate={{
-                                    rotate: [0, -10, 10, 0],
-                                    scale: [1, 1.08, 1],
-                                }}
-                                transition={{
-                                    duration: 3,
-                                    repeat: Infinity,
-                                    ease: "easeInOut",
-                                }}
-                                className="text-[32px] font-light leading-none text-[#5B78FF] sm:text-[42px]"
-                            >
-                                ✻
-                            </motion.span>
+                            <span className="text-[#5870EE] text-[42px] sm:text-[52px] leading-none font-light animate-pulse"><GiDandelionFlower /></span>
                         </motion.div>
 
                         <motion.div
@@ -379,7 +368,7 @@ const ServicesOffering = () => {
                         </div>
 
                         <div>
-                            <p className="text-[12px] uppercase tracking-widest text-[#BCBCBC] font-medium mb-0.5">
+                            <p className="text-[12px] uppercase tracking-widest text-gray-600 font-medium mb-0.5">
                                 HAVE AN EYE
                             </p>
 
@@ -406,28 +395,24 @@ const ServicesOffering = () => {
                     >
                         <NavLink to="/contact" className="absolute inset-0 z-0" aria-label="Go to Contact Page" />
 
-                        <div className="absolute left-6 top-0 h-9.5 w-0.5 bg-[#d9deea] group-hover:bg-[#5870EE] transition-colors duration-300" />
-                        <div className="absolute left-3 top-8 h-7 w-7">
-                            <svg
+                        <div className="absolute left-8 top-0 h-13.75 w-0.5 bg-[#d9deea] pointer-events-none" />
+
+                        <div className="absolute left-4.5 top-10 h-8 w-8 pointer-events-none">
+                            <motion.svg
+                                animate={{ rotate: 360 }}
+                                transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
                                 viewBox="0 0 32 32"
                                 className="h-full w-full"
                                 fill="none"
                                 xmlns="http://www.w3.org/2000/svg"
                             >
                                 <path
-                                    d="
-                                    M16 0
-                                    C16.8 8.5 23.5 15.2 32 16
-                                    C23.5 16.8 16.8 23.5 16 32
-                                    C15.2 23.5 8.5 16.8 0 16
-                                    C8.5 15.2 15.2 8.5 16 0Z
-                                    "
+                                    d="M16 0 C16.8 8.5 23.5 15.2 32 16 C23.5 16.8 16.8 23.5 16 32 C15.2 23.5 8.5 16.8 0 16 C8.5 15.2 15.2 8.5 16 0Z"
                                     fill="white"
                                     stroke="#cfd5e2"
                                     strokeWidth="1.5"
-                                    className="group-hover:stroke-[#5870EE] transition-colors duration-300"
                                 />
-                            </svg>
+                            </motion.svg>
                         </div>
 
                         <motion.div
@@ -462,13 +447,13 @@ const ServicesOffering = () => {
                         className="md:col-span-3 h-55 bg-white rounded-[22px] p-3.5 shadow-[0_2px_12px_rgba(0,0,0,0.03)] hover:shadow-[0_12px_30px_rgba(35,45,80,0.08)] flex flex-col justify-between group cursor-pointer relative transition-all duration-300"
                     >
                         <div className="flex justify-center items-center h-17">
-                            <span className="font-serif italic text-[20px] text-[#BCBCBC] font-light tracking-wider group-hover:text-[#5870EE] transition-colors duration-300">
+                            <span className="font-serif italic text-[20px] text-gray-600 font-light tracking-wider group-hover:text-[#5870EE] transition-colors duration-300">
                                 Rakesh P.
                             </span>
                         </div>
 
                         <div>
-                            <p className="text-[12px] uppercase tracking-widest text-[#BCBCBC] font-medium mb-0.5">
+                            <p className="text-[12px] uppercase tracking-widest text-gray-600 font-medium mb-0.5">
                                 MORE ABOUT ME
                             </p>
                             <div className="flex items-center justify-between">

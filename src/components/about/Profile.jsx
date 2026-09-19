@@ -70,7 +70,7 @@ const Profile = () => {
         <section className="bg-[#F8F9FA] flex items-center justify-center py-10">
             <div className="container flex flex-col lg:flex-row gap-8 lg:gap-16 items-start">
                 <div className="w-full lg:w-[320px] shrink-0 bg-white rounded-2xl p-6 flex flex-col items-center text-center shadow-xs">
-                    <div className="relative h-44 w-44 sm:h-52 sm:w-52 rounded-2xl bg-linear-to-b from-[#5B78F6] to-[#3B59E8] overflow-hidden shadow-md mb-6">
+                    <div className="relative h-44 w-44 sm:h-60 sm:w-52 rounded-2xl bg-linear-to-b from-[#5B78F6] to-[#3B59E8] overflow-hidden shadow-md mb-6">
                         {profile.avatar ? (
                             <img
                                 src={profile.avatar}
@@ -90,7 +90,7 @@ const Profile = () => {
                         </h2>
                     )}
                     {profile.handle && (
-                        <p className="text-xs sm:text-sm text-[#BCBCBC] mt-2 mb-6">
+                        <p className="text-xs sm:text-sm text-gray-600 mt-2 mb-6">
                             {profile.handle.startsWith('@') ? profile.handle : `@${profile.handle}`}
                         </p>
                     )}
@@ -144,7 +144,7 @@ const Profile = () => {
                             </h3>
                             <div className="space-y-1.5">
                                 {profile.experience?.duration && (
-                                    <span className="text-[16px] sm:text-xs font-semibold tracking-wide text-[#BCBCBC] uppercase">
+                                    <span className="text-[16px] sm:text-xs font-semibold tracking-wide text-gray-600 uppercase">
                                         {profile.experience.duration}
                                     </span>
                                 )}
@@ -154,7 +154,7 @@ const Profile = () => {
                                     </h4>
                                 )}
                                 {profile.experience?.company && (
-                                    <p className="text-xs sm:text-sm font-regular text-[#BCBCBC]">
+                                    <p className="text-xs sm:text-sm font-regular text-gray-600">
                                         {profile.experience.company}
                                     </p>
                                 )}
@@ -185,7 +185,7 @@ const Profile = () => {
                                                 </h4>
                                             )}
                                             {(edu.academy || edu.institution) && (
-                                                <p className="mt-1 text-xs leading-5 text-[#BCBCBC] sm:text-sm">
+                                                <p className="mt-1 text-xs leading-5 text-gray-600 sm:text-sm">
                                                     {edu.academy || edu.institution}
                                                 </p>
                                             )}

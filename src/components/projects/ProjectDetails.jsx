@@ -621,7 +621,7 @@ const ProjectDetails = ({ card, index, fadeUp }) => {
 
 
                         {/* PLATFORM ECOSYSTEM (50% Width on Large Screens) */}
-                        <motion.div
+                        {/* <motion.div
                             className="lg:col-span-6 bg-white border border-[#C3C5D9]/30 rounded-2xl p-6 sm:p-8"
                             variants={scaleIn}
                             initial="hidden"
@@ -669,7 +669,7 @@ const ProjectDetails = ({ card, index, fadeUp }) => {
                                     );
                                 })}
                             </div>
-                        </motion.div>
+                        </motion.div> */}
                     </div>
 
                 </div>
@@ -692,69 +692,39 @@ const ProjectDetails = ({ card, index, fadeUp }) => {
 
                     {/* Vertical line */}
 
-                    <motion.div
-                        className="absolute left-1/2 top-0 h-9.5 w-0.5 -translate-x-1/2 bg-[#5870EE]"
-                        initial={{
-                            scaleY: 0,
-                        }}
-                        whileInView={{
-                            scaleY: 1,
-                        }}
-                        viewport={{
-                            once: true,
-                        }}
-                        transition={{
-                            duration: 0.7,
-                        }}
-                        style={{
-                            transformOrigin: "top",
-                        }}
+                    {/* Blue Vertical Line */}
+                    <div
+                        className="absolute left-1/2 top-0 h-9.5 w-0.5 -translate-x-1/2 bg-[#5870EE] pointer-events-none"
                     />
 
-
-                    {/* Diamond */}
-
-                    <motion.div
+                    {/* Moving Blue Diamond */}
+                    <div
                         className="absolute left-1/2 top-8 h-8 w-8 -translate-x-1/2 pointer-events-none"
-                        initial={{
-                            opacity: 0,
-                            scale: 0,
-                            rotate: -45,
-                        }}
-                        whileInView={{
-                            opacity: 1,
-                            scale: 1,
-                            rotate: 0,
-                        }}
-                        viewport={{
-                            once: true,
-                        }}
-                        transition={{
-                            duration: 0.6,
-                            delay: 0.5,
-                            ease: "backOut",
-                        }}
                     >
-
-                        <svg
+                        <motion.svg
+                            animate={{ rotate: 360 }}
+                            transition={{
+                                duration: 25,
+                                repeat: Infinity,
+                                ease: "linear",
+                            }}
                             viewBox="0 0 32 32"
                             className="h-full w-full"
                             fill="none"
                             xmlns="http://www.w3.org/2000/svg"
                         >
                             <path
-                                d="M16 0
-                                C16.8 8.5 23.5 15.2 32 16
-                                C23.5 16.8 16.8 23.5 16 32
-                                C15.2 23.5 8.5 16.8 0 16
-                                C8.5 15.2 15.2 8.5 16 0Z"
+                                d="M16 0 
+            C16.8 8.5 23.5 15.2 32 16 
+            C23.5 16.8 16.8 23.5 16 32 
+            C15.2 23.5 8.5 16.8 0 16 
+            C8.5 15.2 15.2 8.5 16 0Z"
                                 fill="white"
                                 stroke="#5870EE"
                                 strokeWidth="1.5"
                             />
-                        </svg>
-
-                    </motion.div>
+                        </motion.svg>
+                    </div>
 
 
                     {/* Content */}
@@ -999,28 +969,38 @@ const ProjectDetails = ({ card, index, fadeUp }) => {
                                 whileHover={{ y: -4 }}
                             >
 
-                                <div className="absolute right-11.5 top-0 h-10 w-0.5 bg-[#5870EE]" />
+                                {/* Blue Vertical Line - Right */}
+                                <div
+                                    className="absolute right-8 top-0 h-9.5 w-0.5 bg-[#5870EE] pointer-events-none"
+                                />
 
-                                <div className="absolute right-8 top-8 h-8 w-8 pointer-events-none">
-
-                                    <svg
+                                {/* Moving Blue Diamond - Right */}
+                                <div
+                                    className="absolute right-4.5 top-8 h-8 w-8 pointer-events-none"
+                                >
+                                    <motion.svg
+                                        animate={{ rotate: 360 }}
+                                        transition={{
+                                            duration: 25,
+                                            repeat: Infinity,
+                                            ease: "linear",
+                                        }}
                                         viewBox="0 0 32 32"
                                         className="h-full w-full"
                                         fill="none"
                                         xmlns="http://www.w3.org/2000/svg"
                                     >
                                         <path
-                                            d="M16 0 
-                                            C16.8 8.5 23.5 15.2 32 16 
-                                            C23.5 16.8 16.8 23.5 16 32 
-                                            C15.2 23.5 8.5 16.8 0 16 
-                                            C8.5 15.2 15.2 8.5 16 0Z"
+                                            d="M16 0
+            C16.8 8.5 23.5 15.2 32 16
+            C23.5 16.8 16.8 23.5 16 32
+            C15.2 23.5 8.5 16 0 16
+            C8.5 15.2 15.2 8.5 16 0Z"
                                             fill="white"
                                             stroke="#5870EE"
                                             strokeWidth="1.5"
                                         />
-                                    </svg>
-
+                                    </motion.svg>
                                 </div>
 
 

@@ -112,7 +112,7 @@ const ProjectCard = ({
 
             {/* Details */}
             <div className="px-px pt-4">
-                <p className="truncate text-[11px] font-normal uppercase leading-none tracking-[0.2px] text-[#BCBCBC]">
+                <p className="truncate text-[11px] font-normal uppercase leading-none tracking-[0.2px] text-gray-600">
                     {project.category}
                 </p>
 
@@ -246,10 +246,10 @@ const Projects = () => {
                                     }}
                                     className="flex h-12 items-center justify-center bg-transparent px-2"
                                 >
-                                    <h1 className="flex items-center gap-2 whitespace-nowrap text-[50px] font-bold leading-none tracking-[-1.5px] text-[#111111] pl-50 mb-10">
-                                        <span className="text-[#5870EE] text-[34px] leading-none font-light animate-pulse"><GiDandelionFlower /></span>
+                                    <h1 className="flex items-center gap-2  text-[48px] sm:text-[64px] md:text-[76px] lg:text-[88px] xl:text-[80px] font-bold tracking-[-4px] uppercase leading-[0.9] text-[#0F0F0F] whitespace-nowrap pl-50 mb-10">
+                                        <span className="text-[#5870EE] text-[42px] sm:text-[52px] leading-none font-light animate-pulse"><GiDandelionFlower /></span>
                                         <span>ALL PROJECTS</span>
-                                        <span className="text-[#5870EE] text-[34px] leading-none font-light animate-pulse"><GiDandelionFlower /></span>
+                                        <span className="text-[#5870EE] text-[42px] sm:text-[52px] leading-none font-light animate-pulse"><GiDandelionFlower /></span>
                                     </h1>
                                 </motion.div>
 

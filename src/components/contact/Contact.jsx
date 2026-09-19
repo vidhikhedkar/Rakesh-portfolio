@@ -136,7 +136,7 @@ const Contact = () => {
                                 </a>
 
                                 <div className="space-y-1">
-                                    <p className="text-[11px] font-semibold uppercase tracking-[1px] text-[#BCBCBC]">
+                                    <p className="text-[11px] font-semibold uppercase tracking-[1px] text-gray-600">
                                         Mail Us
                                     </p>
                                     <a href={`mailto:${contactData.email}`} className="text-[15px] font-medium text-gray-600 hover:text-[#5B78F6] transition-colors">
@@ -164,14 +164,14 @@ const Contact = () => {
                                         </span>
                                     </div>
 
-                                    <div className="flex items-center justify-between">
+                                    {/* <div className="flex items-center justify-between">
                                         <span
                                             onClick={() => handlePhoneClick(contactData.phone2)}
                                             className="text-[15px] font-medium text-gray-600 hover:text-[#5B78F6] transition-colors cursor-pointer"
                                         >
                                             {contactData.phone2}
                                         </span>
-                                    </div>
+                                    </div> */}
                                 </div>
                             </div>
 
@@ -220,30 +220,45 @@ const Contact = () => {
                     transition={{ duration: 0.5, delay: 0.1 }}
                     className="lg:col-span-7 bg-white rounded-4xl p-6 shadow-[0_10px_40px_rgba(35,45,80,0.04)] relative overflow-hidden"
                 >
-                    <div className="absolute right-11 top-0 h-9.5 w-0.5 bg-[#5870EE] group-hover:bg-[#5870EE] transition-colors duration-300" />
-                    <div className="absolute right-7 top-8 h-8 w-8 pointer-events-none">
-                        <svg
-                            viewBox="0 0 32 32"
-                            className="h-full w-full"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <path
-                                d="M16 0
-         C16.8 8.5 23.5 15.2 32 16
-         C23.5 16.8 16.8 23.5 16 32
-         C15.2 23.5 8.5 16.8 0 16
-         C8.5 15.2 15.2 8.5 16 0Z"
-                                fill="white"
-                                stroke="#5870EE"
-                                strokeWidth="1.5"
-                            />
-                        </svg>
-                    </div>
+                    {/* Blue Vertical Line - Right */}
+<div
+    className="absolute right-8 top-0 h-9.5 w-0.5 bg-[#5870EE] pointer-events-none"
+/>
+
+{/* Moving Blue Diamond - Right */}
+<div
+    className="absolute right-4.5 top-8 h-8 w-8 pointer-events-none"
+>
+    <motion.svg
+        animate={{ rotate: 360 }}
+        transition={{
+            duration: 25,
+            repeat: Infinity,
+            ease: "linear",
+        }}
+        viewBox="0 0 32 32"
+        className="h-full w-full"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+    >
+        <path
+            d="M16 0
+            C16.8 8.5 23.5 15.2 32 16
+            C23.5 16.8 16.8 23.5 16 32
+            C15.2 23.5 8.5 16 0 16
+            C8.5 15.2 15.2 8.5 16 0Z"
+            fill="white"
+            stroke="#5870EE"
+            strokeWidth="1.5"
+        />
+    </motion.svg>
+</div>
 
                     <h2 className="text-[32px] md:text-[42px] font-medium tracking-[-1.5px] text-[#171719] mb-4">
                         Let’s work <span className="text-[#5B78F6]">together.</span>
                     </h2>
+
+                    
 
                     {submitStatus.message && (
                         <div className={`p-3 mb-4 rounded-xl text-sm ${submitStatus.success ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600'}`}>
