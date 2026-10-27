@@ -874,7 +874,7 @@ const ProjectDetailsTab = () => {
 
 
             <div className="space-y-2">
-                <Section title="1. Header">
+                {/* <Section title="1. Header">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div>
                             <label className="block text-xs font-semibold text-gray-700 mb-1">
@@ -949,7 +949,7 @@ const ProjectDetailsTab = () => {
                             />
                         </div>
                     </div>
-                </Section>
+                </Section> */}
 
 
                 <Section title="2. Hero Image">
@@ -960,7 +960,7 @@ const ProjectDetailsTab = () => {
                 </Section>
 
 
-                <Section title="3. Project Information">
+                {/* <Section title="3. Project Information">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div>
                             <label className="block text-xs font-semibold text-gray-700 mb-1">
@@ -1017,9 +1017,9 @@ const ProjectDetailsTab = () => {
                             />
                         </div>
                     </div>
-                </Section>
+                </Section> */}
 
-                <Section title="4. Brand & Editorial Images">
+                {/* <Section title="4. Brand & Editorial Images">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <ImageField
                             label="Brand Image"
@@ -1031,10 +1031,10 @@ const ProjectDetailsTab = () => {
                             field="editorialImage"
                         />
                     </div>
-                </Section>
+                </Section> */}
 
 
-                <Section title="5. Product">
+                {/* <Section title="5. Product">
                     <div className="space-y-4">
                         <div>
                             <label className="block text-xs font-semibold text-gray-700 mb-1">
@@ -1080,10 +1080,10 @@ const ProjectDetailsTab = () => {
                             />
                         </div>
                     </div>
-                </Section>
+                </Section> */}
 
 
-                <Section
+                {/* <Section
                     title="6. Platform Ecosystem"
                     action={
                         <AddButton
@@ -1147,10 +1147,10 @@ const ProjectDetailsTab = () => {
                             </div>
                         ))}
                     </div>
-                </Section>
+                </Section> */}
 
 
-                <Section title="7. Challenge & Approach">
+                {/* <Section title="7. Challenge & Approach">
                     <div className="space-y-6">
                         <div className="p-4 border border-gray-200 rounded-xl space-y-4">
                             <div>
@@ -1252,9 +1252,9 @@ const ProjectDetailsTab = () => {
                             </div>
                         </div>
                     </div>
-                </Section>
+                </Section> */}
 
-
+{/* 
                 <Section
                     title="8. Section Images"
                     action={
@@ -1312,9 +1312,9 @@ const ProjectDetailsTab = () => {
                             </div>
                         ))}
                     </div>
-                </Section>
+                </Section> */}
 
-                <Section title="9. Strategic Overview">
+                {/* <Section title="9. Strategic Overview">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label className="block text-xs font-semibold text-gray-700 mb-1">
@@ -1414,10 +1414,10 @@ const ProjectDetailsTab = () => {
                             </div>
                         ))}
                     </div>
-                </Section>
+                </Section> */}
 
  
-                <Section title="10. Project Metadata">
+                {/* <Section title="10. Project Metadata">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
                             <label className="block text-xs font-semibold text-gray-700 mb-1">
@@ -1461,9 +1461,9 @@ const ProjectDetailsTab = () => {
                             />
                         </div>
                     </div>
-                </Section>
+                </Section> */}
 
-                <Section
+                {/* <Section
                     title="11. Experience / Results"
                     action={
                         <div className="inline-block text-xs [&_button]:h-8 [&_button]:px-3 [&_button]:py-1 [&_button]:text-xs">
@@ -1513,16 +1513,16 @@ const ProjectDetailsTab = () => {
                             </div>
                         ))}
                     </div>
-                </Section>
+                </Section> */}
 
-                <Section title="12. Section 7 Image">
+                {/* <Section title="12. Section 7 Image">
                     <ImageField
                         label="Section 7 Image"
                         field="section7Image"
                     />
-                </Section>
+                </Section> */}
 
-          
+{/*           
                 <Section
                     title="13. Challenge Cards"
                     action={
@@ -1634,17 +1634,17 @@ const ProjectDetailsTab = () => {
                             </div>
                         ))}
                     </div>
-                </Section>
+                </Section> */}
 
-                <Section title="14. Section 9 Image">
+                {/* <Section title="14. Section 9 Image">
                     <ImageField
                         label="Section 9 Image"
                         field="section9Image"
                     />
-                </Section>
+                </Section> */}
 
 
-                <Section
+                {/* <Section
                     title="15. Outcome"
                     action={
                         <div className="inline-block text-xs [&_button]:h-8 [&_button]:px-3 [&_button]:py-1 [&_button]:text-xs">
@@ -1746,10 +1746,10 @@ const ProjectDetailsTab = () => {
                             </div>
                         ))}
                     </div>
-                </Section>
+                </Section> */}
 
                
-                <Section title="16. Footer">
+                {/* <Section title="16. Footer">
                     <div>
                         <label className="block text-xs font-semibold text-gray-700 mb-1">
                             Footer Title
@@ -1763,7 +1763,7 @@ const ProjectDetailsTab = () => {
                             className="w-full p-2.5 text-sm border border-gray-300 rounded-lg outline-none focus:border-[#5870EE] focus:ring-1 focus:ring-[#5870EE] resize-none uppercase"
                         />
                     </div>
-                </Section>
+                </Section> */}
 
 
                 <div className="flex justify-end pb-10">
